@@ -1,0 +1,70 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: CompositeResourceDefinition
+metadata:
+  name: clusters.aws.platformref.crossplane.io
+spec:
+  claimNames:
+    kind: Cluster
+    listKind: ClusterList
+    plural: clusters
+    singular: cluster
+  connectionSecretKeys:
+  - kubeconfig
+  crdSpecTemplate:
+    group: aws.platformref.crossplane.io
+    version: v1alpha1
+    names:
+      kind: AllocatedCluster
+      listKind: AllocatedClusterList
+      plural: allocatedclusters
+      singular: allocatedcluster
+    validation:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              parameters:
+                type: object
+                description: Cluster configuration parameters.
+                properties:
+                  nodes:
+                    type: object
+                    description: Cluster node configuration parameters.
+                    properties:
+                      count:
+                        type: int
+                        description: Desired node count, from 1 to 100.
+                      size:
+                        type: string
+                        description: Size of node.
+                        enum:
+                        - small
+                        - medium
+                        - large
+                      required:
+                      - count
+                      - size
+                  services:
+                    type: object
+                    description: Services configuration parameters.
+                    properties:
+                      operators:
+                        type: object
+                        description: Configuration for operators.
+                        properties:
+                          prometheus:
+                            type: object
+                            description: Configuration for the Prometheus operator.
+                            properties:
+                              image:
+                                type: string
+                                description: Prometheus operator image to run.
+                              tag:
+                                type: string
+                                description: Prometheus operator tag (version) to run.
+                required:
+                - nodes
+            required:
+            - parameters

@@ -1,0 +1,212 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: Composition
+metadata:
+  name: networks.aws.platformref.crossplane.io
+  labels:
+    provider: aws
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  reclaimPolicy: Delete
+  compositeTypeRef:
+    apiVersion: aws.platformref.crossplane.io/v1alpha1
+    kind: NetworkGroup
+  resources:
+  - base:
+      apiVersion: network.aws.crossplane.io/v1alpha3
+      kind: VPC
+      spec:
+        cidrBlock: 192.168.0.0/16
+        enableDnsSupport: true
+        enableDnsHostNames: true
+    patches:
+    - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+  - base:
+      apiVersion: network.aws.crossplane.io/v1alpha3
+      kind: InternetGateway
+      spec:
+        vpcIdSelector:
+          matchControllerRef: true
+    patches:
+    - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+  - base:
+      apiVersion: network.aws.crossplane.io/v1alpha3
+      kind: Subnet
+      metadata:
+        labels:
+          zone: us-west-2a
+          access: public
+      spec:
+        mapPublicIPOnLaunch: true
+        cidrBlock: 192.168.64.0/18
+        vpcIdSelector:
+          matchControllerRef: true
+        availabilityZone: us-west-2a
+    patches:
+    - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+  - base:
+      apiVersion: network.aws.crossplane.io/v1alpha3
+      kind: Subnet
+      metadata:
+        labels:
+          zone: us-west-2b
+          access: public
+      spec:
+        mapPublicIPOnLaunch: true
+        cidrBlock: 192.168.128.0/18
+        vpcIdSelector:
+          matchControllerRef: true
+        availabilityZone: us-west-2b
+    patches:
+    - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+  - base:
+      apiVersion: network.aws.crossplane.io/v1alpha3
+      kind: Subnet
+      metadata:
+        labels:
+          zone: us-west-2c
+          access: public
+      spec:
+        mapPublicIPOnLaunch: true
+        cidrBlock: 192.168.192.0/18
+        vpcIdSelector:
+          matchControllerRef: true
+        availabilityZone: us-west-2c
+    patches:
+    - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+  - base:
+      apiVersion: network.aws.crossplane.io/v1alpha3
+      kind: Subnet
+      metadata:
+        labels:
+          zone: us-west-2a
+          access: private
+      spec:
+        cidrBlock: 172.16.10.0/24
+        vpcIdSelector:
+          matchControllerRef: true
+        availabilityZone: us-west-2a
+        tags:
+        - value: shared
+    patches:
+    - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+    - fromFieldPath: metadata.annotations[crossplane.io/external-name]
+      toFieldPath: spec.tags[0].key
+      transforms:
+      - type: string
+        string:
+          fmt: "kubernetes.io/cluster/%s"
+    connectionDetails:
+  - base:
+      apiVersion: network.aws.crossplane.io/v1alpha3
+      kind: Subnet
+      metadata:
+        labels:
+          zone: us-west-2b
+          access: private
+      spec:
+        cidrBlock: 172.16.20.0/24
+        vpcIdSelector:
+          matchControllerRef: true
+        availabilityZone: us-west-2b
+        tags:
+        - value: shared
+    patches:
+    - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+    - fromFieldPath: metadata.annotations[crossplane.io/external-name]
+      toFieldPath: spec.tags[0].key
+      transforms:
+      - type: string
+        string:
+          fmt: "kubernetes.io/cluster/%s"
+  - base:
+      apiVersion: network.aws.crossplane.io/v1alpha3
+      kind: Subnet
+      metadata:
+        labels:
+          zone: us-west-2c
+          access: private
+      spec:
+        cidrBlock: 172.16.30.0/24
+        vpcIdSelector:
+          matchControllerRef: true
+        availabilityZone: us-west-2c
+        tags:
+        - value: shared
+    patches:
+    - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+    - fromFieldPath: metadata.annotations[crossplane.io/external-name]
+      toFieldPath: spec.tags[0].key
+      transforms:
+      - type: string
+        string:
+          fmt: "kubernetes.io/cluster/%s"
+  - base:
+      apiVersion: network.aws.crossplane.io/v1alpha3
+      kind: RouteTable
+      spec:
+        vpcIdSelector:
+          matchControllerRef: true
+        routes:
+          - destinationCidrBlock: 0.0.0.0/0
+            gatewayIdSelector:
+              matchControllerRef: true
+        associations:
+          - subnetIdSelector:
+              matchControllerRef: true
+              matchLabels:
+                zone: us-west-2a
+                access: public
+          - subnetIdSelector:
+              matchControllerRef: true
+              matchLabels:
+                zone: us-west-2b
+                access: public
+          - subnetIdSelector:
+              matchControllerRef: true
+              matchLabels:
+                zone: us-west-2c
+                access: public
+          - subnetIdSelector:
+              matchControllerRef: true
+              matchLabels:
+                zone: us-west-2a
+                access: private
+          - subnetIdSelector:
+              matchControllerRef: true
+              matchLabels:
+                zone: us-west-2b
+                access: private
+          - subnetIdSelector:
+              matchControllerRef: true
+              matchLabels:
+                zone: us-west-2c
+                access: private
+    patches:
+      - fromFieldPath: metadata.labels
+        toFieldPath: metadata.labels
+  - base:
+      apiVersion: network.aws.crossplane.io/v1alpha3
+      kind: SecurityGroup
+      spec:
+        vpcIdSelector:
+          matchControllerRef: true
+        groupName: cnp-cluster
+        description: Allow access to PostgreSQL
+        ingress:
+          - fromPort: 5432
+            toPort: 5432
+            protocol: tcp
+            cidrBlocks:
+              - cidrIp: 0.0.0.0/0
+                description: Everywhere
+    patches:
+      - fromFieldPath: metadata.labels
+        toFieldPath: metadata.labels

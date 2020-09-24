@@ -1,0 +1,39 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: CompositeResourceDefinition
+metadata:
+  name: database.aws.platformref.crossplane.io
+spec:
+  claimNames:
+    kind: PostgreSQLInstance
+    plural: postgresqlinstances
+  connectionSecretKeys:
+    - username
+    - password
+    - endpoint
+    - port
+  crdSpecTemplate:
+    group: database.aws.platformref.crossplane.io
+    version: v1alpha1
+    names:
+      kind: CompositePostgreSQLInstance
+      plural: compositepostgresqlinstances
+    validation:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              parameters:
+                type: object
+                properties:
+                  storageGB:
+                    type: integer
+                required:
+                  - storageGB
+              networkRef:
+                type: object
+                description: A reference to the Network object that this postgres should be
+                connected to.
+            required:
+              - parameters

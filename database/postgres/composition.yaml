@@ -1,0 +1,53 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: Composition
+metadata:
+  name: postgres.database.aws.platformref.crossplane.io
+  labels:
+    provider: aws
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  compositeTypeRef:
+    apiVersion: database.aws.platformref.crossplane.io/v1alpha1
+    kind: CompositePostgreSQLInstance
+  resources:
+    - base:
+        apiVersion: database.aws.crossplane.io/v1beta1
+        kind: DBSubnetGroup
+        spec:
+          forProvider:
+            description: An excellent formation of subnetworks.
+            subnetIdSelector:
+              matchControllerRef: true
+          reclaimPolicy: Delete
+    - base:
+        apiVersion: database.aws.crossplane.io/v1beta1
+        kind: RDSInstance
+        spec:
+          forProvider:
+            dbSubnetGroupNameSelector:
+              matchControllerRef: true
+            dbInstanceClass: db.t2.small
+            masterUsername: masteruser
+            engine: postgres
+            engineVersion: "9.6"
+            skipFinalSnapshotBeforeDeletion: true
+            publiclyAccessible: true
+          writeConnectionSecretToRef:
+            namespace: crossplane-system
+          reclaimPolicy: Delete
+      patches:
+      - fromFieldPath: "metadata.uid"
+        toFieldPath: "spec.writeConnectionSecretToRef.name"
+        transforms:
+        - type: string
+            string:
+            fmt: "%s-postgresql"
+      - fromFieldPath: "spec.parameters.storageGB"
+        toFieldPath: "spec.forProvider.allocatedStorage"
+      - fromFieldPath: "spec.parameters.networkRef.metadata.labels"
+        toFieldPath: spec.forProvider.vpcSecurityGroupIDSelector.matchLabels"
+      connectionDetails:
+        - fromConnectionSecretKey: username
+        - fromConnectionSecretKey: password
+        - fromConnectionSecretKey: endpoint
+        - fromConnectionSecretKey: port

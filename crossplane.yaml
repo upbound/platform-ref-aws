@@ -1,0 +1,18 @@
+apiVersion: meta.pkg.crossplane.io/v1alpha1
+kind: Configuration
+metadata:
+  name: platform-ref-aws
+  annotations:
+    company: Upbound
+    maintainer: Jared Watts <jared@upbound.io>
+    keywords: aws, cloud-native, kubernetes, example, platform, reference
+    source: github.com/crossplane/platform-ref-aws
+    license: Apache-2.0
+    description: |
+      This configuration serves as a reference platform for cloud native services
+      and applications running in AWS.
+spec:
+  crossplane: v0.13.0
+  dependsOn:
+  - provider: crossplane/provider-aws
+    version: v0.12.0
