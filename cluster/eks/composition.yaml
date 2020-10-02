@@ -1,14 +1,14 @@
 apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: Composition
 metadata:
-  name: eks.clusters.aws.platformref.crossplane.io
+  name: eks.aws.platformref.crossplane.io
   labels:
     provider: aws
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
   reclaimPolicy: Delete
   compositeTypeRef:
-    apiVersion: clusters.aws.platformref.crossplane.io/v1alpha1
+    apiVersion: aws.platformref.crossplane.io/v1alpha1
     kind: EKS
   resources:
   - base:
@@ -58,8 +58,6 @@ spec:
           resourcesVpcConfig:
             endpointPrivateAccess: true
             endpointPublicAccess: false
-            subnetIdSelector:
-              matchControllerRef: true
           version: "1.16"
     patches:
     - fromFieldPath: metadata.annotations[crossplane.io/external-name]
@@ -70,6 +68,8 @@ spec:
       - type: string
         string:
           fmt: "%s-eks-controlplane"
+    - fromFieldPath: "spec.parameters.networkRef.name"
+      toFieldPath: spec.forProvider.resourcesVpcConfig.subnetIdSelector.matchLabels[networks.aws.platformref.crossplane.io/network-name]
     connectionDetails:
     - fromConnectionSecretKey: kubeconfig
   - base:
@@ -138,7 +138,6 @@ spec:
             matchLabels:
               role: nodegroup
           subnetSelector:
-            matchControllerRef: true
             matchLabels:
               access: private
           scalingConfig:
@@ -160,6 +159,8 @@ spec:
             small: t3.small
             medium: t3.medium
             large: t3.large
+      - fromFieldPath: "spec.parameters.networkRef.name"
+        toFieldPath: spec.forProvider.subnetSelector.matchLabels[networks.aws.platformref.crossplane.io/network-name]
   - base:
       apiVersion: eks.aws.crossplane.io/v1alpha1
       kind: NodeGroup
@@ -172,7 +173,6 @@ spec:
             matchLabels:
               role: nodegroup
           subnetSelector:
-            matchControllerRef: true
             matchLabels:
               access: private
           scalingConfig:
@@ -194,6 +194,8 @@ spec:
             small: t3.small
             medium: t3.medium
             large: t3.large
+      - fromFieldPath: "spec.parameters.networkRef.name"
+        toFieldPath: spec.forProvider.subnetSelector.matchLabels[networks.aws.platformref.crossplane.io/network-name]
   - base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
       kind: ProviderConfig

@@ -1,23 +1,26 @@
 apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: CompositeResourceDefinition
 metadata:
-  name: networks.aws.platformref.crossplane.io
+  name: compositenetworks.aws.platformref.crossplane.io
 spec:
   claimNames:
     kind: Network
-    listKind: NetworkList
     plural: networks
-    singular: network
   crdSpecTemplate:
     group: aws.platformref.crossplane.io
     version: v1alpha1
     names:
-      kind: NetworkGroup
-      listKind: NetworkGroupList
-      plural: networkgroups
-      singular: networkgroup
+      kind: CompositeNetwork
+      plural: compositenetworks
     validation:
       openAPIV3Schema:
         type: object
         properties:
           spec:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Name of this Network that other objects will use to refer to it.
+            required:
+            - name

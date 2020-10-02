@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: CompositeResourceDefinition
 metadata:
-  name: database.aws.platformref.crossplane.io
+  name: compositepostgresqlinstances.aws.platformref.crossplane.io
 spec:
   claimNames:
     kind: PostgreSQLInstance
@@ -12,7 +12,7 @@ spec:
     - endpoint
     - port
   crdSpecTemplate:
-    group: database.aws.platformref.crossplane.io
+    group: aws.platformref.crossplane.io
     version: v1alpha1
     names:
       kind: CompositePostgreSQLInstance
@@ -29,11 +29,18 @@ spec:
                 properties:
                   storageGB:
                     type: integer
+                  networkRef:
+                    type: object
+                    description: "A reference to the Network object that this postgres should be
+                    connected to."
+                    properties:
+                      name:
+                        type: string
+                        description: Name of the Network object this ref points to.
+                    required:
+                    - name
                 required:
                   - storageGB
-              networkRef:
-                type: object
-                description: A reference to the Network object that this postgres should be
-                connected to.
+                  - networkRef
             required:
               - parameters

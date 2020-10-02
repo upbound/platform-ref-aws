@@ -1,16 +1,16 @@
 apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: Composition
 metadata:
-  name: clusters.aws.platformref.crossplane.io
+  name: compositeclusters.aws.platformref.crossplane.io
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
   reclaimPolicy: Delete
   compositeTypeRef:
     apiVersion: aws.platformref.crossplane.io/v1alpha1
-    kind: AllocatedCluster
+    kind: CompositeCluster
   resources:
   - base:
-      apiVersion: clusters.aws.platformref.crossplane.io/v1alpha1
+      apiVersion: aws.platformref.crossplane.io/v1alpha1
       kind: EKS
     patches:
     - fromFieldPath: metadata.annotations[crossplane.io/external-name]
@@ -26,7 +26,7 @@ spec:
     - fromFieldPath: spec.parameters.nodes.size
       toFieldPath: spec.parameters.nodes.size
   - base:
-      apiVersion: clusters.aws.platformref.crossplane.io/v1alpha1
+      apiVersion: aws.platformref.crossplane.io/v1alpha1
       kind: Services
     patches:
     - fromFieldPath: metadata.uid

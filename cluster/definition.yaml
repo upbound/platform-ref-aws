@@ -1,23 +1,19 @@
 apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: CompositeResourceDefinition
 metadata:
-  name: clusters.aws.platformref.crossplane.io
+  name: compositeclusters.aws.platformref.crossplane.io
 spec:
   claimNames:
     kind: Cluster
-    listKind: ClusterList
     plural: clusters
-    singular: cluster
   connectionSecretKeys:
   - kubeconfig
   crdSpecTemplate:
     group: aws.platformref.crossplane.io
     version: v1alpha1
     names:
-      kind: AllocatedCluster
-      listKind: AllocatedClusterList
-      plural: allocatedclusters
-      singular: allocatedcluster
+      kind: CompositeCluster
+      plural: compositeclusters
     validation:
       openAPIV3Schema:
         type: object
@@ -43,9 +39,9 @@ spec:
                         - small
                         - medium
                         - large
-                      required:
-                      - count
-                      - size
+                    required:
+                    - count
+                    - size
                   services:
                     type: object
                     description: Services configuration parameters.

@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: Composition
 metadata:
-  name: full.services.clusters.aws.platformref.crossplane.io
+  name: services.aws.platformref.crossplane.io
   labels:
     plan: full
     provider: helm
@@ -9,7 +9,7 @@ spec:
   writeConnectionSecretsToNamespace: crossplane-system
   reclaimPolicy: Delete
   compositeTypeRef:
-    apiVersion: clusters.aws.platformref.crossplane.io/v1alpha1
+    apiVersion: aws.platformref.crossplane.io/v1alpha1
     kind: Services
   resources:
   - base:

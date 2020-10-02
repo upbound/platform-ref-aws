@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: Composition
 metadata:
-  name: networks.aws.platformref.crossplane.io
+  name: compositenetworks.aws.platformref.crossplane.io
   labels:
     provider: aws
 spec:
@@ -9,29 +9,29 @@ spec:
   reclaimPolicy: Delete
   compositeTypeRef:
     apiVersion: aws.platformref.crossplane.io/v1alpha1
-    kind: NetworkGroup
+    kind: CompositeNetwork
   resources:
   - base:
-      apiVersion: network.aws.crossplane.io/v1alpha3
+      apiVersion: ec2.aws.crossplane.io/v1beta1
       kind: VPC
       spec:
         cidrBlock: 192.168.0.0/16
         enableDnsSupport: true
         enableDnsHostNames: true
     patches:
-    - fromFieldPath: metadata.labels
-      toFieldPath: metadata.labels
+    - fromFieldPath: spec.name
+      toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
   - base:
-      apiVersion: network.aws.crossplane.io/v1alpha3
+      apiVersion: ec2.aws.crossplane.io/v1beta1
       kind: InternetGateway
       spec:
         vpcIdSelector:
           matchControllerRef: true
     patches:
-    - fromFieldPath: metadata.labels
-      toFieldPath: metadata.labels
+    - fromFieldPath: spec.name
+      toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
   - base:
-      apiVersion: network.aws.crossplane.io/v1alpha3
+      apiVersion: ec2.aws.crossplane.io/v1beta1
       kind: Subnet
       metadata:
         labels:
@@ -44,10 +44,10 @@ spec:
           matchControllerRef: true
         availabilityZone: us-west-2a
     patches:
-    - fromFieldPath: metadata.labels
-      toFieldPath: metadata.labels
+    - fromFieldPath: spec.name
+      toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
   - base:
-      apiVersion: network.aws.crossplane.io/v1alpha3
+      apiVersion: ec2.aws.crossplane.io/v1beta1
       kind: Subnet
       metadata:
         labels:
@@ -60,10 +60,10 @@ spec:
           matchControllerRef: true
         availabilityZone: us-west-2b
     patches:
-    - fromFieldPath: metadata.labels
-      toFieldPath: metadata.labels
+    - fromFieldPath: spec.name
+      toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
   - base:
-      apiVersion: network.aws.crossplane.io/v1alpha3
+      apiVersion: ec2.aws.crossplane.io/v1beta1
       kind: Subnet
       metadata:
         labels:
@@ -76,10 +76,10 @@ spec:
           matchControllerRef: true
         availabilityZone: us-west-2c
     patches:
-    - fromFieldPath: metadata.labels
-      toFieldPath: metadata.labels
+    - fromFieldPath: spec.name
+      toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
   - base:
-      apiVersion: network.aws.crossplane.io/v1alpha3
+      apiVersion: ec2.aws.crossplane.io/v1beta1
       kind: Subnet
       metadata:
         labels:
@@ -93,17 +93,16 @@ spec:
         tags:
         - value: shared
     patches:
-    - fromFieldPath: metadata.labels
-      toFieldPath: metadata.labels
+    - fromFieldPath: spec.name
+      toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
     - fromFieldPath: metadata.annotations[crossplane.io/external-name]
       toFieldPath: spec.tags[0].key
       transforms:
       - type: string
         string:
           fmt: "kubernetes.io/cluster/%s"
-    connectionDetails:
   - base:
-      apiVersion: network.aws.crossplane.io/v1alpha3
+      apiVersion: ec2.aws.crossplane.io/v1beta1
       kind: Subnet
       metadata:
         labels:
@@ -117,8 +116,8 @@ spec:
         tags:
         - value: shared
     patches:
-    - fromFieldPath: metadata.labels
-      toFieldPath: metadata.labels
+    - fromFieldPath: spec.name
+      toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
     - fromFieldPath: metadata.annotations[crossplane.io/external-name]
       toFieldPath: spec.tags[0].key
       transforms:
@@ -126,7 +125,7 @@ spec:
         string:
           fmt: "kubernetes.io/cluster/%s"
   - base:
-      apiVersion: network.aws.crossplane.io/v1alpha3
+      apiVersion: ec2.aws.crossplane.io/v1beta1
       kind: Subnet
       metadata:
         labels:
@@ -140,8 +139,8 @@ spec:
         tags:
         - value: shared
     patches:
-    - fromFieldPath: metadata.labels
-      toFieldPath: metadata.labels
+    - fromFieldPath: spec.name
+      toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
     - fromFieldPath: metadata.annotations[crossplane.io/external-name]
       toFieldPath: spec.tags[0].key
       transforms:
@@ -149,7 +148,7 @@ spec:
         string:
           fmt: "kubernetes.io/cluster/%s"
   - base:
-      apiVersion: network.aws.crossplane.io/v1alpha3
+      apiVersion: ec2.aws.crossplane.io/v1alpha4
       kind: RouteTable
       spec:
         vpcIdSelector:
@@ -190,10 +189,10 @@ spec:
                 zone: us-west-2c
                 access: private
     patches:
-      - fromFieldPath: metadata.labels
-        toFieldPath: metadata.labels
+    - fromFieldPath: spec.name
+      toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
   - base:
-      apiVersion: network.aws.crossplane.io/v1alpha3
+      apiVersion: ec2.aws.crossplane.io/v1beta1
       kind: SecurityGroup
       spec:
         vpcIdSelector:
@@ -208,5 +207,5 @@ spec:
               - cidrIp: 0.0.0.0/0
                 description: Everywhere
     patches:
-      - fromFieldPath: metadata.labels
-        toFieldPath: metadata.labels
+    - fromFieldPath: spec.name
+      toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]

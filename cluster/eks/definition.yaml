@@ -1,20 +1,16 @@
 apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: CompositeResourceDefinition
 metadata:
-  name: eks.clusters.aws.platformref.crossplane.io
+  name: eks.aws.platformref.crossplane.io
 spec:
-  defaultCompositionRef:
-    name: eks.clusters.aws.platformref.crossplane.io
   connectionSecretKeys:
   - kubeconfig
   crdSpecTemplate:
-    group: clusters.aws.platformref.crossplane.io
+    group: aws.platformref.crossplane.io
     version: v1alpha1
     names:
       kind: EKS
-      listKind: EKSList
       plural: eks
-      singular: eks
     validation:
       openAPIV3Schema:
         type: object
@@ -41,7 +37,18 @@ spec:
                   required:
                   - count
                   - size
+                networkRef:
+                  type: object
+                  description: "A reference to the Network object that this postgres should be
+                  connected to."
+                  properties:
+                    name:
+                      type: string
+                      description: Name of the Network object this ref points to.
+                    required:
+                    - name
                 required:
                 - nodes
+                - networkRef
             required:
             - parameters

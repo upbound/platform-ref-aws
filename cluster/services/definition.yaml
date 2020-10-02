@@ -1,16 +1,14 @@
 apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: CompositeResourceDefinition
 metadata:
-  name: services.clusters.aws.platformref.crossplane.io
+  name: services.aws.platformref.crossplane.io
 spec:
   crdSpecTemplate:
-    group: clusters.aws.platformref.crossplane.io
+    group: aws.platformref.crossplane.io
     version: v1alpha1
     names:
       kind: Services
-      listKind: ServicesList
       plural: services
-      singular: services
     validation:
       openAPIV3Schema:
         type: object
@@ -33,13 +31,13 @@ spec:
                       description: Prometheus operator tag (version) to run.
               providerConfigRef:
                 type: object
-                description: A reference to the ProviderConfig of the cluster that services should
-                be deployed to.
+                description: "A reference to the ProviderConfig of the cluster that services should
+                be deployed to."
                 name:
                   type: string
-                  description: Name of the Kubernetes provider configuration.
+                  description: "Name of the Kubernetes provider configuration.
                     This will typically be the name of the cluster with a
-                    five character suffix appended.
+                    five character suffix appended."
                 required:
                 - name
             required:

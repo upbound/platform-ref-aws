@@ -1,0 +1,6 @@
+apiVersion: aws.platformref.crossplane.io/v1alpha1
+kind: Network
+metadata:
+  name: network
+spec:
+  name: network
