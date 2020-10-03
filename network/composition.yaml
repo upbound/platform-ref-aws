@@ -15,9 +15,10 @@ spec:
       apiVersion: ec2.aws.crossplane.io/v1beta1
       kind: VPC
       spec:
-        cidrBlock: 192.168.0.0/16
-        enableDnsSupport: true
-        enableDnsHostNames: true
+        forProvider:
+          cidrBlock: 192.168.0.0/16
+          enableDnsSupport: true
+          enableDnsHostNames: true
     patches:
     - fromFieldPath: spec.name
       toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
@@ -25,8 +26,9 @@ spec:
       apiVersion: ec2.aws.crossplane.io/v1beta1
       kind: InternetGateway
       spec:
-        vpcIdSelector:
-          matchControllerRef: true
+        forProvider:
+          vpcIdSelector:
+            matchControllerRef: true
     patches:
     - fromFieldPath: spec.name
       toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
@@ -38,11 +40,15 @@ spec:
           zone: us-west-2a
           access: public
       spec:
-        mapPublicIPOnLaunch: true
-        cidrBlock: 192.168.64.0/18
-        vpcIdSelector:
-          matchControllerRef: true
-        availabilityZone: us-west-2a
+        forProvider:
+          mapPublicIPOnLaunch: true
+          cidrBlock: 192.168.0.0/18
+          vpcIdSelector:
+            matchControllerRef: true
+          availabilityZone: us-west-2a
+          tags:
+          - key: kubernetes.io/role/elb
+            value: "1"
     patches:
     - fromFieldPath: spec.name
       toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
@@ -54,27 +60,15 @@ spec:
           zone: us-west-2b
           access: public
       spec:
-        mapPublicIPOnLaunch: true
-        cidrBlock: 192.168.128.0/18
-        vpcIdSelector:
-          matchControllerRef: true
-        availabilityZone: us-west-2b
-    patches:
-    - fromFieldPath: spec.name
-      toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
-  - base:
-      apiVersion: ec2.aws.crossplane.io/v1beta1
-      kind: Subnet
-      metadata:
-        labels:
-          zone: us-west-2c
-          access: public
-      spec:
-        mapPublicIPOnLaunch: true
-        cidrBlock: 192.168.192.0/18
-        vpcIdSelector:
-          matchControllerRef: true
-        availabilityZone: us-west-2c
+        forProvider:
+          mapPublicIPOnLaunch: true
+          cidrBlock: 192.168.64.0/18
+          vpcIdSelector:
+            matchControllerRef: true
+          availabilityZone: us-west-2b
+          tags:
+          - key: kubernetes.io/role/elb
+            value: "1"
     patches:
     - fromFieldPath: spec.name
       toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
@@ -86,17 +80,21 @@ spec:
           zone: us-west-2a
           access: private
       spec:
-        cidrBlock: 172.16.10.0/24
-        vpcIdSelector:
-          matchControllerRef: true
-        availabilityZone: us-west-2a
-        tags:
-        - value: shared
+        forProvider:
+          cidrBlock: 192.168.128.0/18
+          vpcIdSelector:
+            matchControllerRef: true
+          availabilityZone: us-west-2a
+          tags:
+          - value: shared
+            key: ""
+          - key: kubernetes.io/role/internal-elb
+            value: "1"
     patches:
     - fromFieldPath: spec.name
       toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
     - fromFieldPath: metadata.annotations[crossplane.io/external-name]
-      toFieldPath: spec.tags[0].key
+      toFieldPath: spec.forProvider.tags[0].key
       transforms:
       - type: string
         string:
@@ -109,40 +107,21 @@ spec:
           zone: us-west-2b
           access: private
       spec:
-        cidrBlock: 172.16.20.0/24
-        vpcIdSelector:
-          matchControllerRef: true
-        availabilityZone: us-west-2b
-        tags:
-        - value: shared
+        forProvider:
+          cidrBlock: 192.168.192.0/18
+          vpcIdSelector:
+            matchControllerRef: true
+          availabilityZone: us-west-2b
+          tags:
+          - value: shared
+            key: ""
+          - key: kubernetes.io/role/internal-elb
+            value: "1"
     patches:
     - fromFieldPath: spec.name
       toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
     - fromFieldPath: metadata.annotations[crossplane.io/external-name]
-      toFieldPath: spec.tags[0].key
-      transforms:
-      - type: string
-        string:
-          fmt: "kubernetes.io/cluster/%s"
-  - base:
-      apiVersion: ec2.aws.crossplane.io/v1beta1
-      kind: Subnet
-      metadata:
-        labels:
-          zone: us-west-2c
-          access: private
-      spec:
-        cidrBlock: 172.16.30.0/24
-        vpcIdSelector:
-          matchControllerRef: true
-        availabilityZone: us-west-2c
-        tags:
-        - value: shared
-    patches:
-    - fromFieldPath: spec.name
-      toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
-    - fromFieldPath: metadata.annotations[crossplane.io/external-name]
-      toFieldPath: spec.tags[0].key
+      toFieldPath: spec.forProvider.tags[0].key
       transforms:
       - type: string
         string:
@@ -151,43 +130,35 @@ spec:
       apiVersion: ec2.aws.crossplane.io/v1alpha4
       kind: RouteTable
       spec:
-        vpcIdSelector:
-          matchControllerRef: true
-        routes:
-          - destinationCidrBlock: 0.0.0.0/0
-            gatewayIdSelector:
-              matchControllerRef: true
-        associations:
-          - subnetIdSelector:
-              matchControllerRef: true
-              matchLabels:
-                zone: us-west-2a
-                access: public
-          - subnetIdSelector:
-              matchControllerRef: true
-              matchLabels:
-                zone: us-west-2b
-                access: public
-          - subnetIdSelector:
-              matchControllerRef: true
-              matchLabels:
-                zone: us-west-2c
-                access: public
-          - subnetIdSelector:
-              matchControllerRef: true
-              matchLabels:
-                zone: us-west-2a
-                access: private
-          - subnetIdSelector:
-              matchControllerRef: true
-              matchLabels:
-                zone: us-west-2b
-                access: private
-          - subnetIdSelector:
-              matchControllerRef: true
-              matchLabels:
-                zone: us-west-2c
-                access: private
+        forProvider:
+          region: us-west-2
+          vpcIdSelector:
+            matchControllerRef: true
+          routes:
+            - destinationCidrBlock: 0.0.0.0/0
+              gatewayIdSelector:
+                matchControllerRef: true
+          associations:
+            - subnetIdSelector:
+                matchControllerRef: true
+                matchLabels:
+                  zone: us-west-2a
+                  access: public
+            - subnetIdSelector:
+                matchControllerRef: true
+                matchLabels:
+                  zone: us-west-2b
+                  access: public
+            - subnetIdSelector:
+                matchControllerRef: true
+                matchLabels:
+                  zone: us-west-2a
+                  access: private
+            - subnetIdSelector:
+                matchControllerRef: true
+                matchLabels:
+                  zone: us-west-2b
+                  access: private
     patches:
     - fromFieldPath: spec.name
       toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
@@ -195,17 +166,18 @@ spec:
       apiVersion: ec2.aws.crossplane.io/v1beta1
       kind: SecurityGroup
       spec:
-        vpcIdSelector:
-          matchControllerRef: true
-        groupName: cnp-cluster
-        description: Allow access to PostgreSQL
-        ingress:
-          - fromPort: 5432
-            toPort: 5432
-            protocol: tcp
-            cidrBlocks:
-              - cidrIp: 0.0.0.0/0
-                description: Everywhere
+        forProvider:
+          vpcIdSelector:
+            matchControllerRef: true
+          groupName: platform-ref-aws-cluster
+          description: Allow access to PostgreSQL
+          ingress:
+            - fromPort: 5432
+              toPort: 5432
+              ipProtocol: tcp
+              ipRanges:
+                - cidrIp: 0.0.0.0/0
+                  description: Everywhere
     patches:
     - fromFieldPath: spec.name
       toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]

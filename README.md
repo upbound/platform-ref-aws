@@ -23,11 +23,24 @@ k apply -f crossplane-cluster-admin-rolebinding.yaml
 
 ```console
 cd ../provider-aws
-k apply -f config/crd/
+k apply -f package/crds/
 make run
 ```
 
 ### AWS reference platform
+
+Set up the AWS credentials and default AWS `ProviderConfig`:
+
+```console
+AWS_PROFILE=default && echo -e "[default]\naws_access_key_id = $(aws configure get aws_access_key_id --profile $AWS_PROFILE)\naws_secret_access_key = $(aws configure get aws_secret_access_key --profile $AWS_PROFILE)" > creds.conf
+```
+
+```console
+kubectl create secret generic aws-creds -n crossplane-system --from-file=key=./creds.conf
+kubectl apply -f examples/aws-default-provider.yaml
+```
+
+Now create all the XRDs and Compositions:
 
 ```console
 cd ../../upbound/platform-ref-aws
@@ -48,6 +61,10 @@ k delete -f examples/network.yaml
 k delete -f network/composition.yaml
 
 for f in $(find . -name 'definition.yaml'); do k delete -f $f; done
+
+kubectl delete -f examples/aws-default-provider.yaml
+kubectl -n crossplane-system delete secret aws-creds
+rm -fr creds.conf
 
 cluster/local/kind.sh clean
 ```
