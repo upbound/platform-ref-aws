@@ -40,8 +40,7 @@ spec:
       - fromFieldPath: "metadata.uid"
         toFieldPath: "spec.writeConnectionSecretToRef.name"
         transforms:
-        - type: string
-            string:
+          - type: string
             fmt: "%s-postgresql"
       - fromFieldPath: "spec.parameters.storageGB"
         toFieldPath: "spec.forProvider.allocatedStorage"
