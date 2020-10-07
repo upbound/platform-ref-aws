@@ -9,6 +9,26 @@ These are in progress development iteration steps to run the following:
 
 Note that no package for this reference platform is being built or used.
 
+## Installing as Crossplane package
+
+1. Build package.
+
+```
+kubectl crossplane build configuration --ignore "examples/*"
+```
+
+2. Push package to registry.
+
+```
+kubectl crossplane push configuration upbound/platform-ref-aws:latest
+```
+
+3. Install package in Kubernetes cluster with Crossplane installed.
+
+```
+kubectl crossplane install configuration upbound/platform-ref-aws:latest
+```
+
 ## Dev steps (outline)
 
 ### kind cluster and Crossplane
