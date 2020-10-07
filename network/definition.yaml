@@ -22,5 +22,15 @@ spec:
               name:
                 type: string
                 description: Name of this Network that other objects will use to refer to it.
+              clusterRef:
+                type: object
+                description: "A reference to the Cluster object that this network will be used for."
+                properties:
+                  name:
+                    type: string
+                    description: Name of the Cluster object this ref points to.
+                required:
+                - name
             required:
             - name
+            - clusterRef

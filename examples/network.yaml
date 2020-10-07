@@ -4,3 +4,5 @@ metadata:
   name: network
 spec:
   name: network
+  clusterRef:
+    name: platform-ref-aws-cluster

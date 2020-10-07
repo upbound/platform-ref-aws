@@ -93,7 +93,7 @@ spec:
     patches:
     - fromFieldPath: spec.name
       toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
-    - fromFieldPath: metadata.annotations[crossplane.io/external-name]
+    - fromFieldPath: spec.clusterRef.name
       toFieldPath: spec.forProvider.tags[0].key
       transforms:
       - type: string
@@ -120,7 +120,7 @@ spec:
     patches:
     - fromFieldPath: spec.name
       toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-name]
-    - fromFieldPath: metadata.annotations[crossplane.io/external-name]
+    - fromFieldPath: spec.clusterRef.name
       toFieldPath: spec.forProvider.tags[0].key
       transforms:
       - type: string

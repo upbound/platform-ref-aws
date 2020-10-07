@@ -22,7 +22,6 @@ k apply -f crossplane-cluster-admin-rolebinding.yaml
 ### `provider-aws`
 
 ```console
-cd ../provider-aws
 k apply -f package/crds/
 make run
 ```
@@ -43,9 +42,8 @@ kubectl apply -f examples/aws-default-provider.yaml
 Now create all the XRDs and Compositions:
 
 ```console
-cd ../../upbound/platform-ref-aws
 for f in $(find . -name 'definition.yaml'); do kubectl apply -f $f; done
-k apply -f network/composition.yaml
+for f in $(find . -name 'composition.yaml'); do kubectl apply -f $f; done
 ```
 
 Now create an instance of the network claim:
@@ -58,8 +56,8 @@ k apply -f examples/network.yaml
 
 ```console
 k delete -f examples/network.yaml
-k delete -f network/composition.yaml
 
+for f in $(find . -name 'composition.yaml'); do k delete -f $f; done
 for f in $(find . -name 'definition.yaml'); do k delete -f $f; done
 
 kubectl delete -f examples/aws-default-provider.yaml

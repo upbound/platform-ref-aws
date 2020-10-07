@@ -13,7 +13,7 @@ spec:
       apiVersion: aws.platformref.crossplane.io/v1alpha1
       kind: EKS
     patches:
-    - fromFieldPath: metadata.annotations[crossplane.io/external-name]
+    - fromFieldPath: spec.name
       toFieldPath: metadata.annotations[crossplane.io/external-name]
     - fromFieldPath: metadata.uid
       toFieldPath: spec.writeConnectionSecretToRef.name
@@ -25,6 +25,8 @@ spec:
       toFieldPath: spec.parameters.nodes.count
     - fromFieldPath: spec.parameters.nodes.size
       toFieldPath: spec.parameters.nodes.size
+    - fromFieldPath: spec.parameters.networkRef.name
+      toFieldPath: spec.parameters.networkRef.name
   - base:
       apiVersion: aws.platformref.crossplane.io/v1alpha1
       kind: Services

@@ -21,6 +21,9 @@ spec:
           spec:
             type: object
             properties:
+              name:
+                type: string
+                description: Name of this Cluster that other objects will use to refer to it.
               parameters:
                 type: object
                 description: Cluster configuration parameters.
@@ -60,7 +63,19 @@ spec:
                               tag:
                                 type: string
                                 description: Prometheus operator tag (version) to run.
+                  networkRef:
+                    type: object
+                    description: "A reference to the Network object that this cluster should be
+                    connected to."
+                    properties:
+                      name:
+                        type: string
+                        description: Name of the Network object this ref points to.
+                      required:
+                      - name
                 required:
                 - nodes
+                - networkRef
             required:
+            - name
             - parameters
