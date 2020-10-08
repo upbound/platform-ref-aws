@@ -19,6 +19,16 @@ metadata:
           validation:
           - minimum: 1
           - maximum: 500
+        - name: networkRef
+          controlType: singleInput
+          type: string
+          path: ".spec.parameters.networkRef.name"
+          title: Network Ref
+          description: Network fabric to connect the database to
+          default: network
+          validation:
+          - required: true
+            customError: Network ref is required and should match the network ref of the app cluster.
 spec:
   claimNames:
     kind: PostgreSQLInstance
