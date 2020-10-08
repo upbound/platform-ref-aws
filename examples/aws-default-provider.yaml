@@ -3,7 +3,9 @@ kind: ProviderConfig
 metadata:
   name: default
 spec:
-  credentialsSecretRef:
-    namespace: crossplane-system
-    name: aws-creds
-    key: key
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: crossplane-system
+      name: aws-creds
+      key: key
