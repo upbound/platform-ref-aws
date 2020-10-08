@@ -16,6 +16,7 @@ spec:
       kind: VPC
       spec:
         forProvider:
+          region: us-west-2
           cidrBlock: 192.168.0.0/16
           enableDnsSupport: true
           enableDnsHostNames: true
@@ -27,6 +28,7 @@ spec:
       kind: InternetGateway
       spec:
         forProvider:
+          region: us-west-2
           vpcIdSelector:
             matchControllerRef: true
     patches:
@@ -41,6 +43,7 @@ spec:
           access: public
       spec:
         forProvider:
+          region: us-west-2
           mapPublicIPOnLaunch: true
           cidrBlock: 192.168.0.0/18
           vpcIdSelector:
@@ -61,6 +64,7 @@ spec:
           access: public
       spec:
         forProvider:
+          region: us-west-2
           mapPublicIPOnLaunch: true
           cidrBlock: 192.168.64.0/18
           vpcIdSelector:
@@ -81,6 +85,7 @@ spec:
           access: private
       spec:
         forProvider:
+          region: us-west-2
           cidrBlock: 192.168.128.0/18
           vpcIdSelector:
             matchControllerRef: true
@@ -108,6 +113,7 @@ spec:
           access: private
       spec:
         forProvider:
+          region: us-west-2
           cidrBlock: 192.168.192.0/18
           vpcIdSelector:
             matchControllerRef: true
@@ -167,6 +173,7 @@ spec:
       kind: SecurityGroup
       spec:
         forProvider:
+          region: us-west-2
           vpcIdSelector:
             matchControllerRef: true
           groupName: platform-ref-aws-cluster
