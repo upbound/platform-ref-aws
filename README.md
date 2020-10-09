@@ -94,6 +94,20 @@ kubectl get composite
 kubectl get managed
 ```
 
+### Connect to the `PostgreSQLInstance` using the supplied db-conn `Secret`
+```
+endpoint=$(kubectl get secret -n default db-conn -o jsonpath='{.data.endpoint}' | base64 --decode)
+port=$(kubectl get secret -n default db-conn -o jsonpath='{.data.port}' | base64 --decode)
+username=$(kubectl get secret -n default db-conn -o jsonpath='{.data.username}' | base64 --decode)
+echo -n "${endpoint}:${port}:postgres:${username}:" > .pgpass
+echo $(kubectl get secret -n default db-conn -o jsonpath='{.data.password}' | base64 --decode) >> .pgpass
+export PGPASSFILE="$(pwd)/.pgpass"
+
+sudo chmod 600 .pgpass
+
+psql -h $endpoint -U $username postgres
+```
+
 ### Cleanup
 ```
 kubectl delete -f examples/postgres-claim.yaml
