@@ -2,6 +2,23 @@ apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: CompositeResourceDefinition
 metadata:
   name: compositenetworks.aws.platformref.crossplane.io
+  annotations:
+    upbound.io/ui-schema: |-
+      ---
+      configSections:
+      - title: Cluster Info
+        description: The cluster used with this network fabric
+        items:
+        - name: clusterRef
+          controlType: singleInput
+          type: string
+          path: ".spec.parameters.clusterRef.name"
+          title: Network Ref
+          description: Name of the Cluster object this ref points to
+          default: cluster
+          validation:
+          - required: true
+            customError: Cluster ref is required.
 spec:
   claimNames:
     kind: Network

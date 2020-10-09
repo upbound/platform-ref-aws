@@ -15,10 +15,11 @@ metadata:
           path: ".spec.parameters.storageGB"
           title: Storage (GB)
           description: The size in GB for database storage
-          default: 10
+          default: 5
           validation:
           - minimum: 1
           - maximum: 500
+          - required: true
         - name: networkRef
           controlType: singleInput
           type: string
@@ -29,6 +30,28 @@ metadata:
           validation:
           - required: true
             customError: Network ref is required and should match the network ref of the app cluster.
+        - name: connectivity
+          controlType: singleSelect
+          path: ".spec.parameters.connectivity"
+          title: Network Connectivity
+          description: determines the network visibility
+          default: 
+          - private
+          enum:
+          - private
+          - public
+          validation:
+          - required: true
+            customError: Network connectivity is required and in most cases should be private.
+        - name: writeSecretRef
+          controlType: singleInput
+          type: string
+          path: ".spec.writeConnectionSecretToRef.name"
+          title: Connection Secret Ref
+          description: name of the secret to write to this namespace
+          default: db-conn
+          validation:
+          - required: true
 spec:
   claimNames:
     kind: PostgreSQLInstance
@@ -66,8 +89,15 @@ spec:
                         description: Name of the Network object this ref points to.
                     required:
                     - name
+                  connectivity:
+                    type: string
+                    description: network connectivity
+                    enum:
+                    - public
+                    - private
                 required:
                   - storageGB
                   - networkRef
+                  - connectivity
             required:
               - parameters
