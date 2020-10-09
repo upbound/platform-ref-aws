@@ -8,6 +8,6 @@ spec:
     storageGB: 20
     networkRef:
       name: network
-    connectivity: private
+    connectivity: public
   writeConnectionSecretToRef:
     name: db-conn

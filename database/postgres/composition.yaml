@@ -21,6 +21,13 @@ spec:
       patches:
       - fromFieldPath: "spec.parameters.networkRef.name"
         toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[networks.aws.platformref.crossplane.io/network-name]
+      - fromFieldPath: "spec.parameters.connectivity"
+        toFieldPath: "spec.forProvider.publiclyAccessible"
+        transforms:
+        - type: map
+          map:
+            public: "true"
+            private: "false"
     - base:
         apiVersion: database.aws.crossplane.io/v1beta1
         kind: RDSInstance
