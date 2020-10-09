@@ -43,7 +43,8 @@ spec:
         toFieldPath: "spec.writeConnectionSecretToRef.name"
         transforms:
           - type: string
-            fmt: "%s-postgresql"
+            string:
+              fmt: "%s-postgresql"
       - fromFieldPath: "spec.parameters.storageGB"
         toFieldPath: "spec.forProvider.allocatedStorage"
       - fromFieldPath: "spec.parameters.networkRef.name"
