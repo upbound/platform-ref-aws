@@ -41,7 +41,7 @@ spec:
             engine: postgres
             engineVersion: "9.6"
             skipFinalSnapshotBeforeDeletion: true
-            publiclyAccessible: true
+            publiclyAccessible: false
           writeConnectionSecretToRef:
             namespace: crossplane-system
           reclaimPolicy: Delete
