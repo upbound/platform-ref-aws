@@ -9,35 +9,35 @@ spec:
     apiVersion: aws.platformref.crossplane.io/v1alpha1
     kind: CompositeCluster
   resources:
-  - base:
-      apiVersion: aws.platformref.crossplane.io/v1alpha1
-      kind: EKS
-    patches:
-    - fromFieldPath: spec.name
-      toFieldPath: metadata.annotations[crossplane.io/external-name]
-    - fromFieldPath: metadata.uid
-      toFieldPath: spec.writeConnectionSecretToRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: "%s-eks"
-    - fromFieldPath: spec.parameters.nodes.count
-      toFieldPath: spec.parameters.nodes.count
-    - fromFieldPath: spec.parameters.nodes.size
-      toFieldPath: spec.parameters.nodes.size
-    - fromFieldPath: spec.parameters.networkRef.name
-      toFieldPath: spec.parameters.networkRef.name
-  - base:
-      apiVersion: aws.platformref.crossplane.io/v1alpha1
-      kind: Services
-    patches:
-    - fromFieldPath: metadata.uid
-      toFieldPath: spec.providerConfigRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: "%s-eks"
-    - fromFieldPath: spec.parameters.services.operators.prometheus.image
-      toFieldPath: spec.operators.prometheus.image
-    - fromFieldPath: spec.parameters.services.operators.prometheus.tag
-      toFieldPath: spec.operators.prometheus.tag
+    - base:
+        apiVersion: aws.platformref.crossplane.io/v1alpha1
+        kind: EKS
+      patches:
+        - fromFieldPath: spec.name
+          toFieldPath: spec.name
+        - fromFieldPath: spec.name
+          toFieldPath: metadata.annotations[crossplane.io/external-name]
+        - fromFieldPath: metadata.uid
+          toFieldPath: spec.writeConnectionSecretToRef.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-eks"
+        - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+          toFieldPath: spec.writeConnectionSecretToRef.namespace
+        - fromFieldPath: spec.parameters.nodes.count
+          toFieldPath: spec.parameters.nodes.count
+        - fromFieldPath: spec.parameters.nodes.size
+          toFieldPath: spec.parameters.nodes.size
+        - fromFieldPath: spec.parameters.networkRef.name
+          toFieldPath: spec.parameters.networkRef.name
+    - base:
+        apiVersion: aws.platformref.crossplane.io/v1alpha1
+        kind: Services
+      patches:
+        - fromFieldPath: spec.name
+          toFieldPath: spec.providerConfigRef.name
+        - fromFieldPath: spec.parameters.services.operators.prometheus.image
+          toFieldPath: spec.operators.prometheus.image
+        - fromFieldPath: spec.parameters.services.operators.prometheus.tag
+          toFieldPath: spec.operators.prometheus.tag
