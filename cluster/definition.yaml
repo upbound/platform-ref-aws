@@ -99,7 +99,7 @@ spec:
                     description: Cluster node configuration parameters.
                     properties:
                       count:
-                        type: int
+                        type: integer
                         description: Desired node count, from 1 to 100.
                       size:
                         type: string
@@ -137,8 +137,8 @@ spec:
                       name:
                         type: string
                         description: Name of the Network object this ref points to.
-                      required:
-                      - name
+                    required:
+                    - name
                 required:
                 - nodes
                 - networkRef

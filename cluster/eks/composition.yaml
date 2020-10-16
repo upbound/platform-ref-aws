@@ -11,196 +11,180 @@ spec:
     apiVersion: aws.platformref.crossplane.io/v1alpha1
     kind: EKS
   resources:
-  - base:
-      apiVersion: identity.aws.crossplane.io/v1beta1
-      kind: IAMRole
-      metadata:
-        labels:
-          role: controlplane
-      spec:
-        forProvider:
-          assumeRolePolicyDocument: |
-            {
-              "Version": "2012-10-17",
-              "Statement": [
-                  {
-                      "Effect": "Allow",
-                      "Principal": {
-                          "Service": [
-                              "eks.amazonaws.com"
-                          ]
-                      },
-                      "Action": [
-                          "sts:AssumeRole"
-                      ]
-                  }
-              ]
-            }
-  - base:
-      apiVersion: identity.aws.crossplane.io/v1beta1
-      kind: IAMRolePolicyAttachment
-      spec:
-        forProvider:
-          policyArn: arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
-          roleNameSelector:
-            matchControllerRef: true
-            matchLabels:
-              role: controlplane
-  - base:
-      apiVersion: eks.aws.crossplane.io/v1beta1
-      kind: Cluster
-      spec:
-        forProvider:
-          roleArnSelector:
-            matchControllerRef: true
-            matchLabels:
-              role: controlplane
-          resourcesVpcConfig:
-            endpointPrivateAccess: true
-            endpointPublicAccess: false
-          version: "1.16"
-    patches:
-    - fromFieldPath: metadata.annotations[crossplane.io/external-name]
-      toFieldPath: metadata.annotations[crossplane.io/external-name]
-    - fromFieldPath: metadata.uid
-      toFieldPath: spec.writeConnectionSecretToRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: "%s-eks-controlplane"
-    - fromFieldPath: "spec.parameters.networkRef.name"
-      toFieldPath: spec.forProvider.resourcesVpcConfig.subnetIdSelector.matchLabels[networks.aws.platformref.crossplane.io/network-name]
-    connectionDetails:
-    - fromConnectionSecretKey: kubeconfig
-  - base:
-      apiVersion: identity.aws.crossplane.io/v1beta1
-      kind: IAMRole
-      labels:
-        role: nodegroup
-      spec:
-        forProvider:
-          assumeRolePolicyDocument: |
-            {
-              "Version": "2012-10-17",
-              "Statement": [
-                  {
-                      "Effect": "Allow",
-                      "Principal": {
-                          "Service": [
-                              "ec2.amazonaws.com"
-                          ]
-                      },
-                      "Action": [
-                          "sts:AssumeRole"
-                      ]
-                  }
-              ]
-            }
-  - base:
-      apiVersion: identity.aws.crossplane.io/v1beta1
-      kind: IAMRolePolicyAttachment
-      spec:
-        forProvider:
-          policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
-          roleNameSelector:
-            matchControllerRef: true
-            matchLabels:
-              role: nodegroup
-  - base:
-      apiVersion: identity.aws.crossplane.io/v1beta1
-      kind: IAMRolePolicyAttachment
-      spec:
-        forProvider:
-          policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
-          roleNameSelector:
-            matchControllerRef: true
-            matchLabels:
-              role: nodegroup
-  - base:
-      apiVersion: identity.aws.crossplane.io/v1beta1
-      kind: IAMRolePolicyAttachment
-      spec:
-        forProvider:
-          policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
-          roleNameSelector:
-            matchControllerRef: true
-            matchLabels:
-              role: nodegroup
-  - base:
-      apiVersion: eks.aws.crossplane.io/v1alpha1
-      kind: NodeGroup
-      spec:
-        forProvider:
-          clusterNameSelector:
-            matchControllerRef: true
-          nodeRoleArnSelector:
-            matchControllerRef: true
-            matchLabels:
-              role: nodegroup
-          subnetSelector:
-            matchLabels:
-              access: private
-          scalingConfig:
-            minSize: 1
-            maxSize: 100
-            desiredSize: 1
-          instanceTypes:
-          - t3.medium
-    patches:
-      - fromFieldPath: metadata.annotations[crossplane.io/external-name]
-        toFieldPath: metadata.annotations[crossplane.io/external-name]
-      - fromFieldPath: "spec.parameters.nodes.count"
-        toFieldPath: "spec.forProvider.scalingConfig.desiredSize"
-      - fromFieldPath: "spec.parameters.nodes.size"
-        toFieldPath: "spec.forProvider.instanceTypes[0]"
-        transforms:
-        - type: map
-          map:
-            small: t3.small
-            medium: t3.medium
-            large: t3.large
-      - fromFieldPath: "spec.parameters.networkRef.name"
-        toFieldPath: spec.forProvider.subnetSelector.matchLabels[networks.aws.platformref.crossplane.io/network-name]
-  - base:
-      apiVersion: eks.aws.crossplane.io/v1alpha1
-      kind: NodeGroup
-      spec:
-        forProvider:
-          clusterNameSelector:
-            matchControllerRef: true
-          nodeRoleArnSelector:
-            matchControllerRef: true
-            matchLabels:
-              role: nodegroup
-          subnetSelector:
-            matchLabels:
-              access: private
-          scalingConfig:
-            minSize: 1
-            maxSize: 100
-            desiredSize: 1
-          instanceTypes:
-          - t3.medium
-    patches:
-      - fromFieldPath: metadata.annotations[crossplane.io/external-name]
-        toFieldPath: metadata.annotations[crossplane.io/external-name]
-      - fromFieldPath: "spec.parameters.nodes.count"
-        toFieldPath: "spec.forProvider.scalingConfig.desiredSize"
-      - fromFieldPath: "spec.parameters.nodes.size"
-        toFieldPath: "spec.forProvider.instanceTypes[0]"
-        transforms:
-        - type: map
-          map:
-            small: t3.small
-            medium: t3.medium
-            large: t3.large
-      - fromFieldPath: "spec.parameters.networkRef.name"
-        toFieldPath: spec.forProvider.subnetSelector.matchLabels[networks.aws.platformref.crossplane.io/network-name]
-  - base:
-      apiVersion: kubernetes.crossplane.io/v1alpha1
-      kind: ProviderConfig
-    patches:
-    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
-      toFieldPath: spec.credentialsSecretRef.namespace
-    - fromFieldPath: spec.writeConnectionSecretToRef.name
-      toFieldPath: spec.credentialsSecretRef.name
+    - base:
+        apiVersion: identity.aws.crossplane.io/v1beta1
+        kind: IAMRole
+        metadata:
+          labels:
+            role: controlplane
+        spec:
+          forProvider:
+            assumeRolePolicyDocument: |
+              {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": [
+                                "eks.amazonaws.com"
+                            ]
+                        },
+                        "Action": [
+                            "sts:AssumeRole"
+                        ]
+                    }
+                ]
+              }
+    - base:
+        apiVersion: identity.aws.crossplane.io/v1beta1
+        kind: IAMRolePolicyAttachment
+        spec:
+          forProvider:
+            policyArn: arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+            roleNameSelector:
+              matchControllerRef: true
+              matchLabels:
+                role: controlplane
+    - base:
+        apiVersion: eks.aws.crossplane.io/v1beta1
+        kind: Cluster
+        spec:
+          forProvider:
+            region: us-west-2
+            roleArnSelector:
+              matchControllerRef: true
+              matchLabels:
+                role: controlplane
+            resourcesVpcConfig:
+              endpointPrivateAccess: true
+              endpointPublicAccess: false
+            version: "1.16"
+      patches:
+        - fromFieldPath: metadata.annotations[crossplane.io/external-name]
+          toFieldPath: metadata.annotations[crossplane.io/external-name]
+        - fromFieldPath: metadata.uid
+          toFieldPath: spec.writeConnectionSecretToRef.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-ekscluster"
+        - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+          toFieldPath: spec.writeConnectionSecretToRef.namespace
+        - fromFieldPath: "spec.parameters.networkRef.name"
+          toFieldPath: spec.forProvider.resourcesVpcConfig.subnetIdSelector.matchLabels[networks.aws.platformref.crossplane.io/network-name]
+      connectionDetails:
+        - fromConnectionSecretKey: kubeconfig
+    - base:
+        apiVersion: identity.aws.crossplane.io/v1beta1
+        kind: IAMRole
+        metadata:
+          labels:
+            role: nodegroup
+        spec:
+          forProvider:
+            assumeRolePolicyDocument: |
+              {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": [
+                                "ec2.amazonaws.com"
+                            ]
+                        },
+                        "Action": [
+                            "sts:AssumeRole"
+                        ]
+                    }
+                ]
+              }
+    - base:
+        apiVersion: identity.aws.crossplane.io/v1beta1
+        kind: IAMRolePolicyAttachment
+        spec:
+          forProvider:
+            policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+            roleNameSelector:
+              matchControllerRef: true
+              matchLabels:
+                role: nodegroup
+    - base:
+        apiVersion: identity.aws.crossplane.io/v1beta1
+        kind: IAMRolePolicyAttachment
+        spec:
+          forProvider:
+            policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+            roleNameSelector:
+              matchControllerRef: true
+              matchLabels:
+                role: nodegroup
+    - base:
+        apiVersion: identity.aws.crossplane.io/v1beta1
+        kind: IAMRolePolicyAttachment
+        spec:
+          forProvider:
+            policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+            roleNameSelector:
+              matchControllerRef: true
+              matchLabels:
+                role: nodegroup
+    - base:
+        apiVersion: eks.aws.crossplane.io/v1alpha1
+        kind: NodeGroup
+        spec:
+          forProvider:
+            region: us-west-2
+            clusterNameSelector:
+              matchControllerRef: true
+            nodeRoleSelector:
+              matchControllerRef: true
+              matchLabels:
+                role: nodegroup
+            subnetSelector:
+              matchLabels:
+                access: public
+            scalingConfig:
+              minSize: 1
+              maxSize: 100
+              desiredSize: 1
+            instanceTypes:
+              - t3.medium
+      patches:
+        - fromFieldPath: metadata.annotations[crossplane.io/external-name]
+          toFieldPath: metadata.annotations[crossplane.io/external-name]
+        - fromFieldPath: "spec.parameters.nodes.count"
+          toFieldPath: "spec.forProvider.scalingConfig.desiredSize"
+        - fromFieldPath: "spec.parameters.nodes.size"
+          toFieldPath: "spec.forProvider.instanceTypes[0]"
+          transforms:
+            - type: map
+              map:
+                small: t3.small
+                medium: t3.medium
+                large: t3.large
+        - fromFieldPath: "spec.parameters.networkRef.name"
+          toFieldPath: spec.forProvider.subnetSelector.matchLabels[networks.aws.platformref.crossplane.io/network-name]
+    - base:
+        apiVersion: helm.crossplane.io/v1alpha1
+        kind: ProviderConfig
+        spec:
+          credentials:
+            source: Secret
+            secretRef:
+              namespace: crossplane-system
+              key: kubeconfig
+      patches:
+        - fromFieldPath: spec.name
+          toFieldPath: metadata.name
+        # This ProviderConfig uses the above EKS cluster's connection secret as
+        # its credentials secret.
+        - fromFieldPath: "metadata.uid"
+          toFieldPath: spec.credentials.secretRef.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-ekscluster"
+      readinessChecks:
+        - type: None

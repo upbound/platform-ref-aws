@@ -1,0 +1,19 @@
+apiVersion: aws.platformref.crossplane.io/v1alpha1
+kind: Cluster
+metadata:
+  name: platform-ref-aws-cluster
+spec:
+  name: platform-ref-aws-cluster
+  parameters:
+    nodes:
+      count: 3
+      size: small
+    services:
+      operators:
+        prometheus:
+          image: prom/prometheus
+          tag: v2.20.1
+    networkRef:
+      name: network
+  writeConnectionSecretToRef:
+    name: platform-ref-aws-cluster

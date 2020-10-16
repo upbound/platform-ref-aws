@@ -18,33 +18,38 @@ spec:
           spec:
             type: object
             properties:
+              name:
+                type: string
+                description: Name of this Cluster that other objects will use to refer to it.
               parameters:
                 type: object
                 description: EKS configuration parameters.
-                nodes:
-                  type: object
-                  description: EKS node configuration parameters.
-                  count:
-                    type: int
-                    description: Desired node count, from 1 to 100.
-                  size:
-                    type: string
-                    description: Size of node.
-                    enum:
-                    - small
-                    - medium
-                    - large
-                  required:
-                  - count
-                  - size
-                networkRef:
-                  type: object
-                  description: "A reference to the Network object that this postgres should be
-                  connected to."
-                  properties:
-                    name:
-                      type: string
-                      description: Name of the Network object this ref points to.
+                properties:
+                  nodes:
+                    type: object
+                    description: EKS node configuration parameters.
+                    properties:
+                      count:
+                        type: integer
+                        description: Desired node count, from 1 to 100.
+                      size:
+                        type: string
+                        description: Size of node.
+                        enum:
+                        - small
+                        - medium
+                        - large
+                    required:
+                    - count
+                    - size
+                  networkRef:
+                    type: object
+                    description: "A reference to the Network object that this postgres should be
+                    connected to."
+                    properties:
+                      name:
+                        type: string
+                        description: Name of the Network object this ref points to.
                     required:
                     - name
                 required:
