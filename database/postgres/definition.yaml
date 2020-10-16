@@ -30,19 +30,6 @@ metadata:
           validation:
           - required: true
             customError: Network ref is required and should match the network ref of the app cluster.
-        - name: connectivity
-          controlType: singleSelect
-          path: ".spec.parameters.connectivity"
-          title: Network Connectivity
-          description: determines the network visibility
-          default: 
-          - private
-          enum:
-          - private
-          - public
-          validation:
-          - required: true
-            customError: Network connectivity is required and in most cases should be private.
         - name: writeSecretRef
           controlType: singleInput
           type: string
@@ -89,15 +76,8 @@ spec:
                         description: Name of the Network object this ref points to.
                     required:
                     - name
-                  connectivity:
-                    type: string
-                    description: network connectivity
-                    enum:
-                    - public
-                    - private
                 required:
                   - storageGB
                   - networkRef
-                  - connectivity
             required:
               - parameters
