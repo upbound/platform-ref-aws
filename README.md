@@ -14,11 +14,13 @@ distributed directly to the app namespace.
 ## Contents
  * [Upbound Cloud](#upbound-cloud)
  * [Build Your Own Internal Cloud Platform](#build-your-own-internal-cloud-platform)
- * [Workflow](#workflow)
- * [Self-Service APIs](#self-service-apis)
  * [Quick Start](#quick-start)
+   * [Platform Ops/SRE: Run your own internal cloud platform](#platform-opssre-run-your-own-internal-cloud-platform)
+   * [App Dev/Ops: Consume the infrastructure you need using kubectl](#app-devops-consume-the-infrastructure-you-need-using-kubectl)
+ * [APIs in this Configuration](#apis-in-this-configuration)
  * [Customize for your Organization](#customize-for-your-organization)
- * [Cloud Service Primitives](#cloud-service-primitives)
+ * [What's Next](#whats-next)
+ * [Learn More](#learn-more)
  * [Local Dev Guide](#local-dev-guide)
 
 ## Upbound Cloud
@@ -60,48 +62,6 @@ Alibaba) used in a `Composition`.
 
 Learn more about `Composition` in the [Crossplane
 Docs](https://crossplane.github.io/docs/v0.13/getting-started/compose-infrastructure.html).
-
-## Workflow
-### Platform Ops/SRE: Build and run your own internal cloud platform
-1. Sign up for [Upbound Cloud](https://cloud.upbound.io/register).
-1. Create an `Organization` for your teams.
-1. Create a `Repository` for your Platform `Configuration`.
-1. Build/push the AWS Reference Platform `Configuration` to your `Repository`.
-1. Create a `Platform` instance in Upbound Cloud (e.g. dev, staging, or prod).
-1. Install the AWS `Provider` & Platform `Configuration` into a `Platform` instance.
-1. Create team `Workspaces` in a `Platform` instance.
-1. Create `Teams` and set permissions to access your `Platforms` and `Workspaces`.
-1. Invite team members to your `Organization`.
-
-### App Dev/Ops: Consume the infrastructure you need via self-service APIs
-1. Join your [Upbound Cloud](https://cloud.upbound.io/register)
-   `Organization`.
-1. Provision infrastructure in your team `Workspace` self-service GUI console.
-1. Provision infrastructure from a connected `kubectl`.
-
-## Self-Service APIs
-* `Cluster` - provision a fully configured EKS cluster
-  * [definition.yaml](cluster/definition.yaml)
-  * [composition.yaml](cluster/composition.yaml) includes (transitively):
-     - `EKSCluster`
-     - `NodeGroup`
-     - `IAMRole`
-     - `IAMRolePolicyAttachment`
-     - `HelmReleases` for Prometheus and other cluster services.
-* `Network` - fabric for a `Cluster` to securly connect to Data Services and
-  the Internet.
-  * [definition.yaml](network/definition.yaml)
-  * [composition.yaml](network/composition.yaml) includes:
-    - `VPC`
-    - `Subnet`
-    - `InternetGateway`
-    - `RouteTable`
-    - `SecurityGroup` 
-* `PostgreSQLInstance` - provision a PostgreSQL RDS instance that securely connects to a `Cluster`
-  * [definition.yaml](database/postgres/definition.yaml)
-  * [composition.yaml](database/postgres/composition.yaml) includes:
-     - `RDSInstance`
-     - `DBSubnetGroup`
 
 ## Quick Start
 ### Platform Ops/SRE: Run your own internal cloud platform
@@ -161,7 +121,7 @@ kubectl get managed
 1. Invite app team members and grant access to `Workspaces` in one or more
      `Platforms`.
 
-### App Dev/Ops: Consume the infrastructure you need via self-service APIs
+### App Dev/Ops: Consume the infrastructure you need using kubectl
 #### Join your Organization in Upbound Cloud
 1. **Join** your [Upbound Cloud](https://cloud.upbound.io/register)
    `Organization`
@@ -217,6 +177,30 @@ kubectl delete providers.pkg.crossplane.io provider-aws
 rm /usr/local/bin/kubectl-crossplane*
 ```
 
+## APIs in this Configuration
+* `Cluster` - provision a fully configured EKS cluster
+  * [definition.yaml](cluster/definition.yaml)
+  * [composition.yaml](cluster/composition.yaml) includes (transitively):
+     - `EKSCluster`
+     - `NodeGroup`
+     - `IAMRole`
+     - `IAMRolePolicyAttachment`
+     - `HelmReleases` for Prometheus and other cluster services.
+* `Network` - fabric for a `Cluster` to securely connect to Data Services and
+  the Internet.
+  * [definition.yaml](network/definition.yaml)
+  * [composition.yaml](network/composition.yaml) includes:
+    - `VPC`
+    - `Subnet`
+    - `InternetGateway`
+    - `RouteTable`
+    - `SecurityGroup` 
+* `PostgreSQLInstance` - provision a PostgreSQL RDS instance that securely connects to a `Cluster`
+  * [definition.yaml](database/postgres/definition.yaml)
+  * [composition.yaml](database/postgres/composition.yaml) includes:
+     - `RDSInstance`
+     - `DBSubnetGroup`
+
 ## Customize for your Organization
 Create a `Repository` called `platform-ref-aws` in your Upbound Cloud `Organization`:
 
@@ -259,13 +243,16 @@ Install package into an Upbound `Platform` instance.
 kubectl crossplane install configuration ${PLATFORM_CONFIG}
 ```
 
-To learn more see: [Configuration Packages](https://crossplane.io/docs/v0.13/getting-started/package-infrastructure.html).
+The AWS cloud service primitives that can be used in a `Composition` today are
+listed in the [Crossplane AWS Provider
+Docs](https://doc.crds.dev/github.com/crossplane/provider-aws).
 
-## Cloud Service Primitives
-The AWS cloud service primitives that can be used in a `Composition` today are listed in the [Crossplane AWS Provider Docs](https://doc.crds.dev/github.com/crossplane/provider-aws).
+To learn more see [Configuration
+Packages](https://crossplane.io/docs/v0.13/getting-started/package-infrastructure.html).
 
-The Crossplane community is targeting 90% coverage of all Cloud APIs by end of
-year 2020 with multiple workstreams in flight:
+## What's Next
+The Crossplane community is targeting a v1.0 release with 90% coverage of all
+Cloud APIs by end of year 2020 with multiple workstreams in flight:
 1. Code gen of native Crossplane providers by adapting existing codegen pipelines:
    - ACK Code Generation of the Crossplane `provider-aws`
      - https://github.com/jaypipes/aws-controllers-k8s/tree/crossplane
@@ -276,11 +263,12 @@ year 2020 with multiple workstreams in flight:
      - https://github.com/crossplane/crossplane/issues/262
 
 ## Learn More
-We’re hosting free PaaS consultations for organizations looking to learn how to
-best define and run their own internal cloud platform. You can setup some time
-with us at info@upbound.io.
+If you're interested in building your own reference platform for your company,
+we'd love to hear from you and chat. You can setup some time with us at
+info@upbound.io.
 
-For Crossplane questions, drop by [slack.crossplane.io](https://slack.crossplane.io), and say hi!
+For Crossplane questions, drop by
+[slack.crossplane.io](https://slack.crossplane.io), and say hi!
 
 ## Local Dev Guide
 
