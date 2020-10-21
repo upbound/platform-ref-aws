@@ -7,7 +7,6 @@ metadata:
     provider: helm
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
-  reclaimPolicy: Delete
   compositeTypeRef:
     apiVersion: aws.platformref.crossplane.io/v1alpha1
     kind: Services
@@ -20,14 +19,11 @@ spec:
             namespace: operators
             chart:
               # from https://github.com/prometheus-community/helm-charts
-              name: prometheus-operator
+              # Note that default values are overridden by the patches below.
+              name: kube-prometheus-stack
               repository: https://prometheus-community.github.io/helm-charts
-            # Note that default values are overridden by the patches below.
-            set:
-              - name: image.repository
-                value: prom/prometheus
-              - name: image.tag
-                value: "v2.20.1"
+              version: "10.1.0"
+            values: {}
       patches:
         # All Helm releases derive their labels and annotations from the XR.
         - fromFieldPath: metadata.labels
@@ -38,7 +34,5 @@ spec:
         - fromFieldPath: spec.providerConfigRef.name
           toFieldPath: spec.providerConfigRef.name
         # Derive the Prometheus operator image and tag from the XR.
-        - fromFieldPath: spec.operators.prometheus.image
-          toFieldPath: spec.forProvider.set[0].value
-        - fromFieldPath: spec.operators.prometheus.tag
-          toFieldPath: spec.forProvider.set[1].value
+        - fromFieldPath: spec.operators.prometheus.version
+          toFieldPath: spec.forProvider.chart.version

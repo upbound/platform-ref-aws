@@ -19,7 +19,7 @@ k apply -f crossplane-cluster-admin-rolebinding.yaml
 
 ```console
 PROVIDER_AWS=crossplane/provider-aws:v0.12.0
-PROVIDER_HELM=crossplane/provider-helm:v0.3.0
+PROVIDER_HELM=crossplane/provider-helm:v0.3.5
 
 kubectl crossplane install provider ${PROVIDER_AWS}
 kubectl crossplane install provider ${PROVIDER_HELM}

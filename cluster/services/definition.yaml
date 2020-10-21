@@ -19,16 +19,14 @@ spec:
               operators:
                 type: object
                 description: Configuration for operators.
-                prometheus:
-                  type: object
-                  description: Configuration for the Prometheus operator.
-                  properties:
-                    image:
-                      type: string
-                      description: Prometheus operator image to run.
-                    tag:
-                      type: string
-                      description: Prometheus operator tag (version) to run.
+                properties:
+                  prometheus:
+                    type: object
+                    description: Configuration for the Prometheus operator.
+                    properties:
+                      version:
+                        type: string
+                        description: Prometheus operator version to run.
               providerConfigRef:
                 type: object
                 description: "A reference to the ProviderConfig of the cluster that services should

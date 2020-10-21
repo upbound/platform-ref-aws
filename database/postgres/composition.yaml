@@ -19,8 +19,8 @@ spec:
             description: An excellent formation of subnetworks.
           reclaimPolicy: Delete
       patches:
-      - fromFieldPath: "spec.parameters.networkRef.name"
-        toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[networks.aws.platformref.crossplane.io/network-name]
+        - fromFieldPath: "spec.parameters.networkRef.name"
+          toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[networks.aws.platformref.crossplane.io/network-name]
     - base:
         apiVersion: database.aws.crossplane.io/v1beta1
         kind: RDSInstance
@@ -39,16 +39,16 @@ spec:
             namespace: crossplane-system
           reclaimPolicy: Delete
       patches:
-      - fromFieldPath: "metadata.uid"
-        toFieldPath: "spec.writeConnectionSecretToRef.name"
-        transforms:
-          - type: string
-            string:
-              fmt: "%s-postgresql"
-      - fromFieldPath: "spec.parameters.storageGB"
-        toFieldPath: "spec.forProvider.allocatedStorage"
-      - fromFieldPath: "spec.parameters.networkRef.name"
-        toFieldPath: spec.forProvider.vpcSecurityGroupIDSelector.matchLabels[networks.aws.platformref.crossplane.io/network-name]
+        - fromFieldPath: "metadata.uid"
+          toFieldPath: "spec.writeConnectionSecretToRef.name"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-postgresql"
+        - fromFieldPath: "spec.parameters.storageGB"
+          toFieldPath: "spec.forProvider.allocatedStorage"
+        - fromFieldPath: "spec.parameters.networkRef.name"
+          toFieldPath: spec.forProvider.vpcSecurityGroupIDSelector.matchLabels[networks.aws.platformref.crossplane.io/network-name]
       connectionDetails:
         - fromConnectionSecretKey: username
         - fromConnectionSecretKey: password

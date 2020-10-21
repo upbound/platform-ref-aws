@@ -123,12 +123,9 @@ spec:
                             type: object
                             description: Configuration for the Prometheus operator.
                             properties:
-                              image:
+                              version:
                                 type: string
-                                description: Prometheus operator image to run.
-                              tag:
-                                type: string
-                                description: Prometheus operator tag (version) to run.
+                                description: Prometheus operator version to run.
                   networkRef:
                     type: object
                     description: "A reference to the Network object that this cluster should be
