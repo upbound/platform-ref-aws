@@ -9,10 +9,18 @@ These are in progress development iteration steps to run the following:
 
 ## kind cluster and Crossplane
 
+In the main `crossplane/crossplane` repo, run the following to bring up the cluster with the latest
+locally built Crossplane:
+
 ```console
 cluster/local/kind.sh up
 cluster/local/kind.sh helm-install
-k apply -f crossplane-cluster-admin-rolebinding.yaml
+```
+
+Back in this repo, run the following to give Crossplane admin permissions, only for development purposes:
+
+```console
+kubectl apply -f hack/crossplane-cluster-admin-rolebinding.yaml
 ```
 
 ## `provider-aws` and `provider-helm`
