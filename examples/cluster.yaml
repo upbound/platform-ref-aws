@@ -11,8 +11,7 @@ spec:
     services:
       operators:
         prometheus:
-          image: prom/prometheus
-          tag: v2.20.1
+          version: "10.0.2"
     networkRef:
       name: network
   writeConnectionSecretToRef:

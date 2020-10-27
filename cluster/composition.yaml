@@ -4,7 +4,6 @@ metadata:
   name: compositeclusters.aws.platformref.crossplane.io
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
-  reclaimPolicy: Delete
   compositeTypeRef:
     apiVersion: aws.platformref.crossplane.io/v1alpha1
     kind: CompositeCluster
@@ -37,7 +36,5 @@ spec:
       patches:
         - fromFieldPath: spec.name
           toFieldPath: spec.providerConfigRef.name
-        - fromFieldPath: spec.parameters.services.operators.prometheus.image
-          toFieldPath: spec.operators.prometheus.image
-        - fromFieldPath: spec.parameters.services.operators.prometheus.tag
-          toFieldPath: spec.operators.prometheus.tag
+        - fromFieldPath: spec.parameters.services.operators.prometheus.version
+          toFieldPath: spec.operators.prometheus.version
