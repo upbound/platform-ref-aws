@@ -267,7 +267,7 @@ docker login ${REGISTRY} -u ${UPBOUND_ACCOUNT_EMAIL}
 Build package.
 
 ```console
-kubectl crossplane build configuration --name package.xpkg --ignore "examples/*"
+kubectl crossplane build configuration --name package.xpkg --ignore "examples/*,hack/*"
 ```
 
 Push package to registry.
