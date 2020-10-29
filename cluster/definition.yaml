@@ -50,22 +50,13 @@ metadata:
       - title: Cluster Services
         description: Configure cluster services and operators
         items:
-        - name: promImage
+        - name: promVersion
           controlType: singleInput
           type: string
-          path: ".spec.parameters.services.prometheus.image"
-          title: Prometheus Image
-          description: operator image to run
-          default: prom/promethueus
-          validation:
-          - required: false
-        - name: promImageTag
-          controlType: singleInput
-          type: string
-          path: ".spec.parameters.services.prometheus.tag"
-          title: Prometheus Image Tag
-          description: operator image tag to use
-          default: v2.21.0
+          path: ".spec.parameters.services.operators.prometheus.version"
+          title: Prometheus Chart Version
+          description: The version of kube-prometheus-stack chart to install
+          default: 10.1.0
           validation:
           - required: false
 spec:
@@ -74,13 +65,15 @@ spec:
     plural: clusters
   connectionSecretKeys:
   - kubeconfig
-  crdSpecTemplate:
-    group: aws.platformref.crossplane.io
-    version: v1alpha1
-    names:
-      kind: CompositeCluster
-      plural: compositeclusters
-    validation:
+  group: aws.platformref.crossplane.io
+  names:
+    kind: CompositeCluster
+    plural: compositeclusters
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
       openAPIV3Schema:
         type: object
         properties:

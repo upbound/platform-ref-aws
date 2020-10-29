@@ -48,13 +48,15 @@ spec:
     - password
     - endpoint
     - port
-  crdSpecTemplate:
-    group: aws.platformref.crossplane.io
-    version: v1alpha1
-    names:
-      kind: CompositePostgreSQLInstance
-      plural: compositepostgresqlinstances
-    validation:
+  group: aws.platformref.crossplane.io
+  names:
+    kind: CompositePostgreSQLInstance
+    plural: compositepostgresqlinstances
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
       openAPIV3Schema:
         type: object
         properties:

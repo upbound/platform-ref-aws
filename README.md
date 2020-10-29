@@ -92,7 +92,7 @@ cp kubectl-crossplane /usr/local/bin
 #### Install Providers into your Platform
 
 ```console
-PROVIDER_AWS=crossplane/provider-aws:v0.12.0
+PROVIDER_AWS=crossplane/provider-aws:v0.13.0
 PROVIDER_HELM=crossplane/provider-helm:v0.3.5
 
 kubectl crossplane install provider ${PROVIDER_AWS}

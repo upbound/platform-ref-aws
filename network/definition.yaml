@@ -23,31 +23,33 @@ spec:
   claimNames:
     kind: Network
     plural: networks
-  crdSpecTemplate:
-    group: aws.platformref.crossplane.io
-    version: v1alpha1
-    names:
-      kind: CompositeNetwork
-      plural: compositenetworks
-    validation:
-      openAPIV3Schema:
-        type: object
-        properties:
-          spec:
-            type: object
-            properties:
-              name:
-                type: string
-                description: Name of this Network that other objects will use to refer to it.
-              clusterRef:
-                type: object
-                description: "A reference to the Cluster object that this network will be used for."
-                properties:
-                  name:
-                    type: string
-                    description: Name of the Cluster object this ref points to.
-                required:
+  group: aws.platformref.crossplane.io
+  names:
+    kind: CompositeNetwork
+    plural: compositenetworks
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of this Network that other objects will use to refer to it.
+                clusterRef:
+                  type: object
+                  description: "A reference to the Cluster object that this network will be used for."
+                  properties:
+                    name:
+                      type: string
+                      description: Name of the Cluster object this ref points to.
+                  required:
+                    - name
+              required:
                 - name
-            required:
-            - name
-            - clusterRef
+                - clusterRef
