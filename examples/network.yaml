@@ -3,6 +3,6 @@ kind: Network
 metadata:
   name: network
 spec:
-  name: network
+  id: platform-ref-aws-network
   clusterRef:
-    name: platform-ref-aws-cluster
+    id: platform-ref-aws-cluster

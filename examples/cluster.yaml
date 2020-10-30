@@ -3,7 +3,7 @@ kind: Cluster
 metadata:
   name: platform-ref-aws-cluster
 spec:
-  name: platform-ref-aws-cluster
+  id: platform-ref-aws-cluster
   parameters:
     nodes:
       count: 3
@@ -13,6 +13,6 @@ spec:
         prometheus:
           version: "10.0.2"
     networkRef:
-      name: network
+      id: platform-ref-aws-network
   writeConnectionSecretToRef:
     name: platform-ref-aws-cluster

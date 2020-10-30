@@ -23,7 +23,7 @@ metadata:
         - name: networkRef
           controlType: singleInput
           type: string
-          path: ".spec.parameters.networkRef.name"
+          path: ".spec.parameters.networkRef.id"
           title: Network Ref
           description: Network fabric to connect the database to
           default: network
@@ -73,11 +73,11 @@ spec:
                     description: "A reference to the Network object that this postgres should be
                     connected to."
                     properties:
-                      name:
+                      id:
                         type: string
-                        description: Name of the Network object this ref points to.
+                        description: ID of the Network object this ref points to.
                     required:
-                    - name
+                    - id
                 required:
                   - storageGB
                   - networkRef

@@ -6,6 +6,19 @@ metadata:
     upbound.io/ui-schema: |-
       ---
       configSections:
+      - title: Cluster Info
+        description: Information about this cluster
+        items:
+        - name: id
+          controlType: singleInput
+          type: string
+          path: ".spec.id"
+          title: Cluster ID
+          description: Cluster ID that other objects will use to refer to this cluster
+          default: cluster
+          validation:
+          - required: true
+            customError: Cluster ID is required.
       - title: Cluster Nodes
         description: Enter information to size your cluster
         items:
@@ -40,7 +53,7 @@ metadata:
         - name: networkRef
           controlType: singleInput
           type: string
-          path: ".spec.parameters.networkRef.name"
+          path: ".spec.parameters.networkRef.id"
           title: Network Ref
           description: Network fabric to connect the database to
           default: network
@@ -80,9 +93,9 @@ spec:
           spec:
             type: object
             properties:
-              name:
+              id:
                 type: string
-                description: Name of this Cluster that other objects will use to refer to it.
+                description: ID of this Cluster that other objects will use to refer to it.
               parameters:
                 type: object
                 description: Cluster configuration parameters.
@@ -124,11 +137,11 @@ spec:
                     description: "A reference to the Network object that this cluster should be
                     connected to."
                     properties:
-                      name:
+                      id:
                         type: string
-                        description: Name of the Network object this ref points to.
+                        description: ID of the Network object this ref points to.
                     required:
-                    - name
+                    - id
                 required:
                 - nodes
                 - networkRef
