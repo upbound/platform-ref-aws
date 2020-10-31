@@ -11,6 +11,8 @@ spec:
     - base:
         apiVersion: aws.platformref.crossplane.io/v1alpha1
         kind: EKS
+      connectionDetails:
+        - fromConnectionSecretKey: kubeconfig
       patches:
         - fromFieldPath: spec.id
           toFieldPath: spec.id
