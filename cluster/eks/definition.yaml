@@ -20,9 +20,9 @@ spec:
           spec:
             type: object
             properties:
-              name:
+              id:
                 type: string
-                description: Name of this Cluster that other objects will use to refer to it.
+                description: ID of this Cluster that other objects will use to refer to it.
               parameters:
                 type: object
                 description: EKS configuration parameters.
@@ -49,11 +49,11 @@ spec:
                     description: "A reference to the Network object that this postgres should be
                     connected to."
                     properties:
-                      name:
+                      id:
                         type: string
-                        description: Name of the Network object this ref points to.
+                        description: ID of the Network object this ref points to.
                     required:
-                    - name
+                    - id
                 required:
                 - nodes
                 - networkRef

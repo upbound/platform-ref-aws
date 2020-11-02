@@ -11,10 +11,12 @@ spec:
     - base:
         apiVersion: aws.platformref.crossplane.io/v1alpha1
         kind: EKS
+      connectionDetails:
+        - fromConnectionSecretKey: kubeconfig
       patches:
-        - fromFieldPath: spec.name
-          toFieldPath: spec.name
-        - fromFieldPath: spec.name
+        - fromFieldPath: spec.id
+          toFieldPath: spec.id
+        - fromFieldPath: spec.id
           toFieldPath: metadata.annotations[crossplane.io/external-name]
         - fromFieldPath: metadata.uid
           toFieldPath: spec.writeConnectionSecretToRef.name
@@ -28,13 +30,13 @@ spec:
           toFieldPath: spec.parameters.nodes.count
         - fromFieldPath: spec.parameters.nodes.size
           toFieldPath: spec.parameters.nodes.size
-        - fromFieldPath: spec.parameters.networkRef.name
-          toFieldPath: spec.parameters.networkRef.name
+        - fromFieldPath: spec.parameters.networkRef.id
+          toFieldPath: spec.parameters.networkRef.id
     - base:
         apiVersion: aws.platformref.crossplane.io/v1alpha1
         kind: Services
       patches:
-        - fromFieldPath: spec.name
+        - fromFieldPath: spec.id
           toFieldPath: spec.providerConfigRef.name
         - fromFieldPath: spec.parameters.services.operators.prometheus.version
           toFieldPath: spec.operators.prometheus.version

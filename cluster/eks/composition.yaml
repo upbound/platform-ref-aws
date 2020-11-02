@@ -70,8 +70,8 @@ spec:
                 fmt: "%s-ekscluster"
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.writeConnectionSecretToRef.namespace
-        - fromFieldPath: "spec.parameters.networkRef.name"
-          toFieldPath: spec.forProvider.resourcesVpcConfig.subnetIdSelector.matchLabels[networks.aws.platformref.crossplane.io/network-name]
+        - fromFieldPath: "spec.parameters.networkRef.id"
+          toFieldPath: spec.forProvider.resourcesVpcConfig.subnetIdSelector.matchLabels[networks.aws.platformref.crossplane.io/network-id]
       connectionDetails:
         - fromConnectionSecretKey: kubeconfig
     - base:
@@ -163,8 +163,8 @@ spec:
                 small: t3.small
                 medium: t3.medium
                 large: t3.large
-        - fromFieldPath: "spec.parameters.networkRef.name"
-          toFieldPath: spec.forProvider.subnetSelector.matchLabels[networks.aws.platformref.crossplane.io/network-name]
+        - fromFieldPath: "spec.parameters.networkRef.id"
+          toFieldPath: spec.forProvider.subnetSelector.matchLabels[networks.aws.platformref.crossplane.io/network-id]
     - base:
         apiVersion: helm.crossplane.io/v1alpha1
         kind: ProviderConfig
@@ -175,7 +175,7 @@ spec:
               namespace: crossplane-system
               key: kubeconfig
       patches:
-        - fromFieldPath: spec.name
+        - fromFieldPath: spec.id
           toFieldPath: metadata.name
         # This ProviderConfig uses the above EKS cluster's connection secret as
         # its credentials secret.

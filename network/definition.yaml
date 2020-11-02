@@ -6,16 +6,29 @@ metadata:
     upbound.io/ui-schema: |-
       ---
       configSections:
+      - title: Network Info
+        description: Information about this network fabric
+        items:
+        - name: id
+          controlType: singleInput
+          type: string
+          path: ".spec.id"
+          title: Network ID
+          description: Network ID that other objects will use to refer (and connect) to this network fabric
+          default: platform-ref-aws-network
+          validation:
+          - required: true
+            customError: Network ID is required.
       - title: Cluster Info
         description: The cluster used with this network fabric
         items:
         - name: clusterRef
           controlType: singleInput
           type: string
-          path: ".spec.parameters.clusterRef.name"
-          title: Network Ref
-          description: Name of the Cluster object this ref points to
-          default: cluster
+          path: ".spec.clusterRef.id"
+          title: Cluster Ref
+          description: ID of the Cluster object that will use this network fabric
+          default: platform-ref-aws-cluster
           validation:
           - required: true
             customError: Cluster ref is required.
@@ -38,18 +51,18 @@ spec:
             spec:
               type: object
               properties:
-                name:
+                id:
                   type: string
-                  description: Name of this Network that other objects will use to refer to it.
+                  description: ID of this Network that other objects will use to refer to it.
                 clusterRef:
                   type: object
                   description: "A reference to the Cluster object that this network will be used for."
                   properties:
-                    name:
+                    id:
                       type: string
-                      description: Name of the Cluster object this ref points to.
+                      description: ID of the Cluster object this ref points to.
                   required:
-                    - name
+                    - id
               required:
-                - name
+                - id
                 - clusterRef
