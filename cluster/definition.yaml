@@ -15,7 +15,7 @@ metadata:
           path: ".spec.id"
           title: Cluster ID
           description: Cluster ID that other objects will use to refer to this cluster
-          default: cluster
+          default: platform-ref-aws-cluster
           validation:
           - required: true
             customError: Cluster ID is required.
@@ -56,7 +56,7 @@ metadata:
           path: ".spec.parameters.networkRef.id"
           title: Network Ref
           description: Network fabric to connect the database to
-          default: network
+          default: platform-ref-aws-network
           validation:
           - required: true
             customError: Network ref is required.

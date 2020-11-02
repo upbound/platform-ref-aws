@@ -26,7 +26,7 @@ metadata:
           path: ".spec.parameters.networkRef.id"
           title: Network Ref
           description: Network fabric to connect the database to
-          default: network
+          default: platform-ref-aws-network
           validation:
           - required: true
             customError: Network ref is required and should match the network ref of the app cluster.

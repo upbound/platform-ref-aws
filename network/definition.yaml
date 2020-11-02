@@ -15,7 +15,7 @@ metadata:
           path: ".spec.id"
           title: Network ID
           description: Network ID that other objects will use to refer (and connect) to this network fabric
-          default: network
+          default: platform-ref-aws-network
           validation:
           - required: true
             customError: Network ID is required.
@@ -26,9 +26,9 @@ metadata:
           controlType: singleInput
           type: string
           path: ".spec.clusterRef.id"
-          title: Network Ref
+          title: Cluster Ref
           description: ID of the Cluster object that will use this network fabric
-          default: cluster
+          default: platform-ref-aws-cluster
           validation:
           - required: true
             customError: Cluster ref is required.
