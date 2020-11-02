@@ -6,7 +6,7 @@ metadata:
     company: Upbound
     maintainer: Jared Watts <jared@upbound.io>
     keywords: aws, cloud-native, kubernetes, example, platform, reference
-    source: github.com/crossplane/platform-ref-aws
+    source: github.com/upbound/platform-ref-aws
     license: Apache-2.0
     description: |
       This configuration serves as a reference platform for cloud native services
