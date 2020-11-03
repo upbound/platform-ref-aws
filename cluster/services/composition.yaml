@@ -15,6 +15,7 @@ spec:
         apiVersion: helm.crossplane.io/v1alpha1
         kind: Release
         spec:
+          rollbackLimit: 3
           forProvider:
             namespace: operators
             chart:
