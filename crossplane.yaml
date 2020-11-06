@@ -12,7 +12,7 @@ metadata:
       The AWS reference platform for Kubernetes and Data Services.
 
     description: |
-      This reference platform `Configuration` for Kubernetes and Data Services
+      This reference platform Configuration for Kubernetes and Data Services
       is a starting point to build, run, and operate your own internal cloud
       platform and offer a self-service console and API to your internal teams.
 
