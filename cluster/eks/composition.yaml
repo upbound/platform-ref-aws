@@ -71,6 +71,8 @@ spec:
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.writeConnectionSecretToRef.namespace
         - fromFieldPath: "spec.parameters.networkRef.id"
+          toFieldPath: spec.forProvider.resourcesVpcConfig.securityGroupIdSelector.matchLabels[networks.aws.platformref.crossplane.io/network-id]
+        - fromFieldPath: "spec.parameters.networkRef.id"
           toFieldPath: spec.forProvider.resourcesVpcConfig.subnetIdSelector.matchLabels[networks.aws.platformref.crossplane.io/network-id]
       connectionDetails:
         - fromConnectionSecretKey: kubeconfig
