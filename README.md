@@ -92,7 +92,7 @@ cp kubectl-crossplane /usr/local/bin
 #### Install Providers into your Platform
 
 ```console
-PROVIDER_AWS=crossplane/provider-aws:v0.14.0-rc.0
+PROVIDER_AWS=crossplane/provider-aws:v0.14.0
 PROVIDER_HELM=crossplane/provider-helm:v0.3.6
 
 kubectl crossplane install provider ${PROVIDER_AWS}
@@ -112,7 +112,7 @@ kubectl apply -f examples/aws-default-provider.yaml
 #### Install the Platform Configuration
 
 ```console
-PLATFORM_CONFIG=registry.upbound.io/upbound/platform-ref-aws:v0.0.7
+PLATFORM_CONFIG=registry.upbound.io/upbound/platform-ref-aws:v0.0.8
 
 kubectl crossplane install configuration ${PLATFORM_CONFIG}
 kubectl get pkg
@@ -246,7 +246,7 @@ Set these to match your settings:
 UPBOUND_ORG=acme
 UPBOUND_ACCOUNT_EMAIL=me@acme.io
 REPO=platform-ref-aws
-VERSION_TAG=v0.0.7
+VERSION_TAG=v0.0.8
 REGISTRY=registry.upbound.io
 PLATFORM_CONFIG=${REGISTRY:+$REGISTRY/}${UPBOUND_ORG}/${REPO}:${VERSION_TAG}
 ```

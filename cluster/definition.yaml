@@ -19,6 +19,15 @@ metadata:
           validation:
           - required: true
             customError: Cluster ID is required.
+        - name: writeSecretRef
+          controlType: singleInput
+          type: string
+          path: ".spec.writeConnectionSecretToRef.name"
+          title: Connection Secret Ref
+          description: name of the secret to write to this namespace
+          default: cluster-conn
+          validation:
+          - required: true
       - title: Cluster Nodes
         description: Enter information to size your cluster
         items:
