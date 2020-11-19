@@ -27,8 +27,6 @@ distributed directly to the app namespace.
 
 ## Upbound Cloud
 
-**New Reference Platform support launching Nov 10th 2020!**
-
 ![Upbound Overview](docs/media/upbound.png)
 
 What if you could eliminate infrastructure bottlenecks, security pitfalls, and
@@ -82,6 +80,10 @@ Docs](https://crossplane.github.io/docs/v0.13/getting-started/compose-infrastruc
 1. Create a `Platform` in Upbound Cloud (e.g. dev, staging, or prod).
 1. Connect `kubectl` to your `Platform` instance.
 
+Note: the Platform instance should have Crossplane v1.0 or higher as this
+`Configuration` relies on package auto-dependency resolution for the
+dependencies listed in crossplane.yaml.
+
 #### Install the Crossplane kubectl extension (for convenience)
 
 ```console
@@ -89,16 +91,16 @@ curl -sL https://raw.githubusercontent.com/crossplane/crossplane/master/install.
 cp kubectl-crossplane /usr/local/bin
 ```
 
-#### Install Providers into your Platform
+#### Install the Platform Configuration
 
 ```console
-PROVIDER_AWS=crossplane/provider-aws:v0.14.0
-PROVIDER_HELM=crossplane/provider-helm:v0.3.6
+PLATFORM_CONFIG=registry.upbound.io/upbound/platform-ref-aws:v0.1.0
 
-kubectl crossplane install provider ${PROVIDER_AWS}
-kubectl crossplane install provider ${PROVIDER_HELM}
+kubectl crossplane install configuration ${PLATFORM_CONFIG}
 kubectl get pkg
 ```
+
+#### Configure Providers in your Platform
 
 Create `ProviderConfig` and `Secret`
 
@@ -107,15 +109,6 @@ AWS_PROFILE=default && echo -e "[default]\naws_access_key_id = $(aws configure g
 
 kubectl create secret generic aws-creds -n crossplane-system --from-file=key=./creds.conf
 kubectl apply -f examples/aws-default-provider.yaml
-```
-
-#### Install the Platform Configuration
-
-```console
-PLATFORM_CONFIG=registry.upbound.io/upbound/platform-ref-aws:v0.0.8
-
-kubectl crossplane install configuration ${PLATFORM_CONFIG}
-kubectl get pkg
 ```
 
 #### Create Network Fabric
@@ -246,7 +239,7 @@ Set these to match your settings:
 UPBOUND_ORG=acme
 UPBOUND_ACCOUNT_EMAIL=me@acme.io
 REPO=platform-ref-aws
-VERSION_TAG=v0.0.8
+VERSION_TAG=v0.1.0
 REGISTRY=registry.upbound.io
 PLATFORM_CONFIG=${REGISTRY:+$REGISTRY/}${UPBOUND_ORG}/${REPO}:${VERSION_TAG}
 ```
