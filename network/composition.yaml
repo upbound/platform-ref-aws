@@ -1,4 +1,4 @@
-apiVersion: apiextensions.crossplane.io/v1alpha1
+apiVersion: apiextensions.crossplane.io/v1beta1
 kind: Composition
 metadata:
   name: compositenetworks.aws.platformref.crossplane.io
