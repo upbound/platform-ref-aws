@@ -1,4 +1,4 @@
-apiVersion: apiextensions.crossplane.io/v1beta1
+apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
   name: eks.aws.platformref.crossplane.io
@@ -168,7 +168,7 @@ spec:
         - fromFieldPath: "spec.parameters.networkRef.id"
           toFieldPath: spec.forProvider.subnetSelector.matchLabels[networks.aws.platformref.crossplane.io/network-id]
     - base:
-        apiVersion: helm.crossplane.io/v1alpha1
+        apiVersion: helm.crossplane.io/v1beta1
         kind: ProviderConfig
         spec:
           credentials:
