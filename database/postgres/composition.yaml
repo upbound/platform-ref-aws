@@ -17,7 +17,7 @@ spec:
           forProvider:
             region: us-west-2
             description: An excellent formation of subnetworks.
-          reclaimPolicy: Delete
+          deletionPolicy: Delete
       patches:
         - fromFieldPath: "spec.parameters.networkRef.id"
           toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[networks.aws.platformref.crossplane.io/network-id]
@@ -37,7 +37,7 @@ spec:
             publiclyAccessible: false
           writeConnectionSecretToRef:
             namespace: crossplane-system
-          reclaimPolicy: Delete
+          deletionPolicy: Delete
       patches:
         - fromFieldPath: "metadata.uid"
           toFieldPath: "spec.writeConnectionSecretToRef.name"
