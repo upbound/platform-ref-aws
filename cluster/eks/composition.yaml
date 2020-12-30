@@ -174,11 +174,12 @@ spec:
           credentials:
             source: Secret
             secretRef:
-              namespace: crossplane-system
               key: kubeconfig
       patches:
         - fromFieldPath: spec.id
           toFieldPath: metadata.name
+        - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+          toFieldPath: spec.credentials.secretRef.namespace
         # This ProviderConfig uses the above EKS cluster's connection secret as
         # its credentials secret.
         - fromFieldPath: "metadata.uid"

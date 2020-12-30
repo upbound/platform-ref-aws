@@ -35,8 +35,6 @@ spec:
             engineVersion: "9.6"
             skipFinalSnapshotBeforeDeletion: true
             publiclyAccessible: false
-          writeConnectionSecretToRef:
-            namespace: crossplane-system
           deletionPolicy: Delete
       patches:
         - fromFieldPath: "metadata.uid"
