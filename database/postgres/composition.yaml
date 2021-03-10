@@ -43,6 +43,8 @@ spec:
             - type: string
               string:
                 fmt: "%s-postgresql"
+        - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+          toFieldPath: spec.writeConnectionSecretToRef.namespace
         - fromFieldPath: "spec.parameters.storageGB"
           toFieldPath: "spec.forProvider.allocatedStorage"
         - fromFieldPath: "spec.parameters.networkRef.id"
