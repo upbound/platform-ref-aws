@@ -94,7 +94,9 @@ cp kubectl-crossplane /usr/local/bin
 #### Install the Platform Configuration
 
 ```console
-PLATFORM_CONFIG=registry.upbound.io/upbound/platform-ref-aws:v0.1.0
+# Check the latest version available in https://cloud.upbound.io/registry/upbound/platform-ref-aws
+PLATFORM_VERSION=v0.1.2
+PLATFORM_CONFIG=registry.upbound.io/upbound/platform-ref-aws:${PLATFORM_VERSION}
 
 kubectl crossplane install configuration ${PLATFORM_CONFIG}
 kubectl get pkg
