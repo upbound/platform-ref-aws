@@ -95,7 +95,7 @@ cp kubectl-crossplane /usr/local/bin
 
 ```console
 # Check the latest version available in https://cloud.upbound.io/registry/upbound/platform-ref-aws
-PLATFORM_VERSION=v0.1.2
+PLATFORM_VERSION=v0.1.3
 PLATFORM_CONFIG=registry.upbound.io/upbound/platform-ref-aws:${PLATFORM_VERSION}
 
 kubectl crossplane install configuration ${PLATFORM_CONFIG}
@@ -241,7 +241,7 @@ Set these to match your settings:
 UPBOUND_ORG=acme
 UPBOUND_ACCOUNT_EMAIL=me@acme.io
 REPO=platform-ref-aws
-VERSION_TAG=v0.1.0
+VERSION_TAG=v0.1.3
 REGISTRY=registry.upbound.io
 PLATFORM_CONFIG=${REGISTRY:+$REGISTRY/}${UPBOUND_ORG}/${REPO}:${VERSION_TAG}
 ```
