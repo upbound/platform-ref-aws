@@ -5,7 +5,7 @@ metadata:
   labels:
     provider: aws
 spec:
-  writeConnectionSecretsToNamespace: crossplane-system
+  writeConnectionSecretsToNamespace: upbound-system
   compositeTypeRef:
     apiVersion: aws.platformref.crossplane.io/v1alpha1
     kind: CompositeNetwork

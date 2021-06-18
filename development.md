@@ -43,7 +43,7 @@ AWS_PROFILE=default && echo -e "[default]\naws_access_key_id = $(aws configure g
 ```
 
 ```console
-kubectl create secret generic aws-creds -n crossplane-system --from-file=key=./creds.conf
+kubectl create secret generic aws-creds -n upbound-system --from-file=key=./creds.conf
 kubectl apply -f examples/aws-default-provider.yaml
 ```
 
@@ -69,7 +69,7 @@ for f in $(find . -name 'composition.yaml'); do k delete -f $f; done
 for f in $(find . -name 'definition.yaml'); do k delete -f $f; done
 
 kubectl delete -f examples/aws-default-provider.yaml
-kubectl -n crossplane-system delete secret aws-creds
+kubectl -n upbound-system delete secret aws-creds
 rm -fr creds.conf
 
 cluster/local/kind.sh clean

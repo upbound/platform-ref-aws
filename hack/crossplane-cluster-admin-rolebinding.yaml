@@ -5,7 +5,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: crossplane
-  namespace: crossplane-system
+  namespace: upbound-system
 roleRef:
   kind: ClusterRole
   name: cluster-admin
