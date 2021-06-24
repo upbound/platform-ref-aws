@@ -326,13 +326,13 @@ docker login ${REGISTRY} -u ${UPBOUND_ACCOUNT_EMAIL}
 Build package.
 
 ```console
-kubectl crossplane build configuration --name package.xpkg --ignore "examples/*,hack/*"
+up xpkg build build --name package.xpkg --ignore "examples/*,hack/*"
 ```
 
 Push package to registry.
 
 ```console
-kubectl crossplane push configuration ${PLATFORM_CONFIG} -f package.xpkg
+up xpkg build push ${PLATFORM_CONFIG} -f package.xpkg
 ```
 
 Install package into an Upbound `Control Plane` instance.
