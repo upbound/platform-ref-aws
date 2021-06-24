@@ -1,8 +1,9 @@
 # AWS Reference Platform for Kubernetes + Data Services
 
 This repository contains a reference AWS Platform
-[Configuration](https://crossplane.io/docs/v0.13/getting-started/package-infrastructure.html)
-for use as a starting point in [Upbound Cloud](https://upbound.io) to build,
+[Configuration](https://crossplane.io/docs/v1.3/getting-started/create-configuration.html)
+for use as a starting point in [Upbound Cloud](https://upbound.io) or
+[Upbound Universal Crossplane (UXP)](https://www.upbound.io/uxp/) to build,
 run and operate your own internal cloud platform and offer a self-service
 console and API to your internal teams. It provides platform APIs to provision
 fully configured EKS clusters, with secure networking, and stateful cloud
@@ -21,9 +22,8 @@ distributed directly to the app namespace.
   * [App Dev/Ops: Consume the infrastructure you need using kubectl](#app-devops-consume-the-infrastructure-you-need-using-kubectl)
   * [APIs in this Configuration](#apis-in-this-configuration)
 * [Customize for your Organization](#customize-for-your-organization)
-* [What's Next](#whats-next)
 * [Learn More](#learn-more)
-* [Local Dev Guide](#local-dev-guide)
+* [Local Dev Guide](development.md)
 
 ## Upbound Cloud
 
@@ -36,7 +36,7 @@ provision the infrastructure they need using a custom cloud console, `kubectl`,
 or deployment pipelines and GitOps workflows -- all without writing code?
 
 [Upbound Cloud](https://upbound.io) enables you to do just that, powered by the
-open source [Crossplane](https://crossplane.io) project.
+open source [Upbound Universal Crossplane](https://www.upbound.io/uxp/) project.
 
 Consistent self-service APIs can be provided across dev, staging, and
 production environments, making it easy for app teams to get the infrastructure
@@ -61,30 +61,77 @@ classes-of-service for each API:
 ![Upbound Overview](docs/media/compose.png)
 
 Crossplane `Providers` include the cloud service primitives (AWS, Azure, GCP,
-Alibaba) used in a `Composition`.
+Alibaba) used  a `Composition`.
 
 Learn more about `Composition` in the [Crossplane
-Docs](https://crossplane.github.io/docs/v0.13/getting-started/compose-infrastructure.html).
+Docs](https://crossplane.io/docs/v1.3/concepts/composition.html).
 
 ## Quick Start
 
 ### Platform Ops/SRE: Run your own internal cloud platform
 
+There are two ways to run Universal Crossplane:
+
+1. Hosted on Upbound Cloud
+1. Self-hosted on any Kubernetes cluster.
+
+To provision the AWS Reference platform, you can pick the option that is best for you. 
+
+We'll go through each option in the next sections.
+
+### Upbound Cloud Hosted UXP Control Plane
+
+Hosted Control planes are run on Upbound's cloud infrastructure and provide a restricted
+Kubernetes API endpoint that can be accessed via `kubectl` or CI/CD systems.
+
 #### Create a free account in Upbound Cloud
 
 1. Sign up for [Upbound Cloud](https://cloud.upbound.io/register).
-1. Create an `Organization` for your teams.
+1. When you first create an Upbound Account, you can create an Organization
 
-#### Create a Platform instance in Upbound Cloud
+#### Create a Hosted UXP Control Plane in Upbound Cloud
 
-1. Create a `Platform` in Upbound Cloud (e.g. dev, staging, or prod).
-1. Connect `kubectl` to your `Platform` instance.
+1. Create a `Control Plane` in Upbound Cloud (e.g. dev, staging, or prod).
+1. Connect `kubectl` to your `Control Plane` instance.
+   * Click on your Control Plane
+   * Select the *Connect Using CLI*
+   * Paste the commands to configure your local `kubectl` context
+   * Test your connectivity by running `kubectl get pods -n upbound-system`
 
-Note: the Platform instance should have Crossplane v1.0 or higher as this
-`Configuration` relies on package auto-dependency resolution for the
-dependencies listed in crossplane.yaml.
+#### Installing UXP on a Kubernetes Cluster
+
+The other option is installing UXP into a Kubernetes cluster you manage using `up`, which
+is the official CLI for interacting with Upbound Cloud and Universal Crossplane (UXP).
+
+There are multiple ways to [install up](https://cloud.upbound.io/docs/cli/#install-script),
+including Homebrew and Linux packages.
+
+```console
+curl -sL https://cli.upbound.io | sh
+```
+
+Ensure that your kubectl context is pointing to the correct cluster:
+
+```console
+kubectl config current-context
+```
+
+Install UXP into the `upbound-system` namespace:
+
+```console
+up uxp install
+```
+
+Validate the install using the following command:
+
+```console
+kubectl get all -n upbound-system
+```
 
 #### Install the Crossplane kubectl extension (for convenience)
+
+Now that your kubectl context is configured to connect to a UXP Control Plane,
+we can install this reference platform as a Crossplane package.
 
 ```console
 curl -sL https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh | sh
@@ -95,7 +142,7 @@ cp kubectl-crossplane /usr/local/bin
 
 ```console
 # Check the latest version available in https://cloud.upbound.io/registry/upbound/platform-ref-aws
-PLATFORM_VERSION=v0.1.4
+PLATFORM_VERSION=v0.2.0
 PLATFORM_CONFIG=registry.upbound.io/upbound/platform-ref-aws:${PLATFORM_VERSION}
 
 kubectl crossplane install configuration ${PLATFORM_CONFIG}
@@ -104,16 +151,35 @@ kubectl get pkg
 
 #### Configure Providers in your Platform
 
-Create `ProviderConfig` and `Secret`
+A `ProviderConfig` is used to configure Cloud Provider API credentials. Multiple
+`ProviderConfig`s can be created, each one pointing to a different credential.
+
+The AWS provider expects a credential `Secret` in the [named profile](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html) format:
+
+```ini
+[default]
+aws_access_key_id = <your access key ID>
+aws_secret_access_key = <your secret access key>
+```
+
+This file can be crated manually or by using the [`aws` CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html):
 
 ```console
 AWS_PROFILE=default && echo -e "[default]\naws_access_key_id = $(aws configure get aws_access_key_id --profile $AWS_PROFILE)\naws_secret_access_key = $(aws configure get aws_secret_access_key --profile $AWS_PROFILE)" > creds.conf
+```
 
-kubectl create secret generic aws-creds -n crossplane-system --from-file=key=./creds.conf
+Create the `ProviderConfig` and `Secret` using the credentials file:
+
+```console
+kubectl create secret generic aws-creds -n upbound-system --from-file=key=./creds.conf
 kubectl apply -f examples/aws-default-provider.yaml
 ```
 
+We are now ready to provision resources.
+
 #### Create Network Fabric
+
+The example network composition includes the creation of a VPC, Subnets, Route Tables and a Gateway:
 
 ```console
 kubectl apply -f examples/network.yaml
@@ -129,10 +195,8 @@ kubectl get managed
 
 #### Invite App Teams to you Organization in Upbound Cloud
 
-1. Create a team `Workspace` in Upbound Cloud, named `team1`.
-1. Enable self-service APIs in each `Workspace`.
-1. Invite app team members and grant access to `Workspaces` in one or more
-     `Platforms`.
+1. Create a Team `team1`.
+1. Invite app team members and grant access to `Control Planes` and `Repositories`.
 
 ### App Dev/Ops: Consume the infrastructure you need using kubectl
 
@@ -140,18 +204,18 @@ kubectl get managed
 
 1. **Join** your [Upbound Cloud](https://cloud.upbound.io/register)
    `Organization`
-1. Verify access to your team `Workspaces`
+1. Verify access to your team `Control Planes` and Registries
 
 #### Provision a PostgreSQLInstance in your team Workspace GUI console
 
-1. Browse the available self-service APIs (XRDs) in your team `Workspace`
+1. Browse the available self-service APIs (XRDs) Control Plane
 1. Provision a `PostgreSQLInstance` using the custom generated GUI for your
 Platform `Configuration`
 1. View status / details in your `Workspace` GUI console
 
-#### Connect kubectl to your team Workspace
+#### Connect kubectl to your team Control Plane
 
-1. Connect `kubectl` to a `Workspace` from the self-service GUI console in a
+1. Connect `kubectl` to a `Control Plane` from the self-service GUI console in a
 `Workspace`
 
 #### Provision a PostgreSQLInstance using kubectl
@@ -241,7 +305,7 @@ Set these to match your settings:
 UPBOUND_ORG=acme
 UPBOUND_ACCOUNT_EMAIL=me@acme.io
 REPO=platform-ref-aws
-VERSION_TAG=v0.1.4
+VERSION_TAG=v0.2.0
 REGISTRY=registry.upbound.io
 PLATFORM_CONFIG=${REGISTRY:+$REGISTRY/}${UPBOUND_ORG}/${REPO}:${VERSION_TAG}
 ```
@@ -271,7 +335,7 @@ Push package to registry.
 kubectl crossplane push configuration ${PLATFORM_CONFIG} -f package.xpkg
 ```
 
-Install package into an Upbound `Platform` instance.
+Install package into an Upbound `Control Plane` instance.
 
 ```console
 kubectl crossplane install configuration ${PLATFORM_CONFIG}
@@ -285,20 +349,6 @@ To learn more see [Configuration
 Packages](https://crossplane.io/docs/v0.13/getting-started/package-infrastructure.html).
 
 ## What's Next
-
-The Crossplane community is targeting a v1.0 release with 90% coverage of all
-Cloud APIs by end of year 2020 with multiple workstreams in flight:
-
-* Code gen of native Crossplane providers by adapting existing codegen pipelines:
-  * ACK Code Generation of the Crossplane `provider-aws`
-    * https://github.com/jaypipes/aws-controllers-k8s/tree/crossplane
-  * Azure Code Generation of the Crossplane `provider-azure`
-    * https://github.com/matthchr/k8s-infra/tree/crossplane-hacking
-* Code gen of Crossplane providers that wrap the stateless Terraform providers
-  * Clouds that don't have code gen pipelines
-    * https://github.com/crossplane/crossplane/issues/262
-
-## Learn More
 
 If you're interested in building your own reference platform for your company,
 we'd love to hear from you and chat. You can setup some time with us at
