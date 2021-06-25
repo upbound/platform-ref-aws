@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - release-*
+  workflow_dispatch: {}
+
+env:
+  DOCKER_USR: ${{ secrets.UPBOUND_ROBOT_USR }}
+
+jobs:
+  configuration:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+          fetch-depth: 0
+      # The tagger step uses the same logic in the build submodule to generate package tag
+      # https://github.com/upbound/build/blob/4f64913157a952dbe77cd9e05457d9abe695a1d4/makelib/common.mk#L193
+      - name: Set tag
+        run: echo "::set-output name=VERSION_TAG::$(git describe --dirty --always --tags | sed 's/-/./2' | sed 's/-/./2' )"
+        id: tagger
+      - name: Login to Docker
+        uses: docker/login-action@v1
+        if: env.DOCKER_USR != ''
+        with:
+          registry: registry.upbound.io
+          username: ${{ secrets.UPBOUND_ROBOT_USR }}
+          password: ${{ secrets.UPBOUND_ROBOT_PSW }}
+      - name: Build
+        uses: crossplane-contrib/xpkg-action@v0.2.0
+        with:
+          channel: stable
+          version: current
+          command: build configuration -f ${{ github.workspace }} --name package.xpkg --ignore '.github/*,.github/*/*,examples/*,hack/*'
+      - name: Push
+        uses: crossplane-contrib/xpkg-action@v0.2.0
+        with:
+          command: push configuration -f package.xpkg registry.upbound.io/upbound/platform-ref-aws:${{ steps.tagger.outputs.VERSION_TAG }}
+      - name: Push Latest
+        uses: crossplane-contrib/xpkg-action@v0.2.0
+        with:
+          command: push configuration -f package.xpkg registry.upbound.io/upbound/platform-ref-aws
