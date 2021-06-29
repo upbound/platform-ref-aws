@@ -206,17 +206,16 @@ kubectl get managed
    `Organization`
 1. Verify access to your team `Control Planes` and Registries
 
-#### Provision a PostgreSQLInstance in your team Workspace GUI console
+#### Provision a CompositePostgreSQLInstance in your team Control Plane GUI console
 
 1. Browse the available self-service APIs (XRDs) Control Plane
-1. Provision a `PostgreSQLInstance` using the custom generated GUI for your
+1. Provision a `CompositePostgreSQLInstance` using the custom generated GUI for your
 Platform `Configuration`
-1. View status / details in your `Workspace` GUI console
+1. View status / details in your `Control Plane` GUI console
 
 #### Connect kubectl to your team Control Plane
 
-1. Connect `kubectl` to a `Control Plane` from the self-service GUI console in a
-`Workspace`
+1. Connect `kubectl` to a `Control Plane` from the self-service GUI console.
 
 #### Provision a PostgreSQLInstance using kubectl
 
@@ -227,7 +226,7 @@ kubectl apply -f examples/postgres-claim.yaml
 Verify status:
 
 ```console
-kubectl get claim -n team1
+kubectl get claim
 kubectl get composite
 kubectl get managed
 ```
@@ -236,9 +235,9 @@ kubectl get managed
 
 #### Cleanup Resources
 
-Delete resources created through the `Workspace` GUI:
+Delete resources created through the `Control Plane` Configurations menu:
 
-* From the `Workspace` GUI using the ellipsis menu in the resource view.
+* From the `Teams` GUI using the ellipsis menu in the resource view.
 * Using `kubectl delete -n team1 <claim-name>`.
 
 Delete resources created using `kubectl`:
