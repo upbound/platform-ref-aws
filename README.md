@@ -23,7 +23,6 @@ distributed directly to the app namespace.
   * [APIs in this Configuration](#apis-in-this-configuration)
 * [Customize for your Organization](#customize-for-your-organization)
 * [Learn More](#learn-more)
-* [Local Dev Guide](development.md)
 
 ## Upbound Cloud
 
