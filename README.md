@@ -60,7 +60,7 @@ classes-of-service for each API:
 ![Upbound Overview](docs/media/compose.png)
 
 Crossplane `Providers` include the cloud service primitives (AWS, Azure, GCP,
-Alibaba) used  a `Composition`.
+Alibaba) used in a `Composition`.
 
 Learn more about `Composition` in the [Crossplane
 Docs](https://crossplane.io/docs/v1.3/concepts/composition.html).
