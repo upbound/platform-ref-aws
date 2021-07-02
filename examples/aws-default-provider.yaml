@@ -6,6 +6,6 @@ spec:
   credentials:
     source: Secret
     secretRef:
-      namespace: crossplane-system
+      namespace: upbound-system
       name: aws-creds
       key: key

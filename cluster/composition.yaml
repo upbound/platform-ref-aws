@@ -3,7 +3,7 @@ kind: Composition
 metadata:
   name: compositeclusters.aws.platformref.crossplane.io
 spec:
-  writeConnectionSecretsToNamespace: crossplane-system
+  writeConnectionSecretsToNamespace: upbound-system
   compositeTypeRef:
     apiVersion: aws.platformref.crossplane.io/v1alpha1
     kind: CompositeCluster
