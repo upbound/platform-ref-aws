@@ -1,5 +1,6 @@
 # AWS Reference Platform for Kubernetes + Data Services
 
+## Trivial commit
 This repository contains a reference AWS Platform
 [Configuration](https://crossplane.io/docs/v1.3/getting-started/create-configuration.html)
 for use as a starting point in [Upbound Cloud](https://upbound.io) or
