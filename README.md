@@ -275,6 +275,7 @@ rm /usr/local/bin/kubectl-crossplane*
     * `NodeGroup`
     * `IAMRole`
     * `IAMRolePolicyAttachment`
+    * `OpenIDConnectProvider`
     * `HelmReleases` for Prometheus and other cluster services.
 * `Network` - fabric for a `Cluster` to securely connect to Data Services and
   the Internet.

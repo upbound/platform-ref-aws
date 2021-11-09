@@ -58,7 +58,7 @@ spec:
             resourcesVpcConfig:
               endpointPrivateAccess: true
               endpointPublicAccess: true
-            version: "1.16"
+            version: "1.21"
       patches:
         - fromFieldPath: metadata.annotations[crossplane.io/external-name]
           toFieldPath: metadata.annotations[crossplane.io/external-name]
@@ -74,6 +74,11 @@ spec:
           toFieldPath: spec.forProvider.resourcesVpcConfig.securityGroupIdSelector.matchLabels[networks.aws.platformref.crossplane.io/network-id]
         - fromFieldPath: "spec.parameters.networkRef.id"
           toFieldPath: spec.forProvider.resourcesVpcConfig.subnetIdSelector.matchLabels[networks.aws.platformref.crossplane.io/network-id]
+        - type: ToCompositeFieldPath
+          fromFieldPath: status.atProvider.identity.oidc.issuer
+          toFieldPath: status.eks.oidc
+          policy:
+            fromFieldPath: Optional
       connectionDetails:
         - fromConnectionSecretKey: kubeconfig
     - base:
@@ -167,6 +172,20 @@ spec:
                 large: t3.large
         - fromFieldPath: "spec.parameters.networkRef.id"
           toFieldPath: spec.forProvider.subnetSelector.matchLabels[networks.aws.platformref.crossplane.io/network-id]
+    - base:
+        apiVersion: identity.aws.crossplane.io/v1alpha1
+        kind: OpenIDConnectProvider
+        spec:
+          forProvider:
+            clientIDList:
+              - sts.amazonaws.com
+            thumbprintList:
+              - "9e99a48a9960b14926bb7f3b02e22da2b0ab7280"
+      patches:
+        - fromFieldPath: status.eks.oidc
+          toFieldPath: spec.forProvider.url
+          policy:
+            fromFieldPath: Required
     - base:
         apiVersion: helm.crossplane.io/v1beta1
         kind: ProviderConfig
