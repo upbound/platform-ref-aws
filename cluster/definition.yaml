@@ -47,7 +47,7 @@ metadata:
           controlType: singleSelect
           path: ".spec.parameters.nodes.size"
           title: Node Size
-          description: Desired node count, from 1 to 100.
+          description: Desired node size (small, medium, or large).
           default: small
           enum:
           - small
@@ -143,8 +143,7 @@ spec:
                                 description: Prometheus operator version to run.
                   networkRef:
                     type: object
-                    description: "A reference to the Network object that this cluster should be
-                    connected to."
+                    description: "A reference to the Network object that this cluster should be connected to."
                     properties:
                       id:
                         type: string
