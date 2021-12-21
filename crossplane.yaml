@@ -90,6 +90,6 @@ spec:
     version: ">=v1.0.0-0"
   dependsOn:
     - provider: registry.upbound.io/crossplane/provider-aws
-      version: ">=v0.19.0-0"
+      version: ">=v0.22.0-0"
     - provider: registry.upbound.io/crossplane/provider-helm
       version: ">=v0.3.6-0"
