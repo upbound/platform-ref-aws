@@ -141,6 +141,26 @@ spec:
                               version:
                                 type: string
                                 description: Prometheus operator version to run.
+                          flux2:
+                            type: object
+                            description: Configuration for the Flux2 operators.
+                            properties:
+                              version:
+                                type: string
+                                description: flux2 operators version to run.
+                          flux2-sync:
+                            type: object
+                            description: Configuration for the Flux2-Sync helm-chart
+                            properties:
+                              version:
+                                type: string
+                                description: flux2-sync helm-chart version to run.
+                              url:
+                                type: string
+                                description: The repository URL (HTTPS)
+                              branch:
+                                type: string
+                                description: The Git reference to checkout and monitor for changes
                   networkRef:
                     type: object
                     description: "A reference to the Network object that this cluster should be connected to."

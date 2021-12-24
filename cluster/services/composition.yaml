@@ -23,7 +23,7 @@ spec:
               # Note that default values are overridden by the patches below.
               name: kube-prometheus-stack
               repository: https://prometheus-community.github.io/helm-charts
-              version: "10.1.0"
+              version: "25.1.0"
             values: {}
       patches:
         # All Helm releases derive their labels and annotations from the XR.
@@ -37,3 +37,83 @@ spec:
         # Derive the Prometheus operator image and tag from the XR.
         - fromFieldPath: spec.operators.prometheus.version
           toFieldPath: spec.forProvider.chart.version
+    - base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: Release
+        spec:
+          rollbackLimit: 3
+          forProvider:
+            namespace: flux-system
+            chart:
+              name: flux2
+              repository: https://fluxcd-community.github.io/helm-charts
+              version: "0.8.5"
+            values:
+              imageautomationcontroller:
+                create: false
+              imagereflectorcontroller:
+                create: false
+      patches:
+        - fromFieldPath: metadata.labels
+          toFieldPath: metadata.labels
+        - fromFieldPath: metadata.annotations
+          toFieldPath: metadata.annotations
+        - fromFieldPath: spec.providerConfigRef.name
+          toFieldPath: spec.providerConfigRef.name
+        - fromFieldPath: spec.providerConfigRef.name
+          toFieldPath: metadata.annotations[crossplane.io/external-name]
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-operator"
+        - fromFieldPath: spec.operators.flux2.version
+          toFieldPath: spec.forProvider.chart.version
+    - base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: Release
+        spec:
+          rollbackLimit: 3
+          forProvider:
+            namespace: flux-system
+            chart:
+              name: flux2-sync
+              repository: https://fluxcd-community.github.io/helm-charts
+              version: "0.3.6"
+            values:
+              gitRepository:
+                spec:
+                  url: https://github.com/upbound/platform-ref-aws.git
+                  ref:
+                    branch: master
+              kustomizationlist:
+                - spec:
+                    interval: 5m
+                    path: ./flux2-kustomize/crossplane
+                    prune: true
+                    timeout: 5m
+                - spec:
+                    dependsOn:
+                      - path: ./flux2-kustomize/crossplane
+                    interval: 5m
+                    path: ./flux2-kustomize/configuration
+                    prune: true
+                    timeout: 5m
+      patches:
+        - fromFieldPath: metadata.labels
+          toFieldPath: metadata.labels
+        - fromFieldPath: metadata.annotations
+          toFieldPath: metadata.annotations
+        - fromFieldPath: spec.providerConfigRef.name
+          toFieldPath: spec.providerConfigRef.name
+        - fromFieldPath: spec.providerConfigRef.name
+          toFieldPath: metadata.annotations[crossplane.io/external-name]
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-sync"
+        - fromFieldPath: spec.operators.flux2-sync.version
+          toFieldPath: spec.forProvider.chart.version
+        - fromFieldPath: spec.operators.flux2-sync.url
+          toFieldPath: spec.forProvider.values.gitRepository.spec.url
+        - fromFieldPath: spec.operators.flux2-sync.branch
+          toFieldPath: spec.forProvider.values.gitRepository.spec.ref.branch

@@ -273,8 +273,8 @@ rm /usr/local/bin/kubectl-crossplane*
   * [composition.yaml](cluster/composition.yaml) includes (transitively):
     * `EKSCluster`
     * `NodeGroup`
-    * `IAMRole`
-    * `IAMRolePolicyAttachment`
+    * `Role`
+    * `RolePolicyAttachment`
     * `OpenIDConnectProvider`
     * `HelmReleases` for Prometheus and other cluster services.
 * `Network` - fabric for a `Cluster` to securely connect to Data Services and

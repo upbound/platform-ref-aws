@@ -11,8 +11,8 @@ spec:
     kind: EKS
   resources:
     - base:
-        apiVersion: identity.aws.crossplane.io/v1beta1
-        kind: IAMRole
+        apiVersion: iam.aws.crossplane.io/v1beta1
+        kind: Role
         metadata:
           labels:
             role: controlplane
@@ -36,8 +36,8 @@ spec:
                 ]
               }
     - base:
-        apiVersion: identity.aws.crossplane.io/v1beta1
-        kind: IAMRolePolicyAttachment
+        apiVersion: iam.aws.crossplane.io/v1beta1
+        kind: RolePolicyAttachment
         spec:
           forProvider:
             policyArn: arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
@@ -82,8 +82,8 @@ spec:
       connectionDetails:
         - fromConnectionSecretKey: kubeconfig
     - base:
-        apiVersion: identity.aws.crossplane.io/v1beta1
-        kind: IAMRole
+        apiVersion: iam.aws.crossplane.io/v1beta1
+        kind: Role
         metadata:
           labels:
             role: nodegroup
@@ -107,8 +107,8 @@ spec:
                 ]
               }
     - base:
-        apiVersion: identity.aws.crossplane.io/v1beta1
-        kind: IAMRolePolicyAttachment
+        apiVersion: iam.aws.crossplane.io/v1beta1
+        kind: RolePolicyAttachment
         spec:
           forProvider:
             policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
@@ -117,8 +117,8 @@ spec:
               matchLabels:
                 role: nodegroup
     - base:
-        apiVersion: identity.aws.crossplane.io/v1beta1
-        kind: IAMRolePolicyAttachment
+        apiVersion: iam.aws.crossplane.io/v1beta1
+        kind: RolePolicyAttachment
         spec:
           forProvider:
             policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
@@ -127,8 +127,8 @@ spec:
               matchLabels:
                 role: nodegroup
     - base:
-        apiVersion: identity.aws.crossplane.io/v1beta1
-        kind: IAMRolePolicyAttachment
+        apiVersion: iam.aws.crossplane.io/v1beta1
+        kind: RolePolicyAttachment
         spec:
           forProvider:
             policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
@@ -173,7 +173,7 @@ spec:
         - fromFieldPath: "spec.parameters.networkRef.id"
           toFieldPath: spec.forProvider.subnetSelector.matchLabels[networks.aws.platformref.crossplane.io/network-id]
     - base:
-        apiVersion: identity.aws.crossplane.io/v1alpha1
+        apiVersion: iam.aws.crossplane.io/v1beta1
         kind: OpenIDConnectProvider
         spec:
           forProvider:

@@ -40,3 +40,11 @@ spec:
           toFieldPath: spec.providerConfigRef.name
         - fromFieldPath: spec.parameters.services.operators.prometheus.version
           toFieldPath: spec.operators.prometheus.version
+        - fromFieldPath: spec.parameters.services.operators.flux2.version
+          toFieldPath: spec.operators.flux2.version
+        - fromFieldPath: spec.parameters.services.operators.flux2-sync.version
+          toFieldPath: spec.operators.flux2-sync.version
+        - fromFieldPath: spec.parameters.services.operators.flux2-sync.url
+          toFieldPath: spec.operators.flux2-sync.url
+        - fromFieldPath: spec.parameters.services.operators.flux2-sync.branch
+          toFieldPath: spec.operators.flux2-sync.branch
