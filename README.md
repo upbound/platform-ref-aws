@@ -74,7 +74,7 @@ There are two ways to run Universal Crossplane:
 1. Hosted on Upbound Cloud
 1. Self-hosted on any Kubernetes cluster.
 
-To provision the AWS Reference platform, you can pick the option that is best for you. 
+To provision the AWS Reference platform, you can pick the option that is best for you.
 
 We'll go through each option in the next sections.
 
@@ -141,7 +141,7 @@ cp kubectl-crossplane /usr/local/bin
 
 ```console
 # Check the latest version available in https://cloud.upbound.io/registry/upbound/platform-ref-aws
-PLATFORM_VERSION=v0.2.0
+PLATFORM_VERSION=v0.2.2
 PLATFORM_CONFIG=registry.upbound.io/upbound/platform-ref-aws:${PLATFORM_VERSION}
 
 kubectl crossplane install configuration ${PLATFORM_CONFIG}
@@ -304,7 +304,7 @@ Set these to match your settings:
 UPBOUND_ORG=acme
 UPBOUND_ACCOUNT_EMAIL=me@acme.io
 REPO=platform-ref-aws
-VERSION_TAG=v0.2.0
+VERSION_TAG=v0.2.2
 REGISTRY=registry.upbound.io
 PLATFORM_CONFIG=${REGISTRY:+$REGISTRY/}${UPBOUND_ORG}/${REPO}:${VERSION_TAG}
 ```
@@ -325,7 +325,7 @@ docker login ${REGISTRY} -u ${UPBOUND_ACCOUNT_EMAIL}
 Build package.
 
 ```console
-up xpkg build --name package.xpkg --ignore ".github/workflows/*,examples/*,hack/*" 
+up xpkg build --name package.xpkg --ignore ".github/workflows/*,examples/*,hack/*"
 ```
 
 Push package to registry.
