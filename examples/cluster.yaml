@@ -1,9 +1,9 @@
 apiVersion: aws.platformref.crossplane.io/v1alpha1
 kind: Cluster
 metadata:
-  name: platform-ref-aws-cluster
+  name: platform-ref-aws-cluster-piotr
 spec:
-  id: platform-ref-aws-cluster
+  id: platform-ref-aws-cluster-piotr
   parameters:
     nodes:
       count: 3
@@ -13,6 +13,6 @@ spec:
         prometheus:
           version: "10.0.2"
     networkRef:
-      id: platform-ref-aws-network
+      id: platform-ref-aws-network-piotr
   writeConnectionSecretToRef:
-    name: platform-ref-aws-cluster
+    name: platform-ref-aws-cluster-piotr

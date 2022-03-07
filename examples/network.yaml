@@ -1,8 +1,8 @@
 apiVersion: aws.platformref.crossplane.io/v1alpha1
 kind: Network
 metadata:
-  name: network
+  name: network-piotr
 spec:
-  id: platform-ref-aws-network
+  id: platform-ref-aws-network-piotr
   clusterRef:
-    id: platform-ref-aws-cluster
+    id: platform-ref-aws-cluster-piotr

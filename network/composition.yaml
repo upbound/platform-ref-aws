@@ -19,6 +19,13 @@ spec:
             cidrBlock: 192.168.0.0/16
             enableDnsSupport: true
             enableDnsHostNames: true
+            tags:
+            - key: Env
+              value: Dev
+            - key: Owner
+              value: Platform Team
+            - key: Name
+              value: piotr-test-vpc
       patches:
         - fromFieldPath: spec.id
           toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-id]

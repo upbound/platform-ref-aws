@@ -6,6 +6,6 @@ spec:
   parameters:
     storageGB: 20
     networkRef:
-      id: platform-ref-aws-network
+      id: platform-ref-aws-network-piotr
   writeConnectionSecretToRef:
     name: my-db-conn
