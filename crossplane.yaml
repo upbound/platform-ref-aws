@@ -3,7 +3,7 @@ kind: Configuration
 metadata:
   name: platform-ref-aws
   annotations:
-    meta.crossplane.io/maintainer: Jared Watts <jared@upbound.io> and Piotr
+    meta.crossplane.io/maintainer: Jared Watts <jared@upbound.io>, Piotr Zaniewski <piotr@upbound.io>
     meta.crossplane.io/source: github.com/upbound/platform-ref-aws
     meta.crossplane.io/license: Apache-2.0
     meta.crossplane.io/description: |
