@@ -25,7 +25,7 @@ spec:
             - key: Owner
               value: Platform Team
             - key: Name
-              value: test-vpc
+              value: platformref-vpc
       patches:
         - fromFieldPath: spec.id
           toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-id]
