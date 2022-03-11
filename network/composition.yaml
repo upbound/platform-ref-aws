@@ -9,6 +9,12 @@ spec:
   compositeTypeRef:
     apiVersion: aws.platformref.crossplane.io/v1alpha1
     kind: CompositeNetwork
+  patchSets:
+  - name: network-id
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-id]
   resources:
     - base:
         apiVersion: ec2.aws.crossplane.io/v1beta1
@@ -27,8 +33,8 @@ spec:
             - key: Name
               value: platformref-vpc
       patches:
-        - fromFieldPath: spec.id
-          toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-id]
+        - type: PatchSet
+          patchSetName: network-id
     - base:
         apiVersion: ec2.aws.crossplane.io/v1beta1
         kind: InternetGateway
@@ -38,8 +44,8 @@ spec:
             vpcIdSelector:
               matchControllerRef: true
       patches:
-        - fromFieldPath: spec.id
-          toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-id]
+        - type: PatchSet
+          patchSetName: network-id
     - base:
         apiVersion: ec2.aws.crossplane.io/v1beta1
         kind: Subnet
@@ -59,8 +65,8 @@ spec:
               - key: kubernetes.io/role/elb
                 value: "1"
       patches:
-        - fromFieldPath: spec.id
-          toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-id]
+        - type: PatchSet
+          patchSetName: network-id
     - base:
         apiVersion: ec2.aws.crossplane.io/v1beta1
         kind: Subnet
@@ -80,8 +86,8 @@ spec:
               - key: kubernetes.io/role/elb
                 value: "1"
       patches:
-        - fromFieldPath: spec.id
-          toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-id]
+        - type: PatchSet
+          patchSetName: network-id
     - base:
         apiVersion: ec2.aws.crossplane.io/v1beta1
         kind: Subnet
@@ -102,8 +108,8 @@ spec:
               - key: kubernetes.io/role/internal-elb
                 value: "1"
       patches:
-        - fromFieldPath: spec.id
-          toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-id]
+        - type: PatchSet
+          patchSetName: network-id
         - fromFieldPath: spec.clusterRef.id
           toFieldPath: spec.forProvider.tags[0].key
           transforms:
@@ -130,8 +136,8 @@ spec:
               - key: kubernetes.io/role/internal-elb
                 value: "1"
       patches:
-        - fromFieldPath: spec.id
-          toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-id]
+        - type: PatchSet
+          patchSetName: network-id
         - fromFieldPath: spec.clusterRef.id
           toFieldPath: spec.forProvider.tags[0].key
           transforms:
@@ -172,8 +178,8 @@ spec:
                     zone: us-west-2b
                     access: private
       patches:
-        - fromFieldPath: spec.id
-          toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-id]
+        - type: PatchSet
+          patchSetName: network-id
     - base:
         apiVersion: ec2.aws.crossplane.io/v1beta1
         kind: SecurityGroup
@@ -192,5 +198,5 @@ spec:
                   - cidrIp: 0.0.0.0/0
                     description: Everywhere
       patches:
-        - fromFieldPath: spec.id
-          toFieldPath: metadata.labels[networks.aws.platformref.crossplane.io/network-id]
+        - type: PatchSet
+          patchSetName: network-id
