@@ -26,8 +26,6 @@ spec:
             enableDnsSupport: true
             enableDnsHostNames: true
             tags:
-            - key: Env
-              value: Dev
             - key: Owner
               value: Platform Team
             - key: Name
