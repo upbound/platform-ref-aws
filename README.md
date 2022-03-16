@@ -71,8 +71,8 @@ Docs](https://crossplane.io/docs/v1.3/concepts/composition.html).
 
 There are two ways to run Universal Crossplane:
 
-1. Hosted on Upbound Cloud
-1. Self-hosted on any Kubernetes cluster.
+1. [Hosted on Upbound Cloud](#upbound-cloud-hosted-uxp-control-plane)
+1. Self-hosted on any Kubernetes cluster
 
 To provision the AWS Reference platform, you can pick the option that is best for you.
 
