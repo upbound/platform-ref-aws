@@ -18,6 +18,7 @@ spec:
             region: us-west-2
             description: An excellent formation of subnetworks.
           deletionPolicy: Delete
+      name: compositePostgreSQLInstanceDbSubnetGroup
       patches:
         - fromFieldPath: "spec.parameters.networkRef.id"
           toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[networks.aws.platformref.crossplane.io/network-id]
@@ -36,6 +37,7 @@ spec:
             skipFinalSnapshotBeforeDeletion: true
             publiclyAccessible: false
           deletionPolicy: Delete
+      name: RDSInstanceSmall
       patches:
         - fromFieldPath: "metadata.uid"
           toFieldPath: "spec.writeConnectionSecretToRef.name"
