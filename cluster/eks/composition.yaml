@@ -35,6 +35,7 @@ spec:
                     }
                 ]
               }
+      name: controlplaneRole
     - base:
         apiVersion: iam.aws.crossplane.io/v1beta1
         kind: RolePolicyAttachment
@@ -45,6 +46,7 @@ spec:
               matchControllerRef: true
               matchLabels:
                 role: controlplane
+      name: clusterRolePolicyAttachment
     - base:
         apiVersion: eks.aws.crossplane.io/v1beta1
         kind: Cluster
@@ -59,6 +61,7 @@ spec:
               endpointPrivateAccess: true
               endpointPublicAccess: true
             version: "1.21"
+      name: kubernetesCluster
       patches:
         - fromFieldPath: metadata.annotations[crossplane.io/external-name]
           toFieldPath: metadata.annotations[crossplane.io/external-name]
@@ -106,6 +109,7 @@ spec:
                     }
                 ]
               }
+      name: nodegroupRole
     - base:
         apiVersion: iam.aws.crossplane.io/v1beta1
         kind: RolePolicyAttachment
@@ -116,6 +120,7 @@ spec:
               matchControllerRef: true
               matchLabels:
                 role: nodegroup
+      name: workerNodeRolePolicyAttachment
     - base:
         apiVersion: iam.aws.crossplane.io/v1beta1
         kind: RolePolicyAttachment
@@ -126,6 +131,7 @@ spec:
               matchControllerRef: true
               matchLabels:
                 role: nodegroup
+      name: cniRolePolicyAttachment
     - base:
         apiVersion: iam.aws.crossplane.io/v1beta1
         kind: RolePolicyAttachment
@@ -136,6 +142,7 @@ spec:
               matchControllerRef: true
               matchLabels:
                 role: nodegroup
+      name: containerRegistryRolePolicyAttachment
     - base:
         apiVersion: eks.aws.crossplane.io/v1alpha1
         kind: NodeGroup
@@ -157,6 +164,7 @@ spec:
               desiredSize: 1
             instanceTypes:
               - t3.medium
+      name: nodeGroupPublic
       patches:
         - fromFieldPath: metadata.annotations[crossplane.io/external-name]
           toFieldPath: metadata.annotations[crossplane.io/external-name]
@@ -181,6 +189,7 @@ spec:
               - sts.amazonaws.com
             thumbprintList:
               - "9e99a48a9960b14926bb7f3b02e22da2b0ab7280"
+      name: oidcProvider
       patches:
         - fromFieldPath: status.eks.oidc
           toFieldPath: spec.forProvider.url
@@ -194,6 +203,7 @@ spec:
             source: Secret
             secretRef:
               key: kubeconfig
+      name: providerConfig
       patches:
         - fromFieldPath: spec.id
           toFieldPath: metadata.name
