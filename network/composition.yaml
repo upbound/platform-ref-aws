@@ -63,7 +63,7 @@ spec:
             availabilityZone: us-west-2a
             tags:
               - key: kubernetes.io/role/elb
-                value: ""
+                value: "1"
       name: subnet-public-west-2a
       patches:
         - type: PatchSet
