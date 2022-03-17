@@ -30,6 +30,7 @@ spec:
               value: Platform Team
             - key: Name
               value: platformref-vpc
+      name: platformref-vcp
       patches:
         - type: PatchSet
           patchSetName: network-id
@@ -41,6 +42,7 @@ spec:
             region: us-west-2
             vpcIdSelector:
               matchControllerRef: true
+      name: gateway
       patches:
         - type: PatchSet
           patchSetName: network-id
@@ -61,7 +63,8 @@ spec:
             availabilityZone: us-west-2a
             tags:
               - key: kubernetes.io/role/elb
-                value: "1"
+                value: ""
+      name: subnet-public-west-2a
       patches:
         - type: PatchSet
           patchSetName: network-id
@@ -83,6 +86,7 @@ spec:
             tags:
               - key: kubernetes.io/role/elb
                 value: "1"
+      name: subnet-public-west-2b
       patches:
         - type: PatchSet
           patchSetName: network-id
@@ -105,6 +109,7 @@ spec:
                 key: ""
               - key: kubernetes.io/role/internal-elb
                 value: "1"
+      name: subnet-private-west-2a
       patches:
         - type: PatchSet
           patchSetName: network-id
@@ -133,6 +138,7 @@ spec:
                 key: ""
               - key: kubernetes.io/role/internal-elb
                 value: "1"
+      name: subnet-private-west-2b
       patches:
         - type: PatchSet
           patchSetName: network-id
@@ -175,6 +181,7 @@ spec:
                   matchLabels:
                     zone: us-west-2b
                     access: private
+      name: routeTable
       patches:
         - type: PatchSet
           patchSetName: network-id
@@ -195,6 +202,7 @@ spec:
                 ipRanges:
                   - cidrIp: 0.0.0.0/0
                     description: Everywhere
+      name: securityGroup
       patches:
         - type: PatchSet
           patchSetName: network-id
