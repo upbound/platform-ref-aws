@@ -25,6 +25,7 @@ spec:
               repository: https://prometheus-community.github.io/helm-charts
               version: "10.1.0"
             values: {}
+      name: releasePrometheus
       patches:
         # All Helm releases derive their labels and annotations from the XR.
         - fromFieldPath: metadata.labels
