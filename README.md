@@ -17,6 +17,7 @@ distributed directly to the app namespace.
 
 * [Upbound Cloud](#upbound-cloud)
 * [Build Your Own Internal Cloud Platform](#build-your-own-internal-cloud-platform)
+* [Install Tools](#pre-requisite--optional-tools)
 * [Quick Start](#quick-start)
 * [Platform Ops/SRE: Run your own internal cloud platform](#platform-opssre-run-your-own-internal-cloud-platform)
   * [App Dev/Ops: Consume the infrastructure you need using kubectl](#app-devops-consume-the-infrastructure-you-need-using-kubectl)
@@ -65,6 +66,26 @@ Alibaba) used in a `Composition`.
 Learn more about `Composition` in the [Crossplane
 Docs](https://crossplane.io/docs/v1.3/concepts/composition.html).
 
+## Pre-Requisite & Optional Tools
+
+Install the following command line tools:
+#### up cli
+There are multiple ways to [install up](https://cloud.upbound.io/docs/cli/#install-script),
+including Homebrew and Linux packages.
+
+```console
+curl -sL https://cli.upbound.io | sh
+```
+
+#### kubectl crossplane extention (optional)
+Now that your kubectl context is configured to connect to a UXP Control Plane,
+we can install this reference platform as a Crossplane package.
+
+```console
+curl -sL https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh | sh
+cp kubectl-crossplane /usr/local/bin
+```
+
 ## Quick Start
 
 ### Platform Ops/SRE: Run your own internal cloud platform
@@ -102,13 +123,6 @@ Kubernetes API endpoint that can be accessed via `kubectl` or CI/CD systems.
 The other option is installing UXP into a Kubernetes cluster you manage using `up`, which
 is the official CLI for interacting with Upbound Cloud and Universal Crossplane (UXP).
 
-There are multiple ways to [install up](https://cloud.upbound.io/docs/cli/#install-script),
-including Homebrew and Linux packages.
-
-```console
-curl -sL https://cli.upbound.io | sh
-```
-
 Ensure that your kubectl context is pointing to the correct cluster:
 
 ```console
@@ -125,16 +139,6 @@ Validate the install using the following command:
 
 ```console
 kubectl get all -n upbound-system
-```
-
-#### Install the Crossplane kubectl extension (for convenience)
-
-Now that your kubectl context is configured to connect to a UXP Control Plane,
-we can install this reference platform as a Crossplane package.
-
-```console
-curl -sL https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh | sh
-cp kubectl-crossplane /usr/local/bin
 ```
 
 #### Install the Platform Configuration
