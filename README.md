@@ -79,14 +79,15 @@ Install the following command line tools:
 
   ```
 
-#### kubectl crossplane extention (optional)
-Now that your kubectl context is configured to connect to a UXP Control Plane,
-we can install this reference platform as a Crossplane package.
+* `kubectl crossplane exstention` (optional)
 
-```console
-curl -sL https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh | sh
-cp kubectl-crossplane /usr/local/bin
-```
+  Now that your kubectl context is configured to connect to a UXP Control Plane,
+  we can install this reference platform as a Crossplane package.
+
+  ```console
+  curl -sL https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh | sh
+  cp kubectl-crossplane /usr/local/bin
+  ```
 
 ## Quick Start
 
