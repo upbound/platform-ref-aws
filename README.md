@@ -75,6 +75,7 @@ including Homebrew and Linux packages.
 
 ```console
 curl -sL https://cli.upbound.io | sh
+
 ```
 
 #### kubectl crossplane extention (optional)
@@ -111,10 +112,11 @@ Kubernetes API endpoint that can be accessed via `kubectl` or CI/CD systems.
 
 #### Create a Hosted UXP Control Plane in Upbound Cloud
 
-1. Create a `Control Plane` in Upbound Cloud (e.g. dev, staging, or prod).
+1. In your browser, Create a `Control Plane` in Upbound Cloud (e.g. dev, staging, or prod)
 1. Connect `kubectl` to your `Control Plane` instance.
    * Click on your Control Plane
    * Select the *Connect Using CLI*
+   * Login to upbound using up cli: `up login`
    * Paste the commands to configure your local `kubectl` context
    * Test your connectivity by running `kubectl get pods -n upbound-system`
 
@@ -132,6 +134,7 @@ kubectl config current-context
 Install UXP into the `upbound-system` namespace:
 
 ```console
+up login
 up uxp install
 ```
 
@@ -165,7 +168,7 @@ aws_access_key_id = <your access key ID>
 aws_secret_access_key = <your secret access key>
 ```
 
-This file can be crated manually or by using the [`aws` CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html):
+This file can be created manually or by using the [`aws` CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html):
 
 ```console
 AWS_PROFILE=default && echo -e "[default]\naws_access_key_id = $(aws configure get aws_access_key_id --profile $AWS_PROFILE)\naws_secret_access_key = $(aws configure get aws_secret_access_key --profile $AWS_PROFILE)" > creds.conf
@@ -178,7 +181,13 @@ kubectl create secret generic aws-creds -n upbound-system --from-file=key=./cred
 kubectl apply -f examples/aws-default-provider.yaml
 ```
 
-We are now ready to provision resources.
+## Provision Resources
+
+With the setup complete, we can now use platform-aws to provision resources in AWS.
+
+#### Create EKS Cluster
+
+The example cluster composition create an EKS cluster and includes a nested composite resource for the network, which creates a VPC, Subnet, Route Tables and a Gateway.
 
 #### Create Network Fabric
 
@@ -276,12 +285,13 @@ rm /usr/local/bin/kubectl-crossplane*
   * [definition.yaml](cluster/definition.yaml)
   * [composition.yaml](cluster/composition.yaml) includes (transitively):
     * `EKSCluster`
+    * `XNetwork` for network fabric
     * `NodeGroup`
     * `Role`
     * `RolePolicyAttachment`
     * `OpenIDConnectProvider`
     * `HelmReleases` for Prometheus and other cluster services.
-* `Network` - fabric for a `Cluster` to securely connect to Data Services and
+* `XNetwork` - fabric for a `Cluster` to securely connect to Data Services and
   the Internet.
   * [definition.yaml](network/definition.yaml)
   * [composition.yaml](network/composition.yaml) includes:

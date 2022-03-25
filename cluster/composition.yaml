@@ -1,16 +1,23 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: compositeclusters.aws.platformref.crossplane.io
+  name: xclusters.aws.platformref.crossplane.io
 spec:
   writeConnectionSecretsToNamespace: upbound-system
   compositeTypeRef:
     apiVersion: aws.platformref.crossplane.io/v1alpha1
-    kind: CompositeCluster
+    kind: XCluster
   resources:
+    # Added this base, but don't know how the cluster knows how to use it?
     - base:
         apiVersion: aws.platformref.crossplane.io/v1alpha1
-        kind: EKS
+        kind: XNetwork
+      patches:
+        - fromFieldPath: spec.id
+          toFieldPath: spec.id
+    - base:
+        apiVersion: aws.platformref.crossplane.io/v1alpha1
+        kind: XEKS
       connectionDetails:
         - fromConnectionSecretKey: kubeconfig
       patches:
@@ -30,11 +37,9 @@ spec:
           toFieldPath: spec.parameters.nodes.count
         - fromFieldPath: spec.parameters.nodes.size
           toFieldPath: spec.parameters.nodes.size
-        - fromFieldPath: spec.parameters.networkRef.id
-          toFieldPath: spec.parameters.networkRef.id
     - base:
         apiVersion: aws.platformref.crossplane.io/v1alpha1
-        kind: Services
+        kind: XServices
       patches:
         - fromFieldPath: spec.id
           toFieldPath: spec.providerConfigRef.name

@@ -50,8 +50,8 @@ spec:
     - port
   group: aws.platformref.crossplane.io
   names:
-    kind: CompositePostgreSQLInstance
-    plural: compositepostgresqlinstances
+    kind: XPostgreSQLInstance
+    plural: xpostgresqlinstances
   versions:
   - name: v1alpha1
     served: true
@@ -68,18 +68,18 @@ spec:
                 properties:
                   storageGB:
                     type: integer
-                  networkRef:
-                    type: object
-                    description: "A reference to the Network object that this postgres should be
-                    connected to."
-                    properties:
-                      id:
-                        type: string
-                        description: ID of the Network object this ref points to.
-                    required:
-                    - id
+                  #networkRef:
+                  #  type: object
+                  #  description: "A reference to the Network object that this postgres should be
+                  #  connected to."
+                  #  properties:
+                  #    id:
+                  #      type: string
+                  #      description: ID of the Network object this ref points to.
+                  #  required:
+                  #  - id
                 required:
                   - storageGB
-                  - networkRef
+                  #- networkRef
             required:
               - parameters

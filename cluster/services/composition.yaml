@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: services.aws.platformref.crossplane.io
+  name: xservices.aws.platformref.crossplane.io
   labels:
     plan: full
     provider: helm
@@ -9,7 +9,7 @@ spec:
   writeConnectionSecretsToNamespace: upbound-system
   compositeTypeRef:
     apiVersion: aws.platformref.crossplane.io/v1alpha1
-    kind: Services
+    kind: XServices
   resources:
     - base:
         apiVersion: helm.crossplane.io/v1beta1

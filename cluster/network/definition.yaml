@@ -1,0 +1,68 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xnetworks.aws.platformref.crossplane.io
+  annotations:
+    upbound.io/ui-schema: |-
+      ---
+      configSections:
+      - title: Network Info
+        description: Information about this network fabric
+        items:
+        - name: id
+          controlType: singleInput
+          type: string
+          path: ".spec.id"
+          title: Network ID
+          description: Network ID that other objects will use to refer (and connect) to this network fabric
+          default: platform-ref-aws-network
+          validation:
+          - required: true
+            customError: Network ID is required.
+      - title: Cluster Info
+        description: The cluster used with this network fabric
+        items:
+        - name: clusterRef
+          controlType: singleInput
+          type: string
+          path: ".spec.clusterRef.id"
+          title: Cluster Ref
+          description: ID of the Cluster object that will use this network fabric
+          default: platform-ref-aws-cluster
+          validation:
+          - required: true
+            customError: Cluster ref is required.
+spec:
+  group: aws.platformref.crossplane.io
+  names:
+    kind: XNetwork
+    plural: xnetworks
+  claimNames:
+    kind: Network
+    plural: networks
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: ID of this Network that other objects will use to refer to it.
+                #clusterRef:
+                #  type: object
+                #  description: "A reference to the Cluster object that this network will be used for."
+                #  properties:
+                #    id:
+                #      type: string
+                #      description: ID of the Cluster object this ref points to.
+                #  required:
+                #    - id
+              required:
+                - id
+                #- clusterRef
