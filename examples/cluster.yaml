@@ -12,7 +12,7 @@ spec:
       operators:
         prometheus:
           version: "15.0.1"
-    networkRef:
-      id: platform-ref-aws-network
+    #networkRef:
+     # id: platform-ref-aws-network
   writeConnectionSecretToRef:
     name: platform-ref-aws-cluster

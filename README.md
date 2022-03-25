@@ -69,14 +69,15 @@ Docs](https://crossplane.io/docs/v1.3/concepts/composition.html).
 ## Pre-Requisite & Optional Tools
 
 Install the following command line tools:
-#### up cli
-There are multiple ways to [install up](https://cloud.upbound.io/docs/cli/#install-script),
-including Homebrew and Linux packages.
 
-```console
-curl -sL https://cli.upbound.io | sh
+* `up cli`
 
-```
+  There are multiple ways to [install up](https://cloud.upbound.io/docs/cli/#install-script),including Homebrew and Linux packages.
+
+  ```console
+  curl -sL https://cli.upbound.io | sh
+
+  ```
 
 #### kubectl crossplane extention (optional)
 Now that your kubectl context is configured to connect to a UXP Control Plane,
@@ -120,7 +121,7 @@ Kubernetes API endpoint that can be accessed via `kubectl` or CI/CD systems.
    * Paste the commands to configure your local `kubectl` context
    * Test your connectivity by running `kubectl get pods -n upbound-system`
 
-#### Installing UXP on a Kubernetes Cluster
+### Installing UXP on a Kubernetes Cluster
 
 The other option is installing UXP into a Kubernetes cluster you manage using `up`, which
 is the official CLI for interacting with Upbound Cloud and Universal Crossplane (UXP).
