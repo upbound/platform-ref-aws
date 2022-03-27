@@ -108,7 +108,7 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: network-id
-        - fromFieldPath: spec.clusterRef.id
+        - fromFieldPath: spec.id
           toFieldPath: spec.forProvider.tags[0].key
           transforms:
             - type: string
@@ -136,7 +136,7 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: network-id
-        - fromFieldPath: spec.clusterRef.id
+        - fromFieldPath: spec.id
           toFieldPath: spec.forProvider.tags[0].key
           transforms:
             - type: string

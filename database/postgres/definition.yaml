@@ -1,11 +1,24 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: compositepostgresqlinstances.aws.platformref.crossplane.io
+  name: xpostgresqlinstances.aws.platformref.crossplane.io
   annotations:
     upbound.io/ui-schema: |-
       ---
       configSections:
+      - title: Cluster Info
+        description: Information Cluster
+        items:
+        - name: id
+          controlType: singleInput
+          type: string
+          path: ".spec.parameters.clusterRef.id"
+          title: Cluster ID
+          description: Cluster Ref
+          default: platform-ref-azure
+          validation:
+          - required: true
+            customError: Cluster ID is required.
       - title: Database Size
         description: Enter information to size your database
         items:
@@ -20,16 +33,6 @@ metadata:
           - minimum: 1
           - maximum: 500
           - required: true
-        - name: networkRef
-          controlType: singleInput
-          type: string
-          path: ".spec.parameters.networkRef.id"
-          title: Network Ref
-          description: Network fabric to connect the database to
-          default: platform-ref-aws-network
-          validation:
-          - required: true
-            customError: Network ref is required and should match the network ref of the app cluster.
         - name: writeSecretRef
           controlType: singleInput
           type: string
@@ -68,18 +71,17 @@ spec:
                 properties:
                   storageGB:
                     type: integer
-                  #networkRef:
-                  #  type: object
-                  #  description: "A reference to the Network object that this postgres should be
-                  #  connected to."
-                  #  properties:
-                  #    id:
-                  #      type: string
-                  #      description: ID of the Network object this ref points to.
-                  #  required:
-                  #  - id
+                  clusterRef:
+                    type: object
+                    description: "A reference to the Network object that this postgres should be
+                    connected to."
+                    properties:
+                      id:
+                        type: string
+                        description: ID of the Network object this ref points to.
+                    required:
+                    - id
                 required:
                   - storageGB
-                  #- networkRef
             required:
               - parameters

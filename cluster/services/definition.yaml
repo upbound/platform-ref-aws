@@ -6,7 +6,7 @@ spec:
   group: aws.platformref.crossplane.io
   names:
     kind: XServices
-    plural: zservices
+    plural: xservices
   versions:
   - name: v1alpha1
     served: true

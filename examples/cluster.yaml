@@ -1,9 +1,9 @@
 apiVersion: aws.platformref.crossplane.io/v1alpha1
 kind: Cluster
 metadata:
-  name: platform-ref-aws-cluster
+  name: platform-ref-aws
 spec:
-  id: platform-ref-aws-cluster
+  id: platform-ref-aws
   parameters:
     nodes:
       count: 3
@@ -12,7 +12,5 @@ spec:
       operators:
         prometheus:
           version: "15.0.1"
-    #networkRef:
-     # id: platform-ref-aws-network
   writeConnectionSecretToRef:
-    name: platform-ref-aws-cluster
+    name: platform-ref-aws-kubeconfig

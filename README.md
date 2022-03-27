@@ -176,12 +176,18 @@ This file can be created manually or by using the [`aws` CLI](https://docs.aws.a
 AWS_PROFILE=default && echo -e "[default]\naws_access_key_id = $(aws configure get aws_access_key_id --profile $AWS_PROFILE)\naws_secret_access_key = $(aws configure get aws_secret_access_key --profile $AWS_PROFILE)" > creds.conf
 ```
 
-Create the `ProviderConfig` and `Secret` using the credentials file:
+Setup AWS `ProviderConfig` and `Secret`
 
 ```console
 kubectl create secret generic aws-creds -n upbound-system --from-file=key=./creds.conf
 kubectl apply -f examples/aws-default-provider.yaml
 ```
+The output will look like:
+
+```shell
+provider.aws.crossplane.io/default create
+```
+Crossplane resources use the ProviderConfig named ```default``` if no specific ProviderConfig is specified, so this ProviderConfig will be the default for all AWS resources.
 
 ## Provision Resources
 
@@ -191,12 +197,8 @@ With the setup complete, we can now use platform-aws to provision resources in A
 
 The example cluster composition create an EKS cluster and includes a nested composite resource for the network, which creates a VPC, Subnet, Route Tables and a Gateway.
 
-#### Create Network Fabric
-
-The example network composition includes the creation of a VPC, Subnets, Route Tables and a Gateway:
-
 ```console
-kubectl apply -f examples/network.yaml
+kubectl apply -f examples/cluster.yaml
 ```
 
 Verify status:
@@ -206,21 +208,9 @@ kubectl get claim
 kubectl get composite
 kubectl get managed
 ```
+>_Note: It may take some time for all managed resources to create successfully. Please reconcile using the AWS console._
 
-#### Invite App Teams to you Organization in Upbound Cloud
-
-1. Create a Team `team1`.
-1. Invite app team members and grant access to `Control Planes` and `Repositories`.
-
-### App Dev/Ops: Consume the infrastructure you need using kubectl
-
-#### Join your Organization in Upbound Cloud
-
-1. **Join** your [Upbound Cloud](https://cloud.upbound.io/register)
-   `Organization`
-1. Verify access to your team `Control Planes` and Registries
-
-#### Provision a CompositePostgreSQLInstance in your team Control Plane GUI console
+#### Provision a PostgreSQLInstance in your team Control Plane GUI console
 
 1. Browse the available self-service APIs (XRDs) Control Plane
 1. Provision a `CompositePostgreSQLInstance` using the custom generated GUI for your
