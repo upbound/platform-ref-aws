@@ -247,8 +247,8 @@ Delete resources created through the `Control Plane` Configurations menu:
 Delete resources created using `kubectl`:
 
 ```console
+kubectl delete -f examples/cluster.yaml
 kubectl delete -f examples/postgres-claim.yaml
-kubectl delete -f examples/network.yaml
 ```
 
 Verify all underlying resources have been cleanly deleted:
@@ -276,6 +276,12 @@ rm /usr/local/bin/kubectl-crossplane*
 * `Cluster` - provision a fully configured EKS cluster
   * [definition.yaml](cluster/definition.yaml)
   * [composition.yaml](cluster/composition.yaml) includes (transitively):
+    * XEKS for EKS Cluster
+    * XNetwork for network fabric
+    * XServices for Prometheus and other cluster services
+* `XEKS` Creates EKS cluster.
+    * definition.yaml
+    * composition.yaml includes:
     * `EKSCluster`
     * `XNetwork` for network fabric
     * `NodeGroup`
