@@ -17,6 +17,7 @@ distributed directly to the app namespace.
 
 * [Upbound Cloud](#upbound-cloud)
 * [Build Your Own Internal Cloud Platform](#build-your-own-internal-cloud-platform)
+* [Install Tools](#pre-requisite--optional-tools)
 * [Quick Start](#quick-start)
 * [Platform Ops/SRE: Run your own internal cloud platform](#platform-opssre-run-your-own-internal-cloud-platform)
   * [App Dev/Ops: Consume the infrastructure you need using kubectl](#app-devops-consume-the-infrastructure-you-need-using-kubectl)
@@ -65,6 +66,29 @@ Alibaba) used in a `Composition`.
 Learn more about `Composition` in the [Crossplane
 Docs](https://crossplane.io/docs/v1.3/concepts/composition.html).
 
+## Pre-Requisite & Optional Tools
+
+Install the following command line tools:
+
+* `up cli`
+
+  There are multiple ways to [install up](https://cloud.upbound.io/docs/cli/#install-script),including Homebrew and Linux packages.
+
+  ```console
+  curl -sL https://cli.upbound.io | sh
+
+  ```
+
+* `kubectl crossplane exstention` (optional)
+
+  Now that your kubectl context is configured to connect to a UXP Control Plane,
+  we can install this reference platform as a Crossplane package.
+
+  ```console
+  curl -sL https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh | sh
+  cp kubectl-crossplane /usr/local/bin
+  ```
+
 ## Quick Start
 
 ### Platform Ops/SRE: Run your own internal cloud platform
@@ -90,24 +114,18 @@ Kubernetes API endpoint that can be accessed via `kubectl` or CI/CD systems.
 
 #### Create a Hosted UXP Control Plane in Upbound Cloud
 
-1. Create a `Control Plane` in Upbound Cloud (e.g. dev, staging, or prod).
+1. In your browser, Create a `Control Plane` in Upbound Cloud (e.g. dev, staging, or prod)
 1. Connect `kubectl` to your `Control Plane` instance.
    * Click on your Control Plane
    * Select the *Connect Using CLI*
+   * Login to upbound using up cli: `up login`
    * Paste the commands to configure your local `kubectl` context
    * Test your connectivity by running `kubectl get pods -n upbound-system`
 
-#### Installing UXP on a Kubernetes Cluster
+### Installing UXP on a Kubernetes Cluster
 
 The other option is installing UXP into a Kubernetes cluster you manage using `up`, which
 is the official CLI for interacting with Upbound Cloud and Universal Crossplane (UXP).
-
-There are multiple ways to [install up](https://cloud.upbound.io/docs/cli/#install-script),
-including Homebrew and Linux packages.
-
-```console
-curl -sL https://cli.upbound.io | sh
-```
 
 Ensure that your kubectl context is pointing to the correct cluster:
 
@@ -118,6 +136,7 @@ kubectl config current-context
 Install UXP into the `upbound-system` namespace:
 
 ```console
+up login
 up uxp install
 ```
 
@@ -125,16 +144,6 @@ Validate the install using the following command:
 
 ```console
 kubectl get all -n upbound-system
-```
-
-#### Install the Crossplane kubectl extension (for convenience)
-
-Now that your kubectl context is configured to connect to a UXP Control Plane,
-we can install this reference platform as a Crossplane package.
-
-```console
-curl -sL https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh | sh
-cp kubectl-crossplane /usr/local/bin
 ```
 
 #### Install the Platform Configuration
@@ -161,27 +170,35 @@ aws_access_key_id = <your access key ID>
 aws_secret_access_key = <your secret access key>
 ```
 
-This file can be crated manually or by using the [`aws` CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html):
+This file can be created manually or by using the [`aws` CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html):
 
 ```console
 AWS_PROFILE=default && echo -e "[default]\naws_access_key_id = $(aws configure get aws_access_key_id --profile $AWS_PROFILE)\naws_secret_access_key = $(aws configure get aws_secret_access_key --profile $AWS_PROFILE)" > creds.conf
 ```
 
-Create the `ProviderConfig` and `Secret` using the credentials file:
+Setup AWS `ProviderConfig` and `Secret`
 
 ```console
 kubectl create secret generic aws-creds -n upbound-system --from-file=key=./creds.conf
 kubectl apply -f examples/aws-default-provider.yaml
 ```
+The output will look like:
 
-We are now ready to provision resources.
+```shell
+provider.aws.crossplane.io/default create
+```
+Crossplane resources use the ProviderConfig named ```default``` if no specific ProviderConfig is specified, so this ProviderConfig will be the default for all AWS resources.
 
-#### Create Network Fabric
+## Provision Resources
 
-The example network composition includes the creation of a VPC, Subnets, Route Tables and a Gateway:
+With the setup complete, we can now use platform-aws to provision resources in AWS.
+
+#### Create EKS Cluster
+
+The example cluster composition create an EKS cluster and includes a nested composite resource for the network, which creates a VPC, Subnet, Route Tables and a Gateway.
 
 ```console
-kubectl apply -f examples/network.yaml
+kubectl apply -f examples/cluster.yaml
 ```
 
 Verify status:
@@ -191,21 +208,9 @@ kubectl get claim
 kubectl get composite
 kubectl get managed
 ```
+>_Note: It may take some time for all managed resources to create successfully. Please reconcile using the AWS console._
 
-#### Invite App Teams to you Organization in Upbound Cloud
-
-1. Create a Team `team1`.
-1. Invite app team members and grant access to `Control Planes` and `Repositories`.
-
-### App Dev/Ops: Consume the infrastructure you need using kubectl
-
-#### Join your Organization in Upbound Cloud
-
-1. **Join** your [Upbound Cloud](https://cloud.upbound.io/register)
-   `Organization`
-1. Verify access to your team `Control Planes` and Registries
-
-#### Provision a CompositePostgreSQLInstance in your team Control Plane GUI console
+#### Provision a PostgreSQLInstance in your team Control Plane GUI console
 
 1. Browse the available self-service APIs (XRDs) Control Plane
 1. Provision a `CompositePostgreSQLInstance` using the custom generated GUI for your
@@ -242,8 +247,8 @@ Delete resources created through the `Control Plane` Configurations menu:
 Delete resources created using `kubectl`:
 
 ```console
+kubectl delete -f examples/cluster.yaml
 kubectl delete -f examples/postgres-claim.yaml
-kubectl delete -f examples/network.yaml
 ```
 
 Verify all underlying resources have been cleanly deleted:
@@ -271,13 +276,20 @@ rm /usr/local/bin/kubectl-crossplane*
 * `Cluster` - provision a fully configured EKS cluster
   * [definition.yaml](cluster/definition.yaml)
   * [composition.yaml](cluster/composition.yaml) includes (transitively):
+    * XEKS for EKS Cluster
+    * XNetwork for network fabric
+    * XServices for Prometheus and other cluster services
+* `XEKS` Creates EKS cluster.
+    * definition.yaml
+    * composition.yaml includes:
     * `EKSCluster`
+    * `XNetwork` for network fabric
     * `NodeGroup`
     * `Role`
     * `RolePolicyAttachment`
     * `OpenIDConnectProvider`
     * `HelmReleases` for Prometheus and other cluster services.
-* `Network` - fabric for a `Cluster` to securely connect to Data Services and
+* `XNetwork` - fabric for a `Cluster` to securely connect to Data Services and
   the Internet.
   * [definition.yaml](network/definition.yaml)
   * [composition.yaml](network/composition.yaml) includes:
