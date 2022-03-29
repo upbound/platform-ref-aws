@@ -11,6 +11,6 @@ spec:
     services:
       operators:
         prometheus:
-          version: "15.0.1"
+          version: "34.5.1"
   writeConnectionSecretToRef:
     name: platform-ref-aws-kubeconfig
