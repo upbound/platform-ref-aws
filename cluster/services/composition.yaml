@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: services.aws.platformref.crossplane.io
+  name: xservices.aws.platformref.crossplane.io
   labels:
     plan: full
     provider: helm
@@ -9,7 +9,7 @@ spec:
   writeConnectionSecretsToNamespace: upbound-system
   compositeTypeRef:
     apiVersion: aws.platformref.crossplane.io/v1alpha1
-    kind: Services
+    kind: XServices
   resources:
     - base:
         apiVersion: helm.crossplane.io/v1beta1
@@ -25,7 +25,6 @@ spec:
               repository: https://prometheus-community.github.io/helm-charts
               version: "10.1.0"
             values: {}
-      name: releasePrometheus
       patches:
         # All Helm releases derive their labels and annotations from the XR.
         - fromFieldPath: metadata.labels

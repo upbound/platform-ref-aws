@@ -1,12 +1,12 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: services.aws.platformref.crossplane.io
+  name: xservices.aws.platformref.crossplane.io
 spec:
   group: aws.platformref.crossplane.io
   names:
-    kind: Services
-    plural: services
+    kind: XServices
+    plural: xservices
   versions:
   - name: v1alpha1
     served: true

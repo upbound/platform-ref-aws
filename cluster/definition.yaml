@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: compositeclusters.aws.platformref.crossplane.io
+  name: xclusters.aws.platformref.crossplane.io
   annotations:
     upbound.io/ui-schema: |-
       ---
@@ -82,15 +82,15 @@ metadata:
           validation:
           - required: false
 spec:
+  group: aws.platformref.crossplane.io
+  names:
+    kind: XCluster
+    plural: xclusters
   claimNames:
     kind: Cluster
     plural: clusters
   connectionSecretKeys:
   - kubeconfig
-  group: aws.platformref.crossplane.io
-  names:
-    kind: CompositeCluster
-    plural: compositeclusters
   versions:
   - name: v1alpha1
     served: true
@@ -141,18 +141,8 @@ spec:
                               version:
                                 type: string
                                 description: Prometheus operator version to run.
-                  networkRef:
-                    type: object
-                    description: "A reference to the Network object that this cluster should be connected to."
-                    properties:
-                      id:
-                        type: string
-                        description: ID of the Network object this ref points to.
-                    required:
-                    - id
                 required:
                 - nodes
-                - networkRef
             required:
             - id
             - parameters
