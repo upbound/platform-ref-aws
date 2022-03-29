@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: eks.aws.platformref.crossplane.io
+  name: xeks.aws.platformref.crossplane.io
   labels:
     provider: aws
 spec:
