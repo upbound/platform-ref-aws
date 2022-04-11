@@ -81,9 +81,6 @@ Install the following command line tools:
 
 * `kubectl crossplane exstention` (optional)
 
-  Now that your kubectl context is configured to connect to a UXP Control Plane,
-  we can install this reference platform as a Crossplane package.
-
   ```console
   curl -sL https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh | sh
   cp kubectl-crossplane /usr/local/bin
@@ -147,6 +144,9 @@ kubectl get all -n upbound-system
 ```
 
 #### Install the Platform Configuration
+
+Now that your kubectl context is configured to connect to a UXP Control Plane, 
+we can install this reference platform as a Crossplane package.
 
 ```console
 # Check the latest version available in https://cloud.upbound.io/registry/upbound/platform-ref-aws
