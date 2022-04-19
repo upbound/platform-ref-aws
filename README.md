@@ -72,14 +72,14 @@ Install the following command line tools:
 
 * `up cli`
 
-  There are multiple ways to [install up](https://cloud.upbound.io/docs/cli/#install-script),including Homebrew and Linux packages.
+  There are multiple ways to [install up](https://cloud.upbound.io/docs/cli/#install-script), including Homebrew and Linux packages.
 
   ```console
   curl -sL https://cli.upbound.io | sh
 
   ```
 
-* `kubectl crossplane exstention` (optional)
+* `kubectl crossplane extension` (optional)
 
   ```console
   curl -sL https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh | sh
@@ -208,7 +208,6 @@ kubectl get claim
 kubectl get composite
 kubectl get managed
 ```
->_Note: It may take some time for all managed resources to create successfully. Please reconcile using the AWS console._
 
 #### Provision a PostgreSQLInstance in your team Control Plane GUI console
 

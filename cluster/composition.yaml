@@ -14,11 +14,13 @@ spec:
       patches:
         - fromFieldPath: spec.id
           toFieldPath: spec.id
+      name: compositeNetworkEKS
     - base:
         apiVersion: aws.platformref.crossplane.io/v1alpha1
         kind: XEKS
       connectionDetails:
         - fromConnectionSecretKey: kubeconfig
+      name: compositeClusterEKS
       patches:
         - fromFieldPath: spec.id
           toFieldPath: spec.id
@@ -39,6 +41,7 @@ spec:
     - base:
         apiVersion: aws.platformref.crossplane.io/v1alpha1
         kind: XServices
+      name: compositeClusterServices
       patches:
         - fromFieldPath: spec.id
           toFieldPath: spec.providerConfigRef.name

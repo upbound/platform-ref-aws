@@ -83,5 +83,6 @@ spec:
                     - id
                 required:
                   - storageGB
+                  - clusterRef
             required:
               - parameters
