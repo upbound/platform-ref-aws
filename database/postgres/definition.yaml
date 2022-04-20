@@ -39,7 +39,7 @@ metadata:
           path: ".spec.writeConnectionSecretToRef.name"
           title: Connection Secret Ref
           description: name of the secret to write to this namespace
-          default: db-conn
+          default: platform-ref-aws-db-conn
           validation:
           - required: true
 spec:
