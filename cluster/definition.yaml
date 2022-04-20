@@ -15,7 +15,7 @@ metadata:
           path: ".spec.id"
           title: Cluster ID
           description: Cluster ID that other objects will use to refer to this cluster
-          default: platform-ref-aws-cluster
+          default: platform-ref-aws
           validation:
           - required: true
             customError: Cluster ID is required.
@@ -25,7 +25,7 @@ metadata:
           path: ".spec.writeConnectionSecretToRef.name"
           title: Connection Secret Ref
           description: name of the secret to write to this namespace
-          default: cluster-conn
+          default: platform-ref-aws-kubeconfig
           validation:
           - required: true
       - title: Cluster Nodes
@@ -56,19 +56,6 @@ metadata:
           validation:
           - required: true
             customError: Node size is required.
-      - title: Cluster Networking
-        description: Select a network fabric for your cluster
-        items:
-        - name: networkRef
-          controlType: singleInput
-          type: string
-          path: ".spec.parameters.networkRef.id"
-          title: Network Ref
-          description: Network fabric to connect the database to
-          default: platform-ref-aws-network
-          validation:
-          - required: true
-            customError: Network ref is required.
       - title: Cluster Services
         description: Configure cluster services and operators
         items:
@@ -78,7 +65,7 @@ metadata:
           path: ".spec.parameters.services.operators.prometheus.version"
           title: Prometheus Chart Version
           description: The version of kube-prometheus-stack chart to install
-          default: 10.1.0
+          default: 15.0.1
           validation:
           - required: false
 spec:
