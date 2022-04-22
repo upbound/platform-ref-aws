@@ -1,14 +1,14 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: compositenetworks.aws.platformref.crossplane.io
+  name: xnetworks.aws.platformref.crossplane.io
   labels:
     provider: aws
 spec:
   writeConnectionSecretsToNamespace: upbound-system
   compositeTypeRef:
     apiVersion: aws.platformref.crossplane.io/v1alpha1
-    kind: CompositeNetwork
+    kind: XNetwork
   patchSets:
   - name: network-id
     patches:
@@ -64,7 +64,7 @@ spec:
             tags:
               - key: kubernetes.io/role/elb
                 value: "1"
-      name: subnet-public-west-2a
+      name: subnet-public-west-2a 
       patches:
         - type: PatchSet
           patchSetName: network-id
@@ -113,7 +113,7 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: network-id
-        - fromFieldPath: spec.clusterRef.id
+        - fromFieldPath: spec.id
           toFieldPath: spec.forProvider.tags[0].key
           transforms:
             - type: string
@@ -142,7 +142,7 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: network-id
-        - fromFieldPath: spec.clusterRef.id
+        - fromFieldPath: spec.id
           toFieldPath: spec.forProvider.tags[0].key
           transforms:
             - type: string

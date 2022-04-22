@@ -1,14 +1,14 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: eks.aws.platformref.crossplane.io
+  name: xeks.aws.platformref.crossplane.io
   labels:
     provider: aws
 spec:
   writeConnectionSecretsToNamespace: upbound-system
   compositeTypeRef:
     apiVersion: aws.platformref.crossplane.io/v1alpha1
-    kind: EKS
+    kind: XEKS
   resources:
     - base:
         apiVersion: iam.aws.crossplane.io/v1beta1
@@ -73,9 +73,10 @@ spec:
                 fmt: "%s-ekscluster"
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.writeConnectionSecretToRef.namespace
-        - fromFieldPath: "spec.parameters.networkRef.id"
+          # Change to spec id
+        - fromFieldPath: "spec.id"
           toFieldPath: spec.forProvider.resourcesVpcConfig.securityGroupIdSelector.matchLabels[networks.aws.platformref.crossplane.io/network-id]
-        - fromFieldPath: "spec.parameters.networkRef.id"
+        - fromFieldPath: "spec.id"
           toFieldPath: spec.forProvider.resourcesVpcConfig.subnetIdSelector.matchLabels[networks.aws.platformref.crossplane.io/network-id]
         - type: ToCompositeFieldPath
           fromFieldPath: status.atProvider.identity.oidc.issuer
@@ -178,7 +179,7 @@ spec:
                 small: t3.small
                 medium: t3.medium
                 large: t3.large
-        - fromFieldPath: "spec.parameters.networkRef.id"
+        - fromFieldPath: "spec.id"
           toFieldPath: spec.forProvider.subnetSelector.matchLabels[networks.aws.platformref.crossplane.io/network-id]
     - base:
         apiVersion: iam.aws.crossplane.io/v1beta1

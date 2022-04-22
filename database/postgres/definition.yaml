@@ -1,11 +1,24 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: compositepostgresqlinstances.aws.platformref.crossplane.io
+  name: xpostgresqlinstances.aws.platformref.crossplane.io
   annotations:
     upbound.io/ui-schema: |-
       ---
       configSections:
+      - title: Cluster Info
+        description: Information Cluster
+        items:
+        - name: id
+          controlType: singleInput
+          type: string
+          path: ".spec.parameters.clusterRef.id"
+          title: Cluster ID
+          description: Cluster Ref
+          default: platform-ref-aws
+          validation:
+          - required: true
+            customError: Cluster ID is required.
       - title: Database Size
         description: Enter information to size your database
         items:
@@ -20,23 +33,13 @@ metadata:
           - minimum: 1
           - maximum: 500
           - required: true
-        - name: networkRef
-          controlType: singleInput
-          type: string
-          path: ".spec.parameters.networkRef.id"
-          title: Network Ref
-          description: Network fabric to connect the database to
-          default: platform-ref-aws-network
-          validation:
-          - required: true
-            customError: Network ref is required and should match the network ref of the app cluster.
         - name: writeSecretRef
           controlType: singleInput
           type: string
           path: ".spec.writeConnectionSecretToRef.name"
           title: Connection Secret Ref
           description: name of the secret to write to this namespace
-          default: db-conn
+          default: platform-ref-aws-db-conn
           validation:
           - required: true
 spec:
@@ -50,8 +53,8 @@ spec:
     - port
   group: aws.platformref.crossplane.io
   names:
-    kind: CompositePostgreSQLInstance
-    plural: compositepostgresqlinstances
+    kind: XPostgreSQLInstance
+    plural: xpostgresqlinstances
   versions:
   - name: v1alpha1
     served: true
@@ -68,7 +71,7 @@ spec:
                 properties:
                   storageGB:
                     type: integer
-                  networkRef:
+                  clusterRef:
                     type: object
                     description: "A reference to the Network object that this postgres should be
                     connected to."
@@ -80,6 +83,6 @@ spec:
                     - id
                 required:
                   - storageGB
-                  - networkRef
+                  - clusterRef
             required:
               - parameters

@@ -1,11 +1,11 @@
 apiVersion: aws.platformref.crossplane.io/v1alpha1
 kind: PostgreSQLInstance
 metadata:
-  name: my-db
+  name: platform-ref-aws-db
 spec:
   parameters:
-    storageGB: 20
-    networkRef:
-      id: platform-ref-aws-network
+    storageGB: 5
+    clusterRef:
+      id: platform-ref-aws
   writeConnectionSecretToRef:
-    name: my-db-conn
+    name: platform-ref-aws-db-conn
