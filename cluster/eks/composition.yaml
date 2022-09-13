@@ -63,8 +63,6 @@ spec:
             version: "1.23"
       name: kubernetesCluster
       patches:
-        - fromFieldPath: metadata.annotations[crossplane.io/external-name]
-          toFieldPath: metadata.annotations[crossplane.io/external-name]
         - fromFieldPath: metadata.uid
           toFieldPath: spec.writeConnectionSecretToRef.name
           transforms:
@@ -74,9 +72,9 @@ spec:
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.writeConnectionSecretToRef.namespace
           # Change to spec id
-        - fromFieldPath: "spec.id"
+        - fromFieldPath: spec.id
           toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIdSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
-        - fromFieldPath: "spec.id"
+        - fromFieldPath: spec.id
           toFieldPath: spec.forProvider.vpcConfig[0].subnetIdSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
         - type: ToCompositeFieldPath
           fromFieldPath: status.atProvider.identity.oidc.issuer
@@ -167,8 +165,6 @@ spec:
               - t3.medium
       name: nodeGroupPublic
       patches:
-        - fromFieldPath: metadata.annotations[crossplane.io/external-name]
-          toFieldPath: metadata.annotations[crossplane.io/external-name]
         - fromFieldPath: spec.parameters.nodes.count
           toFieldPath: spec.forProvider.scalingConfig[0].desiredSize
         - fromFieldPath: spec.parameters.nodes.size
