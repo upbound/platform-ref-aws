@@ -1,11 +1,11 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xeks.aws.platformref.crossplane.io
+  name: xeks.aws.platformref.upbound.io
 spec:
   connectionSecretKeys:
   - kubeconfig
-  group: aws.platformref.crossplane.io
+  group: aws.platformref.upbound.io
   names:
     kind: XEKS
     plural: xeks

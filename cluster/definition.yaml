@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xclusters.aws.platformref.crossplane.io
+  name: xclusters.aws.platformref.upbound.io
   annotations:
     upbound.io/ui-schema: |-
       ---
@@ -69,7 +69,7 @@ metadata:
           validation:
           - required: false
 spec:
-  group: aws.platformref.crossplane.io
+  group: aws.platformref.upbound.io
   names:
     kind: XCluster
     plural: xclusters

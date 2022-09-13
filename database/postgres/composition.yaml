@@ -30,10 +30,10 @@ spec:
             region: us-west-2
             dbSubnetGroupNameSelector:
               matchControllerRef: true
-            dbInstanceClass: db.t2.small
+            dbInstanceClass: db.t3.micro
             masterUsername: masteruser
             engine: postgres
-            engineVersion: "9.6"
+            engineVersion: "13.7"
             skipFinalSnapshotBeforeDeletion: true
             publiclyAccessible: false
           deletionPolicy: Delete

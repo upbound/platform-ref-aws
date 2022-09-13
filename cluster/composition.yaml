@@ -1,22 +1,22 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: xclusters.aws.platformref.crossplane.io
+  name: xclusters.aws.platformref.upbound.io
 spec:
   writeConnectionSecretsToNamespace: upbound-system
   compositeTypeRef:
-    apiVersion: aws.platformref.crossplane.io/v1alpha1
+    apiVersion: aws.platformref.upbound.io/v1alpha1
     kind: XCluster
   resources:
     - base:
-        apiVersion: aws.platformref.crossplane.io/v1alpha1
+        apiVersion: aws.platformref.upbound.io/v1alpha1
         kind: XNetwork
       patches:
         - fromFieldPath: spec.id
           toFieldPath: spec.id
       name: compositeNetworkEKS
     - base:
-        apiVersion: aws.platformref.crossplane.io/v1alpha1
+        apiVersion: aws.platformref.upbound.io/v1alpha1
         kind: XEKS
       connectionDetails:
         - fromConnectionSecretKey: kubeconfig
@@ -39,7 +39,7 @@ spec:
         - fromFieldPath: spec.parameters.nodes.size
           toFieldPath: spec.parameters.nodes.size
     - base:
-        apiVersion: aws.platformref.crossplane.io/v1alpha1
+        apiVersion: aws.platformref.upbound.io/v1alpha1
         kind: XServices
       name: compositeClusterServices
       patches:
