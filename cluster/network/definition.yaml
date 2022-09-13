@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xnetworks.aws.platformref.crossplane.io
+  name: xnetworks.aws.platformref.upbound.io
   annotations:
     upbound.io/ui-schema: |-
       ---
@@ -20,7 +20,7 @@ metadata:
           - required: true
             customError: Network ID is required.
 spec:
-  group: aws.platformref.crossplane.io
+  group: aws.platformref.upbound.io
   names:
     kind: XNetwork
     plural: xnetworks
