@@ -34,7 +34,7 @@ spec:
             username: masteruser
             engine: postgres
             engineVersion: "13.7"
-            skipFinalSnapshotBeforeDeletion: true
+            skipFinalSnapshot: true
             publiclyAccessible: false
           deletionPolicy: Delete
       name: RDSInstanceSmall
