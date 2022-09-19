@@ -1,15 +1,15 @@
 # AWS Reference Platform for Kubernetes + Data Services
 
 This repository contains a reference AWS Platform
-[Configuration](https://crossplane.io/docs/v1.3/getting-started/create-configuration.html)
+[Configuration](https://crossplane.io/docs/v1.9/getting-started/create-configuration.html)
 for use as a starting point in [Upbound Cloud](https://upbound.io) or
-[Upbound Universal Crossplane (UXP)](https://www.upbound.io/uxp/) to build,
+[Upbound Universal Crossplane (UXP)](https://www.upbound.io/products/universal-crossplane) to build,
 run and operate your own internal cloud platform and offer a self-service
 console and API to your internal teams. It provides platform APIs to provision
 fully configured EKS clusters, with secure networking, and stateful cloud
 services (RDS) designed to securely connect to the nodes in each EKS cluster --
-all composed using cloud service primitives from the [Crossplane AWS
-Provider](https://doc.crds.dev/github.com/crossplane/provider-aws). App
+all composed using cloud service primitives from the [Official Upbound AWS
+Provider](https://marketplace.upbound.io/providers/upbound/provider-aws). App
 deployments can securely connect to the infrastructure they need using secrets
 distributed directly to the app namespace.
 
@@ -36,7 +36,7 @@ provision the infrastructure they need using a custom cloud console, `kubectl`,
 or deployment pipelines and GitOps workflows -- all without writing code?
 
 [Upbound Cloud](https://upbound.io) enables you to do just that, powered by the
-open source [Upbound Universal Crossplane](https://www.upbound.io/uxp/) project.
+open source [Upbound Universal Crossplane](https://www.upbound.io/products/universal-crossplane) project.
 
 Consistent self-service APIs can be provided across dev, staging, and
 production environments, making it easy for app teams to get the infrastructure
@@ -47,14 +47,14 @@ of your organization.
 
 App teams can provision the infrastructure they need with a single YAML file
 alongside `Deployments` and `Services` using existing tools and workflows
-including tools like `kubectl` and Flux to consume your platform's self-service
+including tools like `kubectl`, Flux and ArgoCD to consume your platform's self-service
 APIs.
 
 The Platform `Configuration` defines the self-service APIs and
 classes-of-service for each API:
 
 * `CompositeResourceDefinitions` (XRDs) define the platform's self-service
-   APIs - e.g. `CompositePostgreSQLInstance`.
+   APIs - e.g. `XPostgreSQLInstance`.
 * `Compositions` offer the classes-of-service supported for each self-service
    API - e.g. `Standard`, `Performance`, `Replicated`.
 
@@ -64,7 +64,7 @@ Crossplane `Providers` include the cloud service primitives (AWS, Azure, GCP,
 Alibaba) used in a `Composition`.
 
 Learn more about `Composition` in the [Crossplane
-Docs](https://crossplane.io/docs/v1.3/concepts/composition.html).
+Docs](https://crossplane.io/docs/v1.9/concepts/composition.html).
 
 ## Pre-Requisite & Optional Tools
 
@@ -145,7 +145,7 @@ kubectl get all -n upbound-system
 
 #### Install the Platform Configuration
 
-Now that your kubectl context is configured to connect to a UXP Control Plane, 
+Now that your kubectl context is configured to connect to a UXP Control Plane,
 we can install this reference platform as a Crossplane package.
 
 ```console
@@ -159,35 +159,8 @@ kubectl get pkg
 
 #### Configure Providers in your Platform
 
-A `ProviderConfig` is used to configure Cloud Provider API credentials. Multiple
-`ProviderConfig`s can be created, each one pointing to a different credential.
-
-The AWS provider expects a credential `Secret` in the [named profile](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html) format:
-
-```ini
-[default]
-aws_access_key_id = <your access key ID>
-aws_secret_access_key = <your secret access key>
-```
-
-This file can be created manually or by using the [`aws` CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html):
-
-```console
-AWS_PROFILE=default && echo -e "[default]\naws_access_key_id = $(aws configure get aws_access_key_id --profile $AWS_PROFILE)\naws_secret_access_key = $(aws configure get aws_secret_access_key --profile $AWS_PROFILE)" > creds.conf
-```
-
-Setup AWS `ProviderConfig` and `Secret`
-
-```console
-kubectl create secret generic aws-creds -n upbound-system --from-file=key=./creds.conf
-kubectl apply -f examples/aws-default-provider.yaml
-```
-The output will look like:
-
-```shell
-provider.aws.crossplane.io/default create
-```
-Crossplane resources use the ProviderConfig named ```default``` if no specific ProviderConfig is specified, so this ProviderConfig will be the default for all AWS resources.
+Refer to [official marketplace
+documentation](https://marketplace.upbound.io/providers/upbound/provider-aws/v0.12.0/docs/configuration)
 
 ## Provision Resources
 
@@ -336,7 +309,7 @@ docker login ${REGISTRY} -u ${UPBOUND_ACCOUNT_EMAIL}
 Build package.
 
 ```console
-up xpkg build --name package.xpkg --ignore ".github/workflows/*,examples/*,hack/*"
+up xpkg build --name package.xpkg --ignore ".github/workflows/*,hack/*"
 ```
 
 Push package to registry.
