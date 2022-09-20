@@ -167,7 +167,7 @@ With the setup complete, we can now use platform-aws to provision resources in A
 The example cluster composition create an EKS cluster and includes a nested composite resource for the network, which creates a VPC, Subnet, Route Tables and a Gateway.
 
 ```console
-kubectl apply -f examples/cluster.yaml
+kubectl apply -f examples/cluster-claim.yaml
 ```
 
 Verify status:
@@ -215,7 +215,7 @@ Delete resources created through the `Control Plane` Configurations menu:
 Delete resources created using `kubectl`:
 
 ```console
-kubectl delete -f examples/cluster.yaml
+kubectl delete -f examples/cluster-claim.yaml
 kubectl delete -f examples/postgres-claim.yaml
 ```
 
