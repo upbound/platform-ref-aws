@@ -149,18 +149,13 @@ Now that your kubectl context is configured to connect to a UXP Control Plane,
 we can install this reference platform as a Crossplane package.
 
 ```console
-# Check the latest version available in https://cloud.upbound.io/registry/upbound/platform-ref-aws
-PLATFORM_VERSION=v0.3.0
-PLATFORM_CONFIG=registry.upbound.io/upbound/platform-ref-aws:${PLATFORM_VERSION}
-
-kubectl crossplane install configuration ${PLATFORM_CONFIG}
-kubectl get pkg
+# Check the latest version available in https://marketplace.upbound.io/configurations/upbound/platform-ref-aws/
+kubectl apply -f examples/configuration.yaml
 ```
 
 #### Configure Providers in your Platform
 
-Refer to [official marketplace
-documentation](https://marketplace.upbound.io/providers/upbound/provider-aws/v0.12.0/docs/configuration)
+Refer to [official marketplace documentation](https://marketplace.upbound.io/providers/upbound/provider-aws/v0.12.0/docs/configuration)
 
 ## Provision Resources
 
