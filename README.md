@@ -151,6 +151,7 @@ we can install this reference platform as a Crossplane package.
 ```console
 # Check the latest version available in https://marketplace.upbound.io/configurations/upbound/platform-ref-aws/
 kubectl apply -f examples/configuration.yaml
+kubectl get pkg
 ```
 
 #### Configure Providers in your Platform
@@ -284,7 +285,7 @@ UPBOUND_ORG=acme
 UPBOUND_ACCOUNT_EMAIL=me@acme.io
 REPO=platform-ref-aws
 VERSION_TAG=v0.3.0
-REGISTRY=registry.upbound.io
+REGISTRY=xpkg.upbound.io
 PLATFORM_CONFIG=${REGISTRY:+$REGISTRY/}${UPBOUND_ORG}/${REPO}:${VERSION_TAG}
 ```
 
