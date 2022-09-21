@@ -63,14 +63,6 @@ spec:
             version: "1.23"
       name: kubernetesCluster
       patches:
-        - fromFieldPath: metadata.uid
-          toFieldPath: spec.writeConnectionSecretToRef.name
-          transforms:
-            - type: string
-              string:
-                fmt: "%s-ekscluster"
-        - fromFieldPath: spec.writeConnectionSecretToRef.namespace
-          toFieldPath: spec.writeConnectionSecretToRef.namespace
           # Change to spec id
         - fromFieldPath: spec.id
           toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIdSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
@@ -81,6 +73,24 @@ spec:
           toFieldPath: status.eks.oidc
           policy:
             fromFieldPath: Optional
+    - base:
+        apiVersion: eks.aws.upbound.io/v1beta1
+        kind: ClusterAuth
+        spec:
+          forProvider:
+            region: us-west-2
+            clusterNameSelector:
+              matchControllerRef: true
+      name: kubernetesClusterAuth
+      patches:
+        - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+          toFieldPath: spec.writeConnectionSecretToRef.namespace
+        - fromFieldPath: metadata.uid
+          toFieldPath: spec.writeConnectionSecretToRef.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-ekscluster"
       connectionDetails:
         - fromConnectionSecretKey: kubeconfig
     - base:
