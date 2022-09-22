@@ -1,4 +1,4 @@
-apiVersion: aws.platformref.crossplane.io/v1alpha1
+apiVersion: aws.platformref.upbound.io/v1alpha1
 kind: Cluster
 metadata:
   name: platform-ref-aws

@@ -1,26 +1,9 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xnetworks.aws.platformref.crossplane.io
-  annotations:
-    upbound.io/ui-schema: |-
-      ---
-      configSections:
-      - title: Network Info
-        description: Information about this network fabric
-        items:
-        - name: id
-          controlType: singleInput
-          type: string
-          path: ".spec.id"
-          title: Network ID
-          description: Network ID that other objects will use to refer (and connect) to this network fabric
-          default: platform-ref-aws
-          validation:
-          - required: true
-            customError: Network ID is required.
+  name: xnetworks.aws.platformref.upbound.io
 spec:
-  group: aws.platformref.crossplane.io
+  group: aws.platformref.upbound.io
   names:
     kind: XNetwork
     plural: xnetworks
@@ -40,3 +23,14 @@ spec:
                   description: ID of this Network that other objects will use to refer to it.
               required:
                 - id
+            status:
+              type: object
+              properties:
+                subnetIds:
+                  type: array
+                  items:
+                    type: string
+                securityGroupIds:
+                  type: array
+                  items:
+                    type: string

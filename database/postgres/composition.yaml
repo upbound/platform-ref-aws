@@ -1,18 +1,18 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: xpostgresqlinstances.aws.platformref.crossplane.io
+  name: xpostgresqlinstances.aws.platformref.upbound.io
   labels:
     provider: aws
 spec:
   writeConnectionSecretsToNamespace: upbound-system
   compositeTypeRef:
-    apiVersion: aws.platformref.crossplane.io/v1alpha1
+    apiVersion: aws.platformref.upbound.io/v1alpha1
     kind: XPostgreSQLInstance
   resources:
     - base:
-        apiVersion: database.aws.crossplane.io/v1beta1
-        kind: DBSubnetGroup
+        apiVersion: rds.aws.upbound.io/v1beta1
+        kind: SubnetGroup
         spec:
           forProvider:
             region: us-west-2
@@ -20,21 +20,21 @@ spec:
           deletionPolicy: Delete
       name: compositePostgreSQLInstanceDbSubnetGroup
       patches:
-        - fromFieldPath: "spec.parameters.clusterRef.id"
-          toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[networks.aws.platformref.crossplane.io/network-id]
+        - fromFieldPath: spec.parameters.clusterRef.id
+          toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
     - base:
-        apiVersion: database.aws.crossplane.io/v1beta1
-        kind: RDSInstance
+        apiVersion: rds.aws.upbound.io/v1beta1
+        kind: Instance
         spec:
           forProvider:
             region: us-west-2
             dbSubnetGroupNameSelector:
               matchControllerRef: true
-            dbInstanceClass: db.t2.small
-            masterUsername: masteruser
+            instanceClass: db.t3.micro
+            username: masteruser
             engine: postgres
-            engineVersion: "9.6"
-            skipFinalSnapshotBeforeDeletion: true
+            engineVersion: "13.7"
+            skipFinalSnapshot: true
             publiclyAccessible: false
           deletionPolicy: Delete
       name: RDSInstanceSmall
@@ -47,12 +47,20 @@ spec:
                 fmt: "%s-postgresql"
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.writeConnectionSecretToRef.namespace
-        - fromFieldPath: "spec.parameters.storageGB"
-          toFieldPath: "spec.forProvider.allocatedStorage"
-        - fromFieldPath: "spec.parameters.clusterRef.id"
-          toFieldPath: spec.forProvider.vpcSecurityGroupIDSelector.matchLabels[networks.aws.platformref.crossplane.io/network-id]
+        - fromFieldPath: spec.parameters.storageGB
+          toFieldPath: spec.forProvider.allocatedStorage
+        - fromFieldPath: spec.parameters.clusterRef.id
+          toFieldPath: spec.forProvider.vpcSecurityGroupIDSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
+        - fromFieldPath: spec.parameters.passwordSecretRef.namespace
+          toFieldPath: spec.forProvider.passwordSecretRef.namespace
+        - fromFieldPath: spec.parameters.passwordSecretRef.name
+          toFieldPath: spec.forProvider.passwordSecretRef.name
+        - fromFieldPath: spec.parameters.passwordSecretRef.key
+          toFieldPath: spec.forProvider.passwordSecretRef.key
       connectionDetails:
-        - fromConnectionSecretKey: username
-        - fromConnectionSecretKey: password
-        - fromConnectionSecretKey: endpoint
-        - fromConnectionSecretKey: port
+        - fromFieldPath: "status.atProvider.endpoint"
+          name: endpoint
+        - fromFieldPath: "spec.forProvider.username"
+          name: username
+        - fromConnectionSecretKey: "attribute.password"
+          name: password
