@@ -15,14 +15,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.labels[networks.aws.platformref.upbound.io/network-id]
-  - name: subnet-id-to-status
-    patches:
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.id
-      toFieldPath: status.subnetIds
-      policy:
-        mergeOptions:
-          appendSlice: true
   resources:
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
@@ -73,8 +65,9 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: network-id
-        - type: PatchSet
-          patchSetName: subnet-id-to-status
+        - type: ToCompositeFieldPath
+          fromFieldPath: metadata.annotations[crossplane.io/external-name]
+          toFieldPath: status.subnetIds[0]
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: Subnet
@@ -96,8 +89,9 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: network-id
-        - type: PatchSet
-          patchSetName: subnet-id-to-status
+        - type: ToCompositeFieldPath
+          fromFieldPath: metadata.annotations[crossplane.io/external-name]
+          toFieldPath: status.subnetIds[1]
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: Subnet
@@ -118,8 +112,9 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: network-id
-        - type: PatchSet
-          patchSetName: subnet-id-to-status
+        - type: ToCompositeFieldPath
+          fromFieldPath: metadata.annotations[crossplane.io/external-name]
+          toFieldPath: status.subnetIds[2]
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: Subnet
@@ -140,8 +135,9 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: network-id
-        - type: PatchSet
-          patchSetName: subnet-id-to-status
+        - type: ToCompositeFieldPath
+          fromFieldPath: metadata.annotations[crossplane.io/external-name]
+          toFieldPath: status.subnetIds[3]
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: RouteTable
