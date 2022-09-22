@@ -27,6 +27,14 @@ spec:
                 type: object
                 description: EKS configuration parameters.
                 properties:
+                  subnetIds:
+                    type: array
+                    items:
+                      type: string
+                  securityGroupIds:
+                    type: array
+                    items:
+                      type: string
                   nodes:
                     type: object
                     description: EKS node configuration parameters.
@@ -46,6 +54,8 @@ spec:
                     - size
                 required:
                 - nodes
+                - subnetIds
+                - securityGroupIds
             required:
             - parameters
           status:

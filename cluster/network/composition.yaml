@@ -261,6 +261,9 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: network-id
+        - type: ToCompositeFieldPath
+          fromFieldPath: metadata.annotations[crossplane.io/external-name]
+          toFieldPath: status.securityGroupIds[0]
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: SecurityGroupRule

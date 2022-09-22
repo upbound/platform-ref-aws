@@ -30,3 +30,7 @@ spec:
                   type: array
                   items:
                     type: string
+                securityGroupIds:
+                  type: array
+                  items:
+                    type: string

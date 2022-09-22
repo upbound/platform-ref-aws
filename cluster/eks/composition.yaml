@@ -64,10 +64,10 @@ spec:
       name: kubernetesCluster
       patches:
           # Change to spec id
-        - fromFieldPath: spec.id
-          toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIdSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
-        - fromFieldPath: spec.id
-          toFieldPath: spec.forProvider.vpcConfig[0].subnetIdSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
+        - fromFieldPath: spec.parameters.securityGroupIds
+          toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIds
+        - fromFieldPath: spec.parameters.subnetIds
+          toFieldPath: spec.forProvider.vpcConfig[0].subnetIds
         - type: ToCompositeFieldPath
           fromFieldPath: status.atProvider.identity[0].oidc[0].issuer
           toFieldPath: status.eks.oidc

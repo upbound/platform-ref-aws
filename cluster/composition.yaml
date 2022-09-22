@@ -14,6 +14,16 @@ spec:
       patches:
         - fromFieldPath: spec.id
           toFieldPath: spec.id
+        - type: ToCompositeFieldPath
+          fromFieldPath: status.subnetIds
+          toFieldPath: status.subnetIds
+          policy:
+            fromFieldPath: Required
+        - type: ToCompositeFieldPath
+          fromFieldPath: status.securityGroupIds
+          toFieldPath: status.securityGroupIds
+          policy:
+            fromFieldPath: Required
       name: compositeNetworkEKS
     - base:
         apiVersion: aws.platformref.upbound.io/v1alpha1
@@ -38,6 +48,14 @@ spec:
           toFieldPath: spec.parameters.nodes.count
         - fromFieldPath: spec.parameters.nodes.size
           toFieldPath: spec.parameters.nodes.size
+        - fromFieldPath: status.subnetIds
+          toFieldPath: spec.parameters.subnetIds
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: status.securityGroupIds
+          toFieldPath: spec.parameters.securityGroupIds
+          policy:
+            fromFieldPath: Required
     - base:
         apiVersion: aws.platformref.upbound.io/v1alpha1
         kind: XServices
