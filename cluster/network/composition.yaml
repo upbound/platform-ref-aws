@@ -15,6 +15,14 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.labels[networks.aws.platformref.upbound.io/network-id]
+  - name: subnet-id-to-status
+    patches:
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.subnetIds
+      policy:
+        mergeOptions:
+          appendSlice: true
   resources:
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
@@ -65,6 +73,8 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: network-id
+        - type: PatchSet
+          patchSetName: subnet-id-to-status
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: Subnet
@@ -86,6 +96,8 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: network-id
+        - type: PatchSet
+          patchSetName: subnet-id-to-status
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: Subnet
@@ -106,6 +118,8 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: network-id
+        - type: PatchSet
+          patchSetName: subnet-id-to-status
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: Subnet
@@ -126,6 +140,8 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: network-id
+        - type: PatchSet
+          patchSetName: subnet-id-to-status
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: RouteTable
