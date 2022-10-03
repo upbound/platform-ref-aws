@@ -14,9 +14,6 @@ UP_CHANNEL = stable
 -include build/makelib/k8s_tools.mk
 # ====================================================================================
 # Setup XPKG
-XPKG_DIR = $(ROOT_DIR)
-XPKG_IGNORE = '.github/workflows/*,hack/*'
-
 XPKG_REG_ORGS ?= xpkg.upbound.io/upbound
 # NOTE(hasheddan): skip promoting on xpkg.upbound.io as channel tags are
 # inferred.
