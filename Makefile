@@ -2,7 +2,10 @@
 PROJECT_NAME := platform-ref-aws
 PROJECT_REPO := github.com/upbound/$(PROJECT_NAME)
 
-PLATFORMS ?= linux_amd64 linux_arm64
+# NOTE(hasheddan): the platform is insignificant here as Configuration package
+# images are not architecture-specific. We constrain to one platform to avoid
+# needlessly pushing a multi-arch image.
+PLATFORMS ?= linux_amd64
 include build/makelib/common.mk
 
 # ====================================================================================
