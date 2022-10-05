@@ -305,7 +305,7 @@ docker login ${REGISTRY} -u ${UPBOUND_ACCOUNT_EMAIL}
 Build package.
 
 ```console
-up xpkg build --name package.xpkg --ignore ".github/workflows/*,hack/*"
+up xpkg build --name package.xpkg --package-root=package --examples-root="examples"
 ```
 
 Push package to registry.

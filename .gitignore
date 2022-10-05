@@ -1,1 +1,7 @@
+/.cache
+/.work
+/_output
+/results
+
 *.xpkg
+kubeconfig
