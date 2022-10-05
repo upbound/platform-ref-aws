@@ -8,6 +8,8 @@ on:
   workflow_dispatch: {}
 
 env:
+  DOCKER_BUILDX_VERSION: 'v0.8.2'
+
   XPKG_ACCESS_ID: ${{ secrets.XPKG_ACCESS_ID }}
 
 jobs:
