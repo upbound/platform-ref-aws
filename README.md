@@ -2,10 +2,10 @@
 
 This repository contains a reference AWS Platform
 [Configuration](https://crossplane.io/docs/v1.9/getting-started/create-configuration.html)
-for use as a starting point in [Universal Marketplace](https://marketplace.upbound.io/) and
-[Upbound Universal Crossplane (UXP)](https://www.upbound.io/products/universal-crossplane) to build,
-run and operate your own internal cloud platform and offer a self-service API
-to your internal teams. It provides platform APIs to provision
+for use as a starting point in working with [Upbound Universal Crossplane (UXP)](https://www.upbound.io/products/universal-crossplane)
+and publishing to [Universal Marketplace](https://marketplace.upbound.io/).
+It enables you to build, run and operate your own internal cloud platform and
+offer a self-service API to your internal teams. It provides platform APIs to provision
 fully configured EKS clusters, with secure networking, and stateful cloud
 services (RDS) designed to securely connect to the nodes in each EKS cluster --
 all composed using cloud service primitives from the [Official Upbound AWS
@@ -15,10 +15,9 @@ distributed directly to the app namespace.
 
 ## Contents
 
-* [Universal Crossplane and Universal Marketplace](#uxp-and-universal-marketplace)
+* [Universal Crossplane and Universal Marketplace](#universal-crossplane-and-universal-marketplace)
 * [Build Your Own Internal Cloud Platform](#build-your-own-internal-cloud-platform)
 * [Install Tools](#pre-requisite--optional-tools)
-* [Quick Start](#quick-start)
 * [Platform Ops/SRE: Run your own internal cloud platform](#platform-opssre-run-your-own-internal-cloud-platform)
   * [App Dev/Ops: Consume the infrastructure you need using kubectl](#app-devops-consume-the-infrastructure-you-need-using-kubectl)
   * [APIs in this Configuration](#apis-in-this-configuration)
@@ -86,16 +85,14 @@ Install the following command line tools:
 
   ```
 
-## Quick Start
-
-### Platform Ops/SRE: Run your own internal cloud platform
+## Platform Ops/SRE: Run your own internal cloud platform
 
 The Universal Crossplane (UXP) can be provisioned to any Kubernetes cluster.
 
 The AWS Reference platform will extend Kubernetes API with your own platform API
 abstractions.
 
-### Installing UXP on a Kubernetes Cluster
+#### Installing UXP on a Kubernetes Cluster
 
 The other option is installing UXP into a Kubernetes cluster you manage using `up`, which
 is the official CLI for interacting with Upbound Cloud and Universal Crossplane (UXP).
@@ -256,7 +253,7 @@ kubectl delete providers.pkg.crossplane.io provider-helm
 ## Customize for your Organization
 
 You can customize this platform reference as much as you like and use it as
-a foundation for your very own Configuration building.
+a foundation for building your very own Configuration.
 
 In addition to that, you can create a free repository for your Configuration and
 publish it to [Universal Marketplace](https://marketplace.upbound.io/)
