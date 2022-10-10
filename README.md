@@ -1,7 +1,7 @@
 # AWS Reference Platform for Kubernetes + Data Services
 
 This repository contains a reference AWS Platform
-[Configuration](https://crossplane.io/docs/v1.9/getting-started/create-configuration.html)
+[Configuration](https://crossplane.io/docs/v1.9/getting-started/create-configuration)
 for use as a starting point in working with [Upbound Universal Crossplane (UXP)](https://www.upbound.io/products/universal-crossplane)
 and publishing to [Universal Marketplace](https://marketplace.upbound.io/).
 It enables you to build, run and operate your own internal cloud platform and
@@ -72,7 +72,7 @@ Alibaba) used in a `Composition`.
 Learn more about `Composition` in the [Crossplane
 Docs](https://crossplane.io/docs/v1.9/concepts/composition.html).
 
-## Pre-Requisite & Optional Tools
+## Pre-Requisites
 
 Install the following command line tools:
 
@@ -94,7 +94,7 @@ abstractions.
 
 #### Installing UXP on a Kubernetes Cluster
 
-The other option is installing UXP into a Kubernetes cluster you manage using `up`, which
+You can install UXP into a Kubernetes cluster you manage using `up`, which
 is the official CLI for interacting with Upbound Cloud and Universal Crossplane (UXP).
 
 Ensure that your kubectl context is pointing to the correct cluster:
@@ -115,6 +115,8 @@ Validate the install using the following command:
 ```console
 kubectl get all -n upbound-system
 ```
+
+The alternative way of installation would be a standard helm, see https://github.com/upbound/universal-crossplane#installation-with-helm-3
 
 #### Install the Platform Configuration
 
@@ -150,17 +152,6 @@ kubectl get claim
 kubectl get composite
 kubectl get managed
 ```
-
-#### Provision a PostgreSQLInstance in your team Control Plane GUI console
-
-1. Browse the available self-service APIs (XRDs) Control Plane
-1. Provision a `CompositePostgreSQLInstance` using the custom generated GUI for your
-Platform `Configuration`
-1. View status / details in your `Control Plane` GUI console
-
-#### Connect kubectl to your team Control Plane
-
-1. Connect `kubectl` to a `Control Plane` from the self-service GUI console.
 
 #### Provision a PostgreSQLInstance using kubectl
 
@@ -224,7 +215,7 @@ kubectl delete providers.pkg.crossplane.io provider-helm
     * `Role`
     * `RolePolicyAttachment`
     * `OpenIDConnectProvider`
-    * `ProviderConfig` of Helm Provider to install custome cluster services as
+    * `ProviderConfig` of Helm Provider to install custom cluster services as
        a part of `XServices` abstraction
 * `XNetwork` - fabric for a `Cluster` to securely connect to Data Services and
   the Internet.
@@ -258,7 +249,7 @@ a foundation for building your very own Configuration.
 In addition to that, you can create a free repository for your Configuration and
 publish it to [Universal Marketplace](https://marketplace.upbound.io/)
 
-#### Create a free account in Upbound Cloud
+### Create a free account in Upbound Cloud
 
 1. Sign up for [Upbound Cloud](https://cloud.upbound.io/register).
 1. When you first create an Upbound Account, you can create an Organization
@@ -325,7 +316,7 @@ kubectl apply -f configuration.yaml
 The AWS cloud service primitives that can be used in a `Composition` today are
 listed in the [Upbound Official AWS Provider Docs](https://marketplace.upbound.io/providers/upbound/provider-aws).
 
-To learn more see [Configuration Packages](https://crossplane.github.io/docs/v1.9/concepts/packages.html).
+To learn more see [Configuration Packages](https://crossplane.github.io/docs/v1.9/concepts/packages#configuration-packages).
 
 ## What's Next
 
