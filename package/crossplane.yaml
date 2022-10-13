@@ -23,12 +23,6 @@ metadata:
       deployments can securely connect to the infrastructure they need using
       secrets distributed directly to the app namespace.
 
-      [Quickstart
-      Guide](https://github.com/upbound/platform-ref-aws/#quick-start)
-
-      [APIs in this
-      Configuration](https://github.com/upbound/platform-ref-aws/#apis-in-this-configuration)
-
       To learn more checkout the [GitHub
       repo](https://github.com/upbound/platform-ref-aws/) that you can copy and
       customize to meet the exact needs of your organization!
