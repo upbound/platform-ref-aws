@@ -38,7 +38,7 @@ or deployment pipelines and GitOps workflows -- all without writing code?
 open source [Upbound Universal Crossplane](https://www.upbound.io/products/universal-crossplane) project.
 
 The [Universal Marketplace](https://marketplace.upbound.io/) is a central hub for
-finding Crossplane packages with verified content and auto-generated documentation.
+finding Crossplane packages with verified content and auto-generated documentation. e.g. [upbound/platform-ref-aws](https://marketplace.upbound.io/configurations/upbound/platform-ref-aws/)
 
 Upbound curates a set of Official Providers which are actively maintained and
 thoroughly tested to help you discover the best building blocks for your internal
@@ -94,7 +94,7 @@ abstractions.
 
 #### Installing UXP on a Kubernetes Cluster
 
-The other option is installing UXP into a Kubernetes cluster you manage using `up`, which
+Installing UXP into a Kubernetes cluster is simply done by `up`, which
 is the official CLI for interacting with Upbound Cloud and Universal Crossplane (UXP).
 
 Ensure that your kubectl context is pointing to the correct cluster:
@@ -260,12 +260,11 @@ publish it to [Universal Marketplace](https://marketplace.upbound.io/)
 
 #### Create a free account in Upbound Cloud
 
-1. Sign up for [Upbound Cloud](https://cloud.upbound.io/register).
-1. When you first create an Upbound Account, you can create an Organization
+Sign up at https://accounts.upbound.io/register.
 
 ### Create a Custom Repository
 
-Create a `Repository` called `platform-ref-aws` in your Upbound Cloud `Organization`:
+Create a `Repository` called `my-platform-ref-aws`:
 
 ![Upbound Repository](docs/media/repository.png)
 
