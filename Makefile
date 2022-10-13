@@ -6,7 +6,7 @@ PROJECT_REPO := github.com/upbound/$(PROJECT_NAME)
 # images are not architecture-specific. We constrain to one platform to avoid
 # needlessly pushing a multi-arch image.
 PLATFORMS ?= linux_amd64
-include build/makelib/common.mk
+-include build/makelib/common.mk
 
 # ====================================================================================
 # Setup Kubernetes tools
