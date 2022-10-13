@@ -1,204 +1,166 @@
-# AWS Reference Platform for Kubernetes + Data Services
+# AWS Reference Platform
 
-This repository contains a reference AWS Platform
-[Configuration](https://crossplane.io/docs/v1.9/getting-started/create-configuration.html)
-for use as a starting point in working with [Upbound Universal Crossplane (UXP)](https://www.upbound.io/products/universal-crossplane)
-and publishing to [Universal Marketplace](https://marketplace.upbound.io/).
-It enables you to build, run and operate your own internal cloud platform and
-offer a self-service API to your internal teams. It provides platform APIs to provision
-fully configured EKS clusters, with secure networking, and stateful cloud
-services (RDS) designed to securely connect to the nodes in each EKS cluster --
-all composed using cloud service primitives from the [Official Upbound AWS
+This repository contains a reference AWS Platform Configuration for
+[Crossplane](https://crossplane.io/). It's a great starting point for building
+internal cloud platforms with AWS and offer a self-service API to your internal
+development teams.
+
+This platform provides APIs to provision fully configured EKS clusters, with
+secure networking, and stateful cloud services (RDS) designed to securely
+connect to the nodes in each EKS cluster — all composed using cloud service
+primitives from the [Official Upbound AWS
 Provider](https://marketplace.upbound.io/providers/upbound/provider-aws). App
 deployments can securely connect to the infrastructure they need using secrets
 distributed directly to the app namespace.
 
-## Contents
+## Overview
 
-* [Universal Crossplane and Universal Marketplace](#universal-crossplane-and-universal-marketplace)
-* [Build Your Own Internal Cloud Platform](#build-your-own-internal-cloud-platform)
-* [Install Tools](#pre-requisite--optional-tools)
-* [Platform Ops/SRE: Run your own internal cloud platform](#platform-opssre-run-your-own-internal-cloud-platform)
-  * [App Dev/Ops: Consume the infrastructure you need using kubectl](#app-devops-consume-the-infrastructure-you-need-using-kubectl)
-  * [APIs in this Configuration](#apis-in-this-configuration)
-* [Customize for your Organization](#customize-for-your-organization)
-* [Learn More](#learn-more)
+This reference platform defines a custom API for creating an EKS cluster
+([XCluster](package/cluster/definition.yaml)) which includes the actual EKS
+cluster, a network fabric and Prometheus and other cluster services
+([XServices](package/cluster/composition.yaml)). Additionally it defines a
+custom API for provisioning Postgres Databases
+([XPostgreSQLInstance](package/database/postgres/definition.yaml)). 
 
-## Universal Crossplane and Universal Marketplace
 
-![Upbound Overview](docs/media/upbound.png)
+```mermaid
+graph LR;
+    MyApp(My App)---MyCluster(XRC: my-cluster);
+    MyCluster---XRD1(XRD: XCluster);
+    MyApp---MyDB(XRC: my-db);
+    MyDB---XRD2(XRD: XPostgreSQLInstance);
+		subgraph Configuration:upbound/platform-ref-aws;
+	    XRD1---Composition(XEKS, XNetwork, XServices);
+	    XRD2---Composition2(Composition);
+		end
+		subgraph Provider:upbound/provider-aws
+	    Composition---IAM.MRs(MRs: IAM Role, RolePolicyAttachment,OpenIDConnectProvider);
+	    Composition---EKS.MRs(MRs: EKS Cluster, ClusterAuth, NodeGroup);
+	    Composition2---RDS.MRs(MRs: RDS SubnetGroup, Instance);
+		end
 
-What if you could eliminate infrastructure bottlenecks, security pitfalls, and
-deliver apps faster by providing your teams with self-service APIs that
-encapsulate your best practices and security policies, so they can quickly
-provision the infrastructure they need using a custom cloud console, `kubectl`,
-or deployment pipelines and GitOps workflows -- all without writing code?
+style MyApp color:#000,fill:#e6e6e6,stroke:#000,stroke-width:2px
+style MyCluster color:#000,fill:#D68A82,stroke:#000,stroke-width:2px
+style MyDB color:#000,fill:#D68A82,stroke:#000,stroke-width:2px
+style Configuration:upbound/platform-ref-aws fill:#f1d16d,opacity:0.3
+style Provider:upbound/provider-aws fill:#81CABB,opacity:0.3
+style XRD1 color:#000,fill:#f1d16d,stroke:#000,stroke-width:2px,stroke-dasharray: 5 5
+style XRD2 color:#000,fill:#f1d16d,stroke:#000,stroke-width:2px,stroke-dasharray: 5 5
+style Composition color:#000,fill:#f1d16d,stroke:#000,stroke-width:2px
+style Composition2 color:#000,fill:#f1d16d,stroke:#000,stroke-width:2px
 
-[Upbound](https://upbound.io) enables you to do just that, powered by the
-open source [Upbound Universal Crossplane](https://www.upbound.io/products/universal-crossplane) project.
-
-The [Universal Marketplace](https://marketplace.upbound.io/) is a central hub for
-finding Crossplane packages with verified content and auto-generated documentation.
-
-Upbound curates a set of Official Providers which are actively maintained and
-thoroughly tested to help you discover the best building blocks for your internal
-cloud platform.
-
-Consistent self-service APIs can be provided across dev, staging, and
-production environments, making it easy for app teams to get the infrastructure
-they need using vetted infrastructure configurations that meet the standards
-of your organization.
-
-## Build Your Own Internal Cloud Platform
-
-App teams can provision the infrastructure they need with a single YAML file
-alongside `Deployments` and `Services` using existing tools and workflows
-including tools like `kubectl`, Flux and ArgoCD to consume your platform's self-service
-APIs.
-
-The Platform `Configuration` defines the self-service APIs and
-classes-of-service for each API:
-
-* `CompositeResourceDefinitions` (XRDs) define the platform's self-service
-   APIs - e.g. `XPostgreSQLInstance`.
-* `Compositions` offer the classes-of-service supported for each self-service
-   API - e.g. `Standard`, `Performance`, `Replicated`.
-
-![Upbound Overview](docs/media/compose.png)
-
-Crossplane `Providers` include the cloud service primitives (AWS, Azure, GCP,
-Alibaba) used in a `Composition`.
-
-Learn more about `Composition` in the [Crossplane
-Docs](https://crossplane.io/docs/v1.9/concepts/composition.html).
-
-## Pre-Requisite & Optional Tools
-
-Install the following command line tools:
-
-* `up cli`
-
-  There are multiple ways to [install up](https://cloud.upbound.io/docs/cli/#install-script), including Homebrew and Linux packages.
-
-  ```console
-  curl -sL https://cli.upbound.io | sh
-
-  ```
-
-## Platform Ops/SRE: Run your own internal cloud platform
-
-The Universal Crossplane (UXP) can be provisioned to any Kubernetes cluster.
-
-The AWS Reference platform will extend Kubernetes API with your own platform API
-abstractions.
-
-#### Installing UXP on a Kubernetes Cluster
-
-The other option is installing UXP into a Kubernetes cluster you manage using `up`, which
-is the official CLI for interacting with Upbound Cloud and Universal Crossplane (UXP).
-
-Ensure that your kubectl context is pointing to the correct cluster:
-
-```console
-kubectl config current-context
+style IAM.MRs color:#000,fill:#81CABB,stroke:#000,stroke-width:2px
+style EKS.MRs color:#000,fill:#81CABB,stroke:#000,stroke-width:2px
+style RDS.MRs color:#000,fill:#81CABB,stroke:#000,stroke-width:2px
 ```
 
-Install UXP into the `upbound-system` namespace:
+Learn more about Composite Resources in the [Crossplane
+Docs](https://crossplane.io/docs/v1.9/concepts/composition.html).
+
+## Quickstart
+
+### Pre-Requisites
+
+Before we can install in the reference platform we need to install the `up` CLI
+and UXP. To install `up` run this install script:
 
 ```console
-up login
+curl -sL https://cli.upbound.io | sh
+```
+See [up docs](https://docs.upbound.io/cli/) for more install options.
+
+For installing the platform we need a running Crossplane control plane. We are
+using [UXP](https://github.com/upbound/universal-crossplane). Ensure that your
+kubectl context is pointing to the correct Kubernetes cluster or for example
+create a [kind](https://kind.sigs.k8s.io) cluster:
+
+```console
+kind create cluster --image kindest/node:v1.25.0
+```
+
+Finally install UXP into the `upbound-system` namespace:
+
+```console
 up uxp install
 ```
 
-Validate the install using the following command:
+You can validate the install by inspecting all installed components: 
 
 ```console
 kubectl get all -n upbound-system
 ```
 
-#### Install the Platform Configuration
+### Install the AWS Reference Platform
 
-Now that your kubectl context is configured to connect to a UXP Control Plane,
-we can install this reference platform as a Crossplane package.
+Now you can install this reference platform. It's packaged as a [Crossplane
+configuration package](https://crossplane.io/docs/v1.9/concepts/packages.html)
+so there is a single command to install this package: 
 
 ```console
-# Check the latest version available in https://marketplace.upbound.io/configurations/upbound/platform-ref-aws/
-kubectl apply -f examples/configuration.yaml
-kubectl get pkg
+kubectl crossplane install configuration xpkg.upbound.io/upbound/platform-ref-aws:v0.4.0
 ```
 
-#### Configure Providers in your Platform
+Validate the install by inspecting the provider and configuration packages:
+```console
+kubectl get providers,providerrevision
 
-Refer to [official Universal Marketplace documentation](https://marketplace.upbound.io/providers/upbound/provider-aws/latest/docs/configuration)
+kubectl get configurations,configurationrevisions
+```
 
-## Provision Resources
+Check the
+[marketplace](https://marketplace.upbound.io/configurations/upbound/platform-ref-aws/
+) for the latest version of this platform.
 
-With the setup complete, we can now use platform-aws to provision resources in AWS.
+### Configure the AWS provider
 
-#### Create EKS Cluster
+Before we can use the reference platform we need to configure it with AWS
+credentials:
 
-The example cluster composition create an EKS cluster and includes a nested composite resource for the network, which creates a VPC, Subnet, Route Tables and a Gateway.
+```console
+# Create a creds.conf file with the aws cli:
+AWS_PROFILE=default && echo -e "[default]\naws_access_key_id = $(aws configure get aws_access_key_id --profile $AWS_PROFILE)\naws_secret_access_key = $(aws configure get aws_secret_access_key --profile $AWS_PROFILE)" > creds.conf
 
+# Create a K8s secret with the AWS creds:
+kubectl create secret generic aws-creds -n upbound-system --from-file=creds=./creds.conf
+
+# Configure the AWS Provider to use the secret:
+kubectl apply -f examples/aws-default-provider.yaml
+```
+
+See [provider-aws docs](https://marketplace.upbound.io/providers/upbound/provider-aws/latest/docs/configuration) for more detailed configuration options
+
+## Using the AWS reference platform
+
+🎉 Congratulations. You have just installed your first Crossplane powered
+platform!
+
+Application developers can now use the platform to request resources which than
+will provisioned in AWS. This would usually done by bundling a claim as part of
+the application code. In our example here we simply create the claims directly:
+
+Create a custom defined cluster:
 ```console
 kubectl apply -f examples/cluster-claim.yaml
 ```
 
-Verify status:
-
-```console
-kubectl get claim
-kubectl get composite
-kubectl get managed
-```
-
-#### Provision a PostgreSQLInstance in your team Control Plane GUI console
-
-1. Browse the available self-service APIs (XRDs) Control Plane
-1. Provision a `CompositePostgreSQLInstance` using the custom generated GUI for your
-Platform `Configuration`
-1. View status / details in your `Control Plane` GUI console
-
-#### Connect kubectl to your team Control Plane
-
-1. Connect `kubectl` to a `Control Plane` from the self-service GUI console.
-
-#### Provision a PostgreSQLInstance using kubectl
-
+Create a custom defined database:
 ```console
 kubectl apply -f examples/postgres-claim.yaml
 ```
 
-Verify status:
+You can verify status by inspecting the claims, composites and managed resources:
 
 ```console
-kubectl get claim
-kubectl get composite
-kubectl get managed
+kubectl get claim,composite,managed
 ```
 
-### Cleanup & Uninstall
-
-#### Cleanup Resources
-
-Delete resources created through the `Control Plane` Configurations menu:
-
-* From the `Teams` GUI using the ellipsis menu in the resource view.
-* Using `kubectl delete -n team1 <claim-name>`.
-
-Delete resources created using `kubectl`:
+To delete the provisioned resources you would simply delete the claims again:
 
 ```console
-kubectl delete -f examples/cluster-claim.yaml
-kubectl delete -f examples/postgres-claim.yaml
+kubectl delete -f examples/cluster-claim.yaml,examples/postgres-claim.yaml
 ```
 
-Verify all underlying resources have been cleanly deleted:
-
-```console
-kubectl get managed
-```
-
-#### Uninstall Provider & Platform Configuration
+To uninstall the provider & platform configuration:
 
 ```console
 kubectl delete configurations.pkg.crossplane.io platform-ref-aws
@@ -206,131 +168,76 @@ kubectl delete providers.pkg.crossplane.io provider-aws
 kubectl delete providers.pkg.crossplane.io provider-helm
 ```
 
-## APIs in this Configuration
-
-* `Cluster` - provision a fully configured EKS cluster
-  * [definition.yaml](package/cluster/definition.yaml)
-  * [composition.yaml](package/cluster/composition.yaml) includes (transitively):
-    * XEKS for EKS Cluster
-    * XNetwork for network fabric
-    * XServices for Prometheus and other cluster services
-* `XEKS` Creates EKS cluster.
-    * [definition.yaml](package/cluster/eks/definition.yaml)
-    * [composition.yaml](package/cluster/eks/composition.yaml) includes:
-    * `Cluster`
-    * `ClusterAuth`
-    * `XNetwork` for network fabric
-    * `NodeGroup`
-    * `Role`
-    * `RolePolicyAttachment`
-    * `OpenIDConnectProvider`
-    * `ProviderConfig` of Helm Provider to install custome cluster services as
-       a part of `XServices` abstraction
-* `XNetwork` - fabric for a `Cluster` to securely connect to Data Services and
-  the Internet.
-  * [definition.yaml](package/cluster/network/definition.yaml)
-  * [composition.yaml](package/cluster/network/composition.yaml) includes:
-    * `VPC`
-    * `Subnet`
-    * `InternetGateway`
-    * `MainRouteTableAssociation`
-    * `Route`
-    * `RouteTable`
-    * `RouteTableAssociation`
-    * `SecurityGroup`
-    * `SecurityGroupRule`
-* `XServices` - Helm Provider abstraction to control installation of
-   Prometheus operator and other cluster services
-    * [definition.yaml](package/cluster/services/definition.yaml)
-    * [composition.yaml](package/cluster/services/composition.yaml) includes:
-    * `Release`
-* `PostgreSQLInstance` - provision a PostgreSQL RDS instance that securely connects to a `Cluster`
-  * [definition.yaml](package/database/postgres/definition.yaml)
-  * [composition.yaml](package/database/postgres/composition.yaml) includes:
-    * `Instance`
-    * `SubnetGroup`
-
 ## Customize for your Organization
 
-You can customize this platform reference as much as you like and use it as
-a foundation for building your very own Configuration.
+So far we have used the existing reference platform but haven't made any
+changes. Lets change this and customize the platform by ensuring that EKS
+Cluster is deployed to Frankfurt (eu-central-1) and that clusters are limitted
+to 10 nodes.
 
-In addition to that, you can create a free repository for your Configuration and
-publish it to [Universal Marketplace](https://marketplace.upbound.io/)
-
-#### Create a free account in Upbound Cloud
-
-1. Sign up for [Upbound Cloud](https://cloud.upbound.io/register).
-1. When you first create an Upbound Account, you can create an Organization
-
-### Create a Custom Repository
-
-Create a `Repository` called `platform-ref-aws` in your Upbound Cloud `Organization`:
-
-![Upbound Repository](docs/media/repository.png)
-
-Set these to match your settings:
+For the following examples we are using `my-org` and `my-platform`:
 
 ```console
-UPBOUND_ORG=acme
-UPBOUND_ACCOUNT_EMAIL=me@acme.io
-REPO=platform-ref-aws
-VERSION_TAG=v0.3.0
-REGISTRY=xpkg.upbound.io
-PLATFORM_CONFIG=${REGISTRY:+$REGISTRY/}${UPBOUND_ORG}/${REPO}:${VERSION_TAG}
+ORG=my-org
+PLATFORM=my-platform
 ```
 
-Clone the GitHub repo.
+### Pre-Requisites
+First you need to create a [free Upbound
+account](https://accounts.upbound.io/register) to push your custom platform.
+Afterwards you can log in:
 
 ```console
-git clone https://github.com/upbound/platform-ref-aws.git
-cd platform-ref-aws
+up login --username=$ORG
 ```
 
-Login to your container registry.
+### Make the changes
+
+To make your changes clone this repository:
 
 ```console
-docker login ${REGISTRY} -u ${UPBOUND_ACCOUNT_EMAIL}
+git clone https://github.com/upbound/platform-ref-aws.git $PLATFORM && cd $PLATFORM
 ```
 
-Build package.
+In the [EKS composition](package/cluster/eks/composition.yaml) find the `region` definitions and change them from `us-west-2` to `eu-central-1`. Also find the `scalingConfig.maxSize` and change it from `100` to `10`.
+
+
+### Build and push your platform
+
+To share your new platform you need to build and distribute this package.
+
+To build the package use the `up xpkg build` command:
 
 ```console
 up xpkg build --name package.xpkg --package-root=package --examples-root="examples"
 ```
 
-Push package to registry.
+Afterwards you can it to the marketplace. Don't worry it's private to you.
 
 ```console
-up xpkg push ${PLATFORM_CONFIG} -f package.xpkg
+up repo create ${PLATFORM}
+up xpkg push ${ORG}/${PLATFORM} -f package/package.xpkg
 ```
 
-Install package into an Universal Crossplane(UXP) instance.
+You can now see your listing in the marketplace:
+```console
+open https://marketplace.upbound.io/configurations/${ORG}/${PLATFORM}:v0.0.1
+```
+
+## Using your custom platform
+
+Now if you want to use it you can follow the steps from above. The only difference is that you need to specify a package-pull-secret as the package is currently private:
 
 ```console
-cat <<EOF >> configuration.yaml
-apiVersion: pkg.crossplane.io/v1
-kind: Configuration
-metadata:
-  name: platform-ref-aws
-spec:
-  package: ${PLATFORM_CONFIG}
-EOF
+kubectl crossplane install configuration xpkg.upbound.io/${ORG}/${PLATFORM}::v0.0.1 --package-pull-secrets=personal-pull-secret
 ```
 
-```console
-kubectl apply -f configuration.yaml
-```
+🎉 Congratulations. You have just build and installed your first custom
+Crossplane powered platform!
 
-The AWS cloud service primitives that can be used in a `Composition` today are
-listed in the [Upbound Official AWS Provider Docs](https://marketplace.upbound.io/providers/upbound/provider-aws).
 
-To learn more see [Configuration Packages](https://crossplane.github.io/docs/v1.9/concepts/packages.html).
+## Questions?
 
-## What's Next
-
-If you're interested in building your own reference platform for your company,
-we'd love to hear from you and chat. You can setup some time with us at
-https://www.upbound.io/contact
-
-For Crossplane questions, drop by [slack.crossplane.io](https://slack.crossplane.io), and say hi!
+For any questions, thoughts and comments don't hesitate to [reach
+out](https://www.upbound.io/contact) or drop by
+[slack.crossplane.io](https://slack.crossplane.io), and say hi!
