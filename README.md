@@ -20,7 +20,7 @@ This reference platform defines a custom API for creating an EKS cluster
 cluster, a network fabric and Prometheus and other cluster services
 ([XServices](package/cluster/composition.yaml)). Additionally it defines a
 custom API for provisioning Postgres Databases
-([XPostgreSQLInstance](package/database/postgres/definition.yaml)). 
+([XPostgreSQLInstance](package/database/postgres/definition.yaml)).
 
 
 ```mermaid
