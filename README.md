@@ -80,7 +80,7 @@ context is pointing to the correct Kubernetes cluster or for example create a
 [kind](https://kind.sigs.k8s.io) cluster:
 
 ```console
-kind create cluster --image kindest/node:v1.25.0
+kind create cluster
 ```
 
 Finally install UXP into the `upbound-system` namespace:
