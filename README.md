@@ -220,6 +220,7 @@ up xpkg build --name package.xpkg --package-root=package --examples-root=example
 Afterwards you can it to the marketplace. Don't worry it's private to you.
 
 ```console
+TAG=v0.1.0
 up repo create ${PLATFORM}
 up xpkg push ${ORG}/${PLATFORM}:${TAG} -f package/package.xpkg
 ```
