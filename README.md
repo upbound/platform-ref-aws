@@ -168,9 +168,9 @@ kubectl delete -f examples/cluster-claim.yaml,examples/postgres-claim.yaml
 To uninstall the provider & platform configuration:
 
 ```console
-kubectl delete configurations.pkg.crossplane.io platform-ref-aws
-kubectl delete providers.pkg.crossplane.io provider-aws
-kubectl delete providers.pkg.crossplane.io provider-helm
+kubectl delete configurations.pkg.crossplane.io upbound-platform-ref-aws
+kubectl delete providers.pkg.crossplane.io upbound-provider-aws
+kubectl delete providers.pkg.crossplane.io crossplane-contrib-provider-helm
 ```
 
 ## Customize for your Organization
