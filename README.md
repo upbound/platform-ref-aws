@@ -102,7 +102,7 @@ configuration package](https://crossplane.io/docs/v1.9/concepts/packages.html)
 so there is a single command to install this package: 
 
 ```console
-up ctp configuration install xpkg.upbound.io/upbound/platform-ref-aws:v0.4.0
+up ctp configuration install xpkg.upbound.io/upbound/platform-ref-aws:v0.4.1
 ```
 
 Validate the install by inspecting the provider and configuration packages:
