@@ -74,9 +74,10 @@ curl -sL https://cli.upbound.io | sh
 See [up docs](https://docs.upbound.io/cli/) for more install options.
 
 For installing the platform we need a running Crossplane control plane. We are
-using [UXP](https://github.com/upbound/universal-crossplane). Ensure that your
-kubectl context is pointing to the correct Kubernetes cluster or for example
-create a [kind](https://kind.sigs.k8s.io) cluster:
+using [Universal Crossplane (UXP)
+](https://github.com/upbound/universal-crossplane). Ensure that your kubectl
+context is pointing to the correct Kubernetes cluster or for example create a
+[kind](https://kind.sigs.k8s.io) cluster:
 
 ```console
 kind create cluster --image kindest/node:v1.25.0
