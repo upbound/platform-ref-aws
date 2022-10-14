@@ -221,7 +221,7 @@ Afterwards you can it to the marketplace. Don't worry it's private to you.
 
 ```console
 up repo create ${PLATFORM}
-up xpkg push ${ORG}/${PLATFORM} -f package/package.xpkg
+up xpkg push ${ORG}/${PLATFORM}:${TAG} -f package/package.xpkg
 ```
 
 You can now see your listing in the marketplace:
