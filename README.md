@@ -214,7 +214,7 @@ To share your new platform you need to build and distribute this package.
 To build the package use the `up xpkg build` command:
 
 ```console
-up xpkg build --name package.xpkg --package-root=package --examples-root="examples"
+up xpkg build --name package.xpkg --package-root=package --examples-root=examples
 ```
 
 Afterwards you can it to the marketplace. Don't worry it's private to you.
