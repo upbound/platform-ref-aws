@@ -99,7 +99,7 @@ kubectl get all -n upbound-system
 
 Now you can install this reference platform. It's packaged as a [Crossplane
 configuration package](https://crossplane.io/docs/v1.9/concepts/packages.html)
-so there is a single command to install this package: 
+so there is a single command to install this package:
 
 ```console
 up ctp configuration install xpkg.upbound.io/upbound/platform-ref-aws:v0.4.1
