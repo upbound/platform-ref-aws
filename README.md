@@ -153,7 +153,8 @@ Create a custom defined database:
 kubectl apply -f examples/postgres-claim.yaml
 ```
 
-You can verify status by inspecting the claims, composites and managed resources:
+You can verify status by inspecting the claims, composites and managed
+resources:
 
 ```console
 kubectl get claim,composite,managed
@@ -204,7 +205,9 @@ To make your changes clone this repository:
 git clone https://github.com/upbound/platform-ref-aws.git $PLATFORM && cd $PLATFORM
 ```
 
-In the [EKS composition](package/cluster/eks/composition.yaml) find the `region` definitions and change them from `us-west-2` to `eu-central-1`. Also find the `scalingConfig.maxSize` and change it from `100` to `10`.
+In the [EKS composition](package/cluster/eks/composition.yaml) find the `region`
+definitions and change them from `us-west-2` to `eu-central-1`. Also find the
+`scalingConfig.maxSize` and change it from `100` to `10`.
 
 
 ### Build and push your platform
@@ -232,26 +235,21 @@ open https://marketplace.upbound.io/configurations/${ORG}/${PLATFORM}/${TAG}
 
 ## Using your custom platform
 
-Now if you want to use it you can follow the steps from above. The only difference is that you need to specify a package-pull-secret as the package is currently private:
+Now if you want to use it you can follow the steps from above. The only
+difference is that you need to specify a package-pull-secret as the package is
+currently private:
 
 ```console
 up ctp pull-secret create personal-pull-secret
 ```
 
-If you want to update the configuration the simplest way is to use a declarative approach and define and create a `Configuration`:
-
-```yaml
-cat <<EOF | kubectl apply -f -
-apiVersion: pkg.crossplane.io/v1
-kind: Configuration
-metadata:
-  name:${PLATFORM}
-spec:
-  package: xpkg.upbound.io/${ORG}/${PLATFORM}:${TAG}
-  packagePullSecrets:
-    - name: package-pull-secret
-EOF
+```console
+up ctp configuration install xpkg.upbound.io/${ORG}/${PLATFORM}:${TAG} --package-pull-secrets=personal-pull-secret
 ```
+
+For alternative declarative installation approach see the [example Configuration
+manifest](examples/configuration.yaml). Please update to your org, platform and
+tag before applying.
 
 🎉 Congratulations. You have just build and installed your first custom
 Crossplane powered platform!
