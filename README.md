@@ -126,7 +126,7 @@ credentials:
 AWS_PROFILE=default && echo -e "[default]\naws_access_key_id = $(aws configure get aws_access_key_id --profile $AWS_PROFILE)\naws_secret_access_key = $(aws configure get aws_secret_access_key --profile $AWS_PROFILE)" > creds.conf
 
 # Create a K8s secret with the AWS creds:
-kubectl create secret generic aws-creds -n upbound-system --from-file=creds=./creds.conf
+kubectl create secret generic aws-creds -n upbound-system --from-file=credentials=./creds.conf
 
 # Configure the AWS Provider to use the secret:
 kubectl apply -f examples/aws-default-provider.yaml
