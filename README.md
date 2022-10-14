@@ -89,7 +89,7 @@ Finally install UXP into the `upbound-system` namespace:
 up uxp install
 ```
 
-You can validate the install by inspecting all installed components: 
+You can validate the install by inspecting all installed components:
 
 ```console
 kubectl get all -n upbound-system
