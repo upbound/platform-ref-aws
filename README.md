@@ -226,7 +226,7 @@ up xpkg push ${ORG}/${PLATFORM} -f package/package.xpkg
 
 You can now see your listing in the marketplace:
 ```console
-open https://marketplace.upbound.io/configurations/${ORG}/${PLATFORM}:v0.0.1
+open https://marketplace.upbound.io/configurations/${ORG}/${PLATFORM}/${TAG}
 ```
 
 ## Using your custom platform
