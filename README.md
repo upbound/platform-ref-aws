@@ -113,8 +113,8 @@ kubectl get configurations,configurationrevisions
 ```
 
 Check the
-[marketplace](https://marketplace.upbound.io/configurations/upbound/platform-ref-aws/
-) for the latest version of this platform.
+[marketplace](https://marketplace.upbound.io/configurations/upbound/platform-ref-aws/)
+for the latest version of this platform.
 
 ### Configure the AWS provider
 
