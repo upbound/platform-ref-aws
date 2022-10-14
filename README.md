@@ -236,8 +236,21 @@ Now if you want to use it you can follow the steps from above. The only differen
 
 ```console
 up ctp pull-secret create personal-pull-secret
+```
 
-up ctp configuration install xpkg.upbound.io/${ORG}/${PLATFORM}:${TAG} --package-pull-secrets=personal-pull-secret
+If you want to update the configuration the simplest way is to use a declarative approach and define and create a `Configuration`:
+
+```yaml
+cat <<EOF | kubectl apply -f -
+apiVersion: pkg.crossplane.io/v1
+kind: Configuration
+metadata:
+  name:${PLATFORM}
+spec:
+  package: xpkg.upbound.io/${ORG}/${PLATFORM}:${TAG}
+  packagePullSecrets:
+    - name: package-pull-secret
+EOF
 ```
 
 🎉 Congratulations. You have just build and installed your first custom
