@@ -61,9 +61,13 @@ Docs](https://crossplane.io/docs/v1.9/concepts/composition.html).
 
 ### Pre-Requisites
 
-Before we can install in the reference platform we need to install the `up` CLI
-and UXP. To install `up` run this install script:
+Before we can install the reference platform we want to install the `up` CLI.
+This is a utility that makes following this quickstart guide easier. Everything
+described here can also be done in a declarative approach which we highly
+recommend for any production type use-case.
+<!-- TODO enhance this guide: Getting ready for Gitops -->
 
+To install `up` run this install script:
 ```console
 curl -sL https://cli.upbound.io | sh
 ```
@@ -97,7 +101,7 @@ configuration package](https://crossplane.io/docs/v1.9/concepts/packages.html)
 so there is a single command to install this package: 
 
 ```console
-kubectl crossplane install configuration xpkg.upbound.io/upbound/platform-ref-aws:v0.4.0
+up ctp configuration install xpkg.upbound.io/upbound/platform-ref-aws:v0.4.0
 ```
 
 Validate the install by inspecting the provider and configuration packages:
@@ -229,7 +233,7 @@ open https://marketplace.upbound.io/configurations/${ORG}/${PLATFORM}:v0.0.1
 Now if you want to use it you can follow the steps from above. The only difference is that you need to specify a package-pull-secret as the package is currently private:
 
 ```console
-kubectl crossplane install configuration xpkg.upbound.io/${ORG}/${PLATFORM}::v0.0.1 --package-pull-secrets=personal-pull-secret
+up ctp configuration install xpkg.upbound.io/${ORG}/${PLATFORM}::v0.0.1 --package-pull-secrets=personal-pull-secret
 ```
 
 🎉 Congratulations. You have just build and installed your first custom
