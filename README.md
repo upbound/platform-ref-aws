@@ -235,6 +235,8 @@ open https://marketplace.upbound.io/configurations/${ORG}/${PLATFORM}/${TAG}
 Now if you want to use it you can follow the steps from above. The only difference is that you need to specify a package-pull-secret as the package is currently private:
 
 ```console
+up ctp pull-secret create personal-pull-secret
+
 up ctp configuration install xpkg.upbound.io/${ORG}/${PLATFORM}:${TAG} --package-pull-secrets=personal-pull-secret
 ```
 
