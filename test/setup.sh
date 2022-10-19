@@ -13,8 +13,11 @@ ${KUBECTL} -n upbound-system create secret generic aws-creds --from-literal=cred
 echo "Waiting until provider-aws is healthy..."
 ${KUBECTL} wait provider.pkg upbound-provider-aws --for condition=Healthy --timeout 5m
 
-echo "Waiting for all pods to come online"
+echo "Waiting for all pods to come online..."
 "${KUBECTL}" -n upbound-system wait --for=condition=Available deployment --all --timeout=5m
+
+echo "Waiting for all XRDs to be established..."
+kubectl wait xrd --all --for condition=Established
 
 echo "Creating a default provider config..."
 cat <<EOF | ${KUBECTL} apply -f -

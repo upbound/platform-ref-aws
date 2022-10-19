@@ -67,6 +67,7 @@ jobs:
         run: make e2e
         env:
           UPTEST_AWS_CREDS: ${{ secrets.UPTEST_AWS_CREDS }}
+          UPTEST_TEST_DIR: ./_output/controlplane-dump
 
       - name: Create Successful Status Check
         env:
