@@ -13,6 +13,7 @@ PLATFORMS ?= linux_amd64
 
 UP_VERSION = v0.13.0
 UP_CHANNEL = stable
+UPTEST_VERSION = v0.1.1
 
 -include build/makelib/k8s_tools.mk
 # ====================================================================================
@@ -26,6 +27,7 @@ XPKGS = $(PROJECT_NAME)
 
 CROSSPLANE_NAMESPACE = upbound-system
 -include build/makelib/local.xpkg.mk
+-include build/makelib/controlplane.mk
 
 # ====================================================================================
 # Targets
@@ -49,3 +51,12 @@ submodules:
 # We must ensure up is installed in tool cache prior to build as including the k8s_tools machinery prior to the xpkg
 # machinery sets UP to point to tool cache.
 build.init: $(UP)
+
+# ====================================================================================
+# End to End Testing
+uptest: build $(UPTEST) $(KUBECTL) $(KUTTL) local.xpkg.deploy.configuration.$(PROJECT_NAME)
+	@$(INFO) running automated tests
+	@KUBECTL=$(KUBECTL) KUTTL=$(KUTTL) $(UPTEST) e2e examples/cluster-claim.yaml --setup-script=test/setup.sh --default-timeout=2400 || $(FAIL)
+	@$(OK) running automated tests
+
+e2e: controlplane.up uptest

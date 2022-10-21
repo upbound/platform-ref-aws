@@ -1,0 +1,116 @@
+name: End to End Test
+
+on:
+  issue_comment:
+    types: [created]
+
+env:
+  UPTEST_AWS_CREDS: ${{ secrets.UPTEST_AWS_CREDS }}
+
+jobs:
+  check-triggered:
+    runs-on: ubuntu-22.04
+    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/test-e2e') }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Checkout PR
+        id: checkout-pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr checkout ${{ github.event.issue.number }}
+          git submodule update --init --recursive
+          OUTPUT=$(git log -1 --format='%H')
+          echo "::set-output name=commit-sha::$OUTPUT"
+
+      - name: Create Pending Status Check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/statuses/${{ steps.checkout-pr.outputs.commit-sha }} \
+            -f state='pending' \
+            -f target_url='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
+            -f description='Running...' \
+            -f context="E2E"
+
+  e2e:
+    runs-on: ubuntu-22.04
+    needs: check-triggered
+    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/test-e2e') }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Checkout PR
+        id: checkout-pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr checkout ${{ github.event.issue.number }}
+          git submodule update --init --recursive
+          OUTPUT=$(git log -1 --format='%H')
+          echo "::set-output name=commit-sha::$OUTPUT"
+
+      - name: Fetch History
+        run: git fetch --prune --unshallow
+
+      - name: End to end
+        run: make e2e
+        env:
+          UPTEST_AWS_CREDS: ${{ secrets.UPTEST_AWS_CREDS }}
+          UPTEST_TEST_DIR: ./_output/controlplane-dump
+
+      - name: Create Successful Status Check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/statuses/${{ steps.checkout-pr.outputs.commit-sha }} \
+            -f state='success' \
+            -f target_url='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
+            -f description='Passed' \
+            -f context="E2E"
+
+      - name: Collect Cluster Dump
+        if: always()
+        run: |
+          export CONTROLPLANE_DUMP_DIRECTORY=./_output/controlplane-dump
+          make controlplane.dump
+
+      - name: Upload Cluster Dump
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: cluster-dump
+          path: ./_output/controlplane-dump
+
+      - name: Cleanup
+        if: always()
+        run: |
+          eval $(make --no-print-directory build.vars)
+          ${KUBECTL} delete managed --all
+
+      - name: Create Unsuccessful Status Check
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/statuses/${{ steps.checkout-pr.outputs.commit-sha }} \
+            -f state='failure' \
+            -f target_url='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
+            -f description='Failed' \
+            -f context="E2E"
