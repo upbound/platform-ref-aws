@@ -13,7 +13,7 @@ PLATFORMS ?= linux_amd64
 
 UP_VERSION = v0.13.0
 UP_CHANNEL = stable
-UPTEST_VERSION = v0.1.1
+UPTEST_VERSION = v0.2.1
 
 -include build/makelib/k8s_tools.mk
 # ====================================================================================
@@ -54,9 +54,16 @@ build.init: $(UP)
 
 # ====================================================================================
 # End to End Testing
-uptest: build $(UPTEST) $(KUBECTL) $(KUTTL) local.xpkg.deploy.configuration.$(PROJECT_NAME)
+
+# This target requires the following environment variables to be set:
+# - UPTEST_CLOUD_CREDENTIALS, cloud credentials for the provider being tested, e.g. export UPTEST_CLOUD_CREDENTIALS=$(cat ~/.aws/credentials)
+uptest: $(UPTEST) $(KUBECTL) $(KUTTL)
 	@$(INFO) running automated tests
 	@KUBECTL=$(KUBECTL) KUTTL=$(KUTTL) $(UPTEST) e2e examples/cluster-claim.yaml --setup-script=test/setup.sh --default-timeout=2400 || $(FAIL)
 	@$(OK) running automated tests
 
-e2e: controlplane.up uptest
+# This target requires the following environment variables to be set:
+# - UPTEST_CLOUD_CREDENTIALS, cloud credentials for the provider being tested, e.g. export UPTEST_CLOUD_CREDENTIALS=$(cat ~/.aws/credentials)
+e2e: build controlplane.up local.xpkg.deploy.configuration.$(PROJECT_NAME) uptest
+
+.PHONY: uptest e2e
