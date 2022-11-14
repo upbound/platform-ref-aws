@@ -9,4 +9,3 @@ jobs:
     uses: upbound/uptest/.github/workflows/pr-comment-trigger.yml@main
     secrets:
       UPTEST_CLOUD_CREDENTIALS: ${{ secrets.UPTEST_CLOUD_CREDENTIALS }}
-      UPTEST_DATASOURCE: 'N/A'
