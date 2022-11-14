@@ -247,7 +247,8 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: network-id
-    - base:
+    - name: securityGroup
+      base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: SecurityGroup
         spec:
@@ -256,15 +257,15 @@ spec:
             vpcIdSelector:
               matchControllerRef: true
             name: platform-ref-aws-cluster
-            description: Allow access to PostgreSQL
-      name: securityGroup
+            description: Allow access to databases
       patches:
         - type: PatchSet
           patchSetName: network-id
         - type: ToCompositeFieldPath
           fromFieldPath: metadata.annotations[crossplane.io/external-name]
           toFieldPath: status.securityGroupIds[0]
-    - base:
+    - name: securityGroupRulePostgres
+      base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: SecurityGroupRule
         spec:
@@ -279,7 +280,25 @@ spec:
             securityGroupIdSelector:
               matchControllerRef: true
             description: Everywhere
-      name: securityGroupRule
+      patches:
+        - type: PatchSet
+          patchSetName: network-id
+    - name: securityGroupRuleMysql
+      base:
+        apiVersion: ec2.aws.upbound.io/v1beta1
+        kind: SecurityGroupRule
+        spec:
+          forProvider:
+            region: us-west-2
+            type: ingress
+            fromPort: 3306
+            toPort: 3306
+            protocol: tcp
+            cidrBlocks:
+              - 0.0.0.0/0
+            securityGroupIdSelector:
+              matchControllerRef: true
+            description: Everywhere
       patches:
         - type: PatchSet
           patchSetName: network-id

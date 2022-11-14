@@ -1,16 +1,17 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: xpostgresqlinstances.aws.platformref.upbound.io
+  name: xsqlinstances.aws.platformref.upbound.io
   labels:
     provider: aws
 spec:
   writeConnectionSecretsToNamespace: upbound-system
   compositeTypeRef:
     apiVersion: aws.platformref.upbound.io/v1alpha1
-    kind: XPostgreSQLInstance
+    kind: XSQLInstance
   resources:
-    - base:
+    - name: compositeSQLInstanceDbSubnetGroup
+      base:
         apiVersion: rds.aws.upbound.io/v1beta1
         kind: SubnetGroup
         spec:
@@ -18,11 +19,11 @@ spec:
             region: us-west-2
             description: An excellent formation of subnetworks.
           deletionPolicy: Delete
-      name: compositePostgreSQLInstanceDbSubnetGroup
       patches:
         - fromFieldPath: spec.parameters.clusterRef.id
           toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
-    - base:
+    - name: RDSInstanceSmall
+      base:
         apiVersion: rds.aws.upbound.io/v1beta1
         kind: Instance
         spec:
@@ -32,21 +33,22 @@ spec:
               matchControllerRef: true
             instanceClass: db.t3.micro
             username: masteruser
-            engine: postgres
-            engineVersion: "13.7"
             skipFinalSnapshot: true
             publiclyAccessible: false
           deletionPolicy: Delete
-      name: RDSInstanceSmall
       patches:
         - fromFieldPath: "metadata.uid"
           toFieldPath: "spec.writeConnectionSecretToRef.name"
           transforms:
             - type: string
               string:
-                fmt: "%s-postgresql"
+                fmt: "%s-sql" #change
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.writeConnectionSecretToRef.namespace
+        - fromFieldPath: spec.parameters.engine
+          toFieldPath: spec.forProvider.engine
+        - fromFieldPath: spec.parameters.engineVersion
+          toFieldPath: spec.forProvider.engineVersion
         - fromFieldPath: spec.parameters.storageGB
           toFieldPath: spec.forProvider.allocatedStorage
         - fromFieldPath: spec.parameters.clusterRef.id

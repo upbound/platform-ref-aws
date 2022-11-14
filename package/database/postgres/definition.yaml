@@ -1,11 +1,11 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xpostgresqlinstances.aws.platformref.upbound.io
+  name: xsqlinstances.aws.platformref.upbound.io
 spec:
   claimNames:
-    kind: PostgreSQLInstance
-    plural: postgresqlinstances
+    kind: SQLInstance
+    plural: sqlinstances
   connectionSecretKeys:
     - username
     - password
@@ -13,8 +13,8 @@ spec:
     - port
   group: aws.platformref.upbound.io
   names:
-    kind: XPostgreSQLInstance
-    plural: xpostgresqlinstances
+    kind: XSQLInstance
+    plural: xsqlinstances
   versions:
   - name: v1alpha1
     served: true
@@ -29,6 +29,12 @@ spec:
               parameters:
                 type: object
                 properties:
+                  engine:
+                    type: string
+                    description: This RDS Instance engine, see https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html for possible values.
+                  engineVersion:
+                    type: string
+                    description: This RDS Instance engine version, see https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html for possible values.
                   storageGB:
                     type: integer
                   passwordSecretRef:
@@ -47,8 +53,7 @@ spec:
                     - key
                   clusterRef:
                     type: object
-                    description: "A reference to the Network object that this postgres should be
-                    connected to."
+                    description: "A reference to the Network object that this database should be connected to."
                     properties:
                       id:
                         type: string
@@ -56,6 +61,8 @@ spec:
                     required:
                     - id
                 required:
+                  - engine
+                  - engineVersion
                   - storageGB
                   - clusterRef
                   - passwordSecretRef
