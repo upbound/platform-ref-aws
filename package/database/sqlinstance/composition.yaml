@@ -35,6 +35,7 @@ spec:
             username: masteruser
             skipFinalSnapshot: true
             publiclyAccessible: false
+            dbName: upbound # create custom database within the instance by default
           deletionPolicy: Delete
       patches:
         - fromFieldPath: "metadata.uid"

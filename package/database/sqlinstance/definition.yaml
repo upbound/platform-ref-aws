@@ -32,6 +32,9 @@ spec:
                   engine:
                     type: string
                     description: This RDS Instance engine, see https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html for possible values.
+                    enum:
+                    - postgres
+                    - mariadb
                   engineVersion:
                     type: string
                     description: This RDS Instance engine version, see https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html for possible values.

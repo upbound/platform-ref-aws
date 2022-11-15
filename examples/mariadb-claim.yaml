@@ -9,7 +9,7 @@ spec:
     storageGB: 5
     passwordSecretRef:
       namespace: default
-      name: psqlsecret
+      name: mariadbsecret
       key: password
     clusterRef:
       id: platform-ref-aws
@@ -21,6 +21,6 @@ data:
   password: dXBiMHVuZHIwY2s1ITMxMzM3
 kind: Secret
 metadata:
-  name: psqlsecret
+  name: mariadbsecret
   namespace: default
 type: Opaque
