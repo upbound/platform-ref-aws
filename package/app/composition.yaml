@@ -1,0 +1,70 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: xapps.aws.platformref.upbound.io
+  labels:
+    provider: helm
+spec:
+  writeConnectionSecretsToNamespace: upbound-system
+  compositeTypeRef:
+    apiVersion: aws.platformref.upbound.io/v1alpha1
+    kind: XApp
+  resources:
+    - name: helmRelease
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: Release
+        spec:
+          rollbackLimit: 3
+          forProvider:
+            namespace: ghost
+            chart:
+              name: ghost
+              repository: https://charts.bitnami.com/bitnami
+              version: "19.1.38"
+            values:
+              persistence:
+                enabled: false
+              mysql:
+                enabled: false
+              externalDatabase:
+                database: upbound
+                port: 3306
+              ghostHost: ghost.upbound-test.io
+              ghostBlogTitle: Upbound Rocks!
+            set:
+              - name: externalDatabase.host
+                valueFrom:
+                  secretKeyRef:
+                    key: host
+              - name: externalDatabase.user
+                valueFrom:
+                  secretKeyRef:
+                    key: username
+              - name: externalDatabase.password
+                valueFrom:
+                  secretKeyRef:
+                    key: password
+      patches:
+        # All Helm releases derive their labels and annotations from the XR.
+        - fromFieldPath: metadata.labels
+          toFieldPath: metadata.labels
+        - fromFieldPath: metadata.annotations
+          toFieldPath: metadata.annotations
+        # All Helm releases derive the ProviderConfig to use from the XR.
+        - fromFieldPath: spec.providerConfigRef.name
+          toFieldPath: spec.providerConfigRef.name
+        - fromFieldPath: spec.helm.version
+          toFieldPath: spec.forProvider.chart.version
+        - fromFieldPath: spec.passwordSecretRef.namespace
+          toFieldPath: spec.forProvider.set[0].valueFrom.secretKeyRef.namespace
+        - fromFieldPath: spec.passwordSecretRef.name
+          toFieldPath: spec.forProvider.set[0].valueFrom.secretKeyRef.name
+        - fromFieldPath: spec.passwordSecretRef.namespace
+          toFieldPath: spec.forProvider.set[1].valueFrom.secretKeyRef.namespace
+        - fromFieldPath: spec.passwordSecretRef.name
+          toFieldPath: spec.forProvider.set[1].valueFrom.secretKeyRef.name
+        - fromFieldPath: spec.passwordSecretRef.namespace
+          toFieldPath: spec.forProvider.set[2].valueFrom.secretKeyRef.namespace
+        - fromFieldPath: spec.passwordSecretRef.name
+          toFieldPath: spec.forProvider.set[2].valueFrom.secretKeyRef.name

@@ -10,7 +10,7 @@ spec:
     - username
     - password
     - endpoint
-    - port
+    - host
   group: aws.platformref.upbound.io
   names:
     kind: XSQLInstance
