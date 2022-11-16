@@ -153,6 +153,15 @@ Create a custom defined database:
 kubectl apply -f examples/postgres-claim.yaml
 ```
 
+**NOTE**: Database abstraction is relying on Cluster claim to be ready as it is
+using the same network to have the connectivity with EKS cluster.
+
+Alternatively, you can use mariadb claim:
+
+```
+kubectl apply -f examples/mariadb-claim.yaml
+```
+
 You can verify status by inspecting the claims, composites and managed
 resources:
 
