@@ -30,7 +30,7 @@ spec:
               externalDatabase:
                 database: upbound
                 port: 3306
-              ghostHost: ghost.upbound-test.io
+              ghostHost: upboundrocks.cloud
               ghostBlogTitle: Upbound Rocks!
             set:
               - name: externalDatabase.host
