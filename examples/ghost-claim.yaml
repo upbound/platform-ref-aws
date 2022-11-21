@@ -1,0 +1,12 @@
+apiVersion: aws.platformref.upbound.io/v1alpha1
+kind: App
+metadata:
+  name: platform-ref-aws-ghost
+spec:
+  providerConfigRef:
+    name: platform-ref-aws
+  passwordSecretRef:
+    namespace: default
+    name: platform-ref-aws-db-conn-mariadb
+  writeConnectionSecretToRef:
+    name: platform-ref-aws-ghost-conn

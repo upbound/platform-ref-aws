@@ -63,6 +63,8 @@ spec:
       connectionDetails:
         - fromFieldPath: "status.atProvider.endpoint"
           name: endpoint
+        - fromFieldPath: "status.atProvider.address"
+          name: host
         - fromFieldPath: "spec.forProvider.username"
           name: username
         - fromConnectionSecretKey: "attribute.password"

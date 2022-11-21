@@ -19,8 +19,8 @@ This reference platform defines a custom API for creating an EKS cluster
 ([XCluster](package/cluster/definition.yaml)) which includes the actual EKS
 cluster, a network fabric and Prometheus and other cluster services
 ([XServices](package/cluster/composition.yaml)). Additionally it defines a
-custom API for provisioning Postgres Databases
-([XPostgreSQLInstance](package/database/postgres/definition.yaml)).
+custom API for provisioning RDS Databases
+([XSQLInstance](package/database/sqlinstance/definition.yaml)).
 
 
 ```mermaid
@@ -28,7 +28,7 @@ graph LR;
     MyApp(My App)---MyCluster(XRC: my-cluster);
     MyCluster---XRD1(XRD: XCluster);
     MyApp---MyDB(XRC: my-db);
-    MyDB---XRD2(XRD: XPostgreSQLInstance);
+    MyDB---XRD2(XRD: XSQLInstance);
 		subgraph Configuration:upbound/platform-ref-aws;
 	    XRD1---Composition(XEKS, XNetwork, XServices);
 	    XRD2---Composition2(Composition);
@@ -160,6 +160,12 @@ Alternatively, you can use mariadb claim:
 
 ```
 kubectl apply -f examples/mariadb-claim.yaml
+```
+
+Deploy sample application:
+
+```
+kubectl apply -f examples/ghost-claim.yaml
 ```
 
 You can verify status by inspecting the claims, composites and managed
