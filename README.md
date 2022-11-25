@@ -2,7 +2,7 @@
 
 This repository contains a reference AWS Platform Configuration for
 [Crossplane](https://crossplane.io/). It's a great starting point for building
-internal cloud platforms with AWS and offer a self-service API to your internal
+internal cloud platforms with AWS and offering a self-service API to your internal
 development teams.
 
 This platform provides APIs to provision fully configured EKS clusters, with
@@ -17,8 +17,8 @@ distributed directly to the app namespace.
 
 This reference platform defines a custom API for creating an EKS cluster
 ([XCluster](package/cluster/definition.yaml)) which includes the actual EKS
-cluster, a network fabric and Prometheus and other cluster services
-([XServices](package/cluster/composition.yaml)). Additionally it defines a
+cluster, a network fabric, Prometheus, and other cluster services
+([XServices](package/cluster/composition.yaml)). Additionally, it defines a
 custom API for provisioning RDS Databases
 ([XSQLInstance](package/database/sqlinstance/definition.yaml)).
 
@@ -55,15 +55,15 @@ style RDS.MRs color:#000,fill:#81CABB,stroke:#000,stroke-width:2px
 ```
 
 Learn more about Composite Resources in the [Crossplane
-Docs](https://crossplane.io/docs/v1.9/concepts/composition.html).
+Docs](https://crossplane.io/docs/v1.10/concepts/composition.html).
 
 ## Quickstart
 
-### Pre-Requisites
+### Prerequisites
 
-Before we can install the reference platform we want to install the `up` CLI.
+Before we can install the reference platform we should install the `up` CLI.
 This is a utility that makes following this quickstart guide easier. Everything
-described here can also be done in a declarative approach which we highly
+described here can also be done in a declarative approach - which we highly
 recommend for any production type use-case.
 <!-- TODO enhance this guide: Getting ready for Gitops -->
 
@@ -73,10 +73,10 @@ curl -sL https://cli.upbound.io | sh
 ```
 See [up docs](https://docs.upbound.io/cli/) for more install options.
 
-For installing the platform we need a running Crossplane control plane. We are
+We need a running Crossplane control plane to install our instance. We are
 using [Universal Crossplane (UXP)
 ](https://github.com/upbound/universal-crossplane). Ensure that your kubectl
-context is pointing to the correct Kubernetes cluster or for example create a
+context points to the correct Kubernetes cluster or create a new
 [kind](https://kind.sigs.k8s.io) cluster:
 
 ```console
@@ -98,8 +98,8 @@ kubectl get all -n upbound-system
 ### Install the AWS Reference Platform
 
 Now you can install this reference platform. It's packaged as a [Crossplane
-configuration package](https://crossplane.io/docs/v1.9/concepts/packages.html)
-so there is a single command to install this package:
+configuration package](https://crossplane.io/docs/v1.10/concepts/packages.html)
+so there is a single command to install it:
 
 ```console
 up ctp configuration install xpkg.upbound.io/upbound/platform-ref-aws:v0.5.0
@@ -132,15 +132,15 @@ kubectl create secret generic aws-creds -n upbound-system --from-file=credential
 kubectl apply -f examples/aws-default-provider.yaml
 ```
 
-See [provider-aws docs](https://marketplace.upbound.io/providers/upbound/provider-aws/latest/docs/configuration) for more detailed configuration options
+See [provider-aws docs](https://marketplace.upbound.io/providers/upbound/provider-aws/latest/docs/configuration) for more detailed configuration options.
 
 ## Using the AWS reference platform
 
-🎉 Congratulations. You have just installed your first Crossplane powered
+🎉 Congratulations. You have just installed your first Crossplane-powered
 platform!
 
-Application developers can now use the platform to request resources which than
-will provisioned in AWS. This would usually done by bundling a claim as part of
+Application developers can now use the platform to request resources which then
+will be provisioned in AWS. This would usually be done by bundling a claim as part of
 the application code. In our example here we simply create the claims directly:
 
 Create a custom defined cluster:
@@ -153,29 +153,29 @@ Create a custom defined database:
 kubectl apply -f examples/postgres-claim.yaml
 ```
 
-**NOTE**: Database abstraction is relying on Cluster claim to be ready as it is
-using the same network to have the connectivity with EKS cluster.
+**NOTE**: The database abstraction relies on the cluster claim to be ready - it
+uses the same network to have connectivity with the EKS cluster.
 
-Alternatively, you can use mariadb claim:
+Alternatively, you can use a mariadb claim:
 
 ```
 kubectl apply -f examples/mariadb-claim.yaml
 ```
 
-Deploy sample application:
+Now deploy the sample application:
 
 ```
 kubectl apply -f examples/ghost-claim.yaml
 ```
 
-You can verify status by inspecting the claims, composites and managed
+You can verify the status by inspecting the claims, composites and managed
 resources:
 
 ```console
 kubectl get claim,composite,managed
 ```
 
-To delete the provisioned resources you would simply delete the claims again:
+To delete the provisioned resources you would simply delete the claims:
 
 ```console
 kubectl delete -f examples/cluster-claim.yaml,examples/postgres-claim.yaml
@@ -192,8 +192,8 @@ kubectl delete providers.pkg.crossplane.io crossplane-contrib-provider-helm
 ## Customize for your Organization
 
 So far we have used the existing reference platform but haven't made any
-changes. Lets change this and customize the platform by ensuring that EKS
-Cluster is deployed to Frankfurt (eu-central-1) and that clusters are limitted
+changes. Let's change this and customize the platform by ensuring the EKS
+Cluster is deployed to Frankfurt (eu-central-1) and that clusters are limited
 to 10 nodes.
 
 For the following examples we are using `my-org` and `my-platform`:
@@ -235,7 +235,7 @@ To build the package use the `up xpkg build` command:
 up xpkg build --name package.xpkg --package-root=package --examples-root=examples
 ```
 
-Afterwards you can it to the marketplace. Don't worry it's private to you.
+Afterwards you can push it to the marketplace. Don't worry - it's private to you.
 
 ```console
 TAG=v0.1.0
@@ -250,8 +250,8 @@ open https://marketplace.upbound.io/configurations/${ORG}/${PLATFORM}/${TAG}
 
 ## Using your custom platform
 
-Now if you want to use it you can follow the steps from above. The only
-difference is that you need to specify a package-pull-secret as the package is
+Now to use your custom platform, you can follow the steps above. The only
+difference is that you need to specify a package-pull-secret, as the package is
 currently private:
 
 ```console
@@ -262,12 +262,12 @@ up ctp pull-secret create personal-pull-secret
 up ctp configuration install xpkg.upbound.io/${ORG}/${PLATFORM}:${TAG} --package-pull-secrets=personal-pull-secret
 ```
 
-For alternative declarative installation approach see the [example Configuration
+For the alternative declarative installation approach see the [example Configuration
 manifest](examples/configuration.yaml). Please update to your org, platform and
 tag before applying.
 
-🎉 Congratulations. You have just build and installed your first custom
-Crossplane powered platform!
+🎉 Congratulations. You have just built and installed your first custom
+Crossplane-powered platform!
 
 
 ## Questions?
