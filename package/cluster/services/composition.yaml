@@ -23,7 +23,7 @@ spec:
               # Note that default values are overridden by the patches below.
               name: kube-prometheus-stack
               repository: https://prometheus-community.github.io/helm-charts
-              version: "10.1.0"
+              version: "41.4.1"
             values: {}
       name: releasePrometheus
       patches:
