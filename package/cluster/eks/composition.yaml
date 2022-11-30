@@ -186,7 +186,7 @@ spec:
                 medium: t3.medium
                 large: t3.large
         - fromFieldPath: spec.id
-          toFieldPath: spec.forProvider.subnetSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
+          toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
     - base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: OpenIDConnectProvider
