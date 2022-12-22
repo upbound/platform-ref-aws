@@ -11,7 +11,8 @@ spec:
     apiVersion: aws.platformref.upbound.io/v1alpha1
     kind: XServices
   resources:
-    - base:
+    - name: releasePrometheus
+      base:
         apiVersion: helm.crossplane.io/v1beta1
         kind: Release
         spec:
@@ -25,7 +26,6 @@ spec:
               repository: https://prometheus-community.github.io/helm-charts
               version: "41.4.1"
             values: {}
-      name: releasePrometheus
       patches:
         # All Helm releases derive their labels and annotations from the XR.
         - fromFieldPath: metadata.labels
@@ -38,3 +38,27 @@ spec:
         # Derive the Prometheus operator image and tag from the XR.
         - fromFieldPath: spec.operators.prometheus.version
           toFieldPath: spec.forProvider.chart.version
+    - name: releaseUXP
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: Release
+        spec:
+          rollbackLimit: 3
+          forProvider:
+            namespace: upbound-system
+            chart:
+              # from https://github.com/upbound/universal-crossplane
+              # Note that default values are overridden by the patches below.
+              name: universal-crossplane
+              repository: https://charts.upbound.io/stable
+              version: "1.10.1-up.1"
+            values: {}
+      patches:
+        # All Helm releases derive their labels and annotations from the XR.
+        - fromFieldPath: metadata.labels
+          toFieldPath: metadata.labels
+        - fromFieldPath: metadata.annotations
+          toFieldPath: metadata.annotations
+        # All Helm releases derive the ProviderConfig to use from the XR.
+        - fromFieldPath: spec.providerConfigRef.name
+          toFieldPath: spec.providerConfigRef.name
