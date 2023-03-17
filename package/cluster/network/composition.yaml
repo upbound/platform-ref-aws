@@ -15,6 +15,15 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.labels[networks.aws.platformref.upbound.io/network-id]
+  - name: region
+    patches:
+    - type: PatchSet
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+  - name: deletionPolicy
+    patches:
+    - fromFieldPath: spec.parameters.deletionPolicy
+      toFieldPath: spec.parameters.deletionPolicy
   resources:
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
@@ -31,6 +40,8 @@ spec:
       name: platformref-vcp
       patches:
         - type: PatchSet
+          patchSetName: region
+        - type: PatchSet
           patchSetName: network-id
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
@@ -42,6 +53,8 @@ spec:
               matchControllerRef: true
       name: gateway
       patches:
+        - type: PatchSet
+          patchSetName: region
         - type: PatchSet
           patchSetName: network-id
     - base:
@@ -63,6 +76,8 @@ spec:
               kubernetes.io/role/elb: "1"
       name: subnet-public-west-2a
       patches:
+        - type: PatchSet
+          patchSetName: region
         - type: PatchSet
           patchSetName: network-id
         - type: ToCompositeFieldPath
@@ -88,6 +103,8 @@ spec:
       name: subnet-public-west-2b
       patches:
         - type: PatchSet
+          patchSetName: region
+        - type: PatchSet
           patchSetName: network-id
         - type: ToCompositeFieldPath
           fromFieldPath: metadata.annotations[crossplane.io/external-name]
@@ -110,6 +127,8 @@ spec:
               kubernetes.io/role/internal-elb: "1"
       name: subnet-private-west-2a
       patches:
+        - type: PatchSet
+          patchSetName: region
         - type: PatchSet
           patchSetName: network-id
         - type: ToCompositeFieldPath
@@ -134,6 +153,8 @@ spec:
       name: subnet-private-west-2b
       patches:
         - type: PatchSet
+          patchSetName: region
+        - type: PatchSet
           patchSetName: network-id
         - type: ToCompositeFieldPath
           fromFieldPath: metadata.annotations[crossplane.io/external-name]
@@ -148,6 +169,8 @@ spec:
               matchControllerRef: true
       name: routeTable
       patches:
+        - type: PatchSet
+          patchSetName: region
         - type: PatchSet
           patchSetName: network-id
     - base:
@@ -164,6 +187,8 @@ spec:
       name: route
       patches:
         - type: PatchSet
+          patchSetName: region
+        - type: PatchSet
           patchSetName: network-id
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
@@ -177,6 +202,8 @@ spec:
               matchControllerRef: true
       name: mainRouteTableAssociation
       patches:
+        - type: PatchSet
+          patchSetName: region
         - type: PatchSet
           patchSetName: network-id
     - base:
@@ -195,6 +222,8 @@ spec:
       name: RouteTableAssociation-public-a
       patches:
         - type: PatchSet
+          patchSetName: region
+        - type: PatchSet
           patchSetName: network-id
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
@@ -211,6 +240,8 @@ spec:
                 access: public
       name: RouteTableAssociation-public-b
       patches:
+        - type: PatchSet
+          patchSetName: region
         - type: PatchSet
           patchSetName: network-id
     - base:
@@ -229,6 +260,8 @@ spec:
       name: RouteTableAssociation-private-a
       patches:
         - type: PatchSet
+          patchSetName: region
+        - type: PatchSet
           patchSetName: network-id
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
@@ -246,6 +279,8 @@ spec:
       name: RouteTableAssociation-private-b
       patches:
         - type: PatchSet
+          patchSetName: region
+        - type: PatchSet
           patchSetName: network-id
     - name: securityGroup
       base:
@@ -259,6 +294,8 @@ spec:
             name: platform-ref-aws-cluster
             description: Allow access to databases
       patches:
+        - type: PatchSet
+          patchSetName: region
         - type: PatchSet
           patchSetName: network-id
         - type: ToCompositeFieldPath
@@ -282,6 +319,8 @@ spec:
             description: Everywhere
       patches:
         - type: PatchSet
+          patchSetName: region
+        - type: PatchSet
           patchSetName: network-id
     - name: securityGroupRuleMysql
       base:
@@ -300,5 +339,7 @@ spec:
               matchControllerRef: true
             description: Everywhere
       patches:
+        - type: PatchSet
+          patchSetName: region
         - type: PatchSet
           patchSetName: network-id

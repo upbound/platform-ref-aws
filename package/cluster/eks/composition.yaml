@@ -63,6 +63,10 @@ spec:
             version: "1.23"
       name: kubernetesCluster
       patches:
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.region
+        - fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.parameters.deletionPolicy
           # Change to spec id
         - fromFieldPath: spec.parameters.securityGroupIds
           toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIds
@@ -83,6 +87,8 @@ spec:
               matchControllerRef: true
       name: kubernetesClusterAuth
       patches:
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.region
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.writeConnectionSecretToRef.namespace
         - fromFieldPath: metadata.uid
@@ -175,6 +181,8 @@ spec:
               - t3.medium
       name: nodeGroupPublic
       patches:
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.region
         - fromFieldPath: spec.parameters.nodes.count
           toFieldPath: spec.forProvider.scalingConfig[0].desiredSize
         - fromFieldPath: spec.parameters.nodes.size
