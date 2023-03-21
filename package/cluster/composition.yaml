@@ -17,7 +17,7 @@ spec:
         - fromFieldPath: spec.parameters.deletionPolicy
           toFieldPath: spec.parameters.deletionPolicy
         - fromFieldPath: spec.parameters.region
-          toFieldPath: spec.parameters.region
+          toFieldPath: spec.region
         - type: ToCompositeFieldPath
           fromFieldPath: status.subnetIds
           toFieldPath: status.subnetIds
@@ -48,6 +48,10 @@ spec:
                 fmt: "%s-eks"
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.writeConnectionSecretToRef.namespace
+        - fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.parameters.deletionPolicy
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.parameters.region
         - fromFieldPath: spec.parameters.nodes.count
           toFieldPath: spec.parameters.nodes.count
         - fromFieldPath: spec.parameters.nodes.size

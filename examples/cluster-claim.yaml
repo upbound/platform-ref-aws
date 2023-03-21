@@ -8,6 +8,7 @@ metadata:
 spec:
   id: platform-ref-aws
   parameters:
+    region: us-east-1
     nodes:
       count: 3
       size: small
@@ -15,5 +16,6 @@ spec:
       operators:
         prometheus:
           version: "34.5.1"
+    # deletionPolicy: Delete
   writeConnectionSecretToRef:
     name: platform-ref-aws-kubeconfig

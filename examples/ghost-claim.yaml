@@ -7,6 +7,6 @@ spec:
     name: platform-ref-aws
   passwordSecretRef:
     namespace: default
-    name: platform-ref-aws-db-conn-mariadb
+    name: platform-ref-aws-db-conn-postgres
   writeConnectionSecretToRef:
     name: platform-ref-aws-ghost-conn

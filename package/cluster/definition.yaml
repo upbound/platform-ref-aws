@@ -31,7 +31,7 @@ spec:
                 description: Cluster configuration parameters.
                 properties:
                   region:
-                    tyoe: string
+                    type: string
                     description: Amazon AWS region
                   deletionPolicy:
                     type: string
@@ -70,6 +70,7 @@ spec:
                                 description: Prometheus operator version to run.
                 required:
                 - nodes
+                - region
             required:
             - id
             - parameters

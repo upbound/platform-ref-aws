@@ -16,10 +16,16 @@ spec:
         kind: SubnetGroup
         spec:
           forProvider:
-            region: us-west-2
+            # region: us-west-2
             description: An excellent formation of subnetworks.
-          deletionPolicy: Delete
+            # deletionPolicy: Delete
       patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.region
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.forProvider.deletionPolicy
         - fromFieldPath: spec.parameters.clusterRef.id
           toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
     - name: RDSInstanceSmall
@@ -28,7 +34,7 @@ spec:
         kind: Instance
         spec:
           forProvider:
-            region: us-west-2
+            # region: us-west-2
             dbSubnetGroupNameSelector:
               matchControllerRef: true
             instanceClass: db.t3.micro
@@ -36,8 +42,14 @@ spec:
             skipFinalSnapshot: true
             publiclyAccessible: false
             dbName: upbound # create custom database within the instance by default
-          deletionPolicy: Delete
+            # deletionPolicy: Delete
       patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.region
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.forProvider.deletionPolicy
         - fromFieldPath: "metadata.uid"
           toFieldPath: "spec.writeConnectionSecretToRef.name"
           transforms:

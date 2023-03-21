@@ -9,6 +9,17 @@ spec:
   compositeTypeRef:
     apiVersion: aws.platformref.upbound.io/v1alpha1
     kind: XEKS
+  patchSets:
+  - name: region
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+  # - name: deletionPolicy
+    # patches:
+      # - type: FromCompositeFieldPath
+      # fromFieldPath: spec.parameters.deletionPolicy
+      # toFieldPath: spec.forProvider.deletionPolicy 
   resources:
     - base:
         apiVersion: iam.aws.upbound.io/v1beta1
@@ -52,7 +63,7 @@ spec:
         kind: Cluster
         spec:
           forProvider:
-            region: us-west-2
+            # region: us-west-2
             roleArnSelector:
               matchControllerRef: true
               matchLabels:
@@ -63,10 +74,10 @@ spec:
             version: "1.23"
       name: kubernetesCluster
       patches:
-        - fromFieldPath: spec.parameters.region
-          toFieldPath: spec.forProvider.region
-        - fromFieldPath: spec.parameters.deletionPolicy
-          toFieldPath: spec.parameters.deletionPolicy
+        - type: PatchSet
+          patchSetName: region
+        # - type: PatchSet
+          # patchSetName: deletionPolicy
           # Change to spec id
         - fromFieldPath: spec.parameters.securityGroupIds
           toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIds
@@ -82,13 +93,13 @@ spec:
         kind: ClusterAuth
         spec:
           forProvider:
-            region: us-west-2
+            # region: us-west-2
             clusterNameSelector:
               matchControllerRef: true
       name: kubernetesClusterAuth
       patches:
-        - fromFieldPath: spec.parameters.region
-          toFieldPath: spec.forProvider.region
+        - type: PatchSet
+          patchSetName: region
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.writeConnectionSecretToRef.namespace
         - fromFieldPath: metadata.uid
@@ -163,7 +174,7 @@ spec:
         kind: NodeGroup
         spec:
           forProvider:
-            region: us-west-2
+            # region: us-west-2
             clusterNameSelector:
               matchControllerRef: true
             nodeRoleArnSelector:
@@ -181,8 +192,8 @@ spec:
               - t3.medium
       name: nodeGroupPublic
       patches:
-        - fromFieldPath: spec.parameters.region
-          toFieldPath: spec.forProvider.region
+        - type: PatchSet
+          patchSetName: region
         - fromFieldPath: spec.parameters.nodes.count
           toFieldPath: spec.forProvider.scalingConfig[0].desiredSize
         - fromFieldPath: spec.parameters.nodes.size
