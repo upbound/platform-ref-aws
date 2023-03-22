@@ -16,6 +16,6 @@ spec:
       operators:
         prometheus:
           version: "34.5.1"
-#   deletionPolicy: Delete
+    deletionPolicy: Delete
   writeConnectionSecretToRef:
     name: platform-ref-aws-kubeconfig
