@@ -55,18 +55,19 @@ spec:
                     required:
                     - count
                     - size
-                  deletionPolicy:
-                    type: string
-                    description: Delete or Orphan
-                    enum:
-                      - Delete
-                      - Orphan
+#                 deletionPolicy:
+#                   type: string
+#                   default: Delete
+#                   description: Delete or Orphan
+#                   enum:
+#                     - Delete
+#                     - Orphan
                 required:
                 - region
                 - nodes
                 - subnetIds
                 - securityGroupIds
-                - deletionPolicy
+#               - deletionPolicy
             required:
             - parameters
           status:
