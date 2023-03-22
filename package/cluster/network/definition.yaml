@@ -24,8 +24,16 @@ spec:
                 region:
                   type: string
                   description: AWS region
+                deletionPolicy:
+                  type: string
+                  description: Delete or Orphan
+                  enum:
+                    - Delete
+                    - Orphan
               required:
                 - id
+                - region
+                - deletionPolicy
             status:
               type: object
               properties:

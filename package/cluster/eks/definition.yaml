@@ -27,6 +27,9 @@ spec:
                 type: object
                 description: EKS configuration parameters.
                 properties:
+                  region:
+                    type: string
+                    description: AWS region
                   subnetIds:
                     type: array
                     items:
@@ -52,10 +55,18 @@ spec:
                     required:
                     - count
                     - size
+                  deletionPolicy:
+                    type: string
+                    description: Delete or Orphan
+                    enum:
+                      - Delete
+                      - Orphan
                 required:
+                - region
                 - nodes
                 - subnetIds
                 - securityGroupIds
+                - deletionPolicy
             required:
             - parameters
           status:

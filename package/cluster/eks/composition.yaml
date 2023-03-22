@@ -12,14 +12,14 @@ spec:
   patchSets:
   - name: region
     patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
+    # type: FromCompositeFieldPath is the default type
+    - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-  # - name: deletionPolicy
-    # patches:
-      # - type: FromCompositeFieldPath
-      # fromFieldPath: spec.parameters.deletionPolicy
-      # toFieldPath: spec.forProvider.deletionPolicy 
+  - name: deletionPolicy
+    patches:
+    # type: FromCompositeFieldPath is the default type
+    - fromFieldPath: spec.parameters.deletionPolicy
+      toFieldPath: spec.deletionPolicy
   resources:
     - base:
         apiVersion: iam.aws.upbound.io/v1beta1
@@ -76,8 +76,8 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: region
-        # - type: PatchSet
-          # patchSetName: deletionPolicy
+        - type: PatchSet
+          patchSetName: deletionPolicy
           # Change to spec id
         - fromFieldPath: spec.parameters.securityGroupIds
           toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIds

@@ -15,7 +15,7 @@ spec:
         - fromFieldPath: spec.id
           toFieldPath: spec.id
         - fromFieldPath: spec.parameters.deletionPolicy
-          toFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.deletionPolicy
         - fromFieldPath: spec.parameters.region
           toFieldPath: spec.region
         - type: ToCompositeFieldPath

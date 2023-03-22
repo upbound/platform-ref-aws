@@ -30,12 +30,15 @@ spec:
                 type: object
                 description: Cluster configuration parameters.
                 properties:
-                  region:
-                    type: string
-                    description: Amazon AWS region
                   deletionPolicy:
                     type: string
                     description: Delete or Orphan
+                    enum:
+                      - Delete
+                      - Orphan
+                  region:
+                    type: string
+                    description: Amazon AWS region
                   nodes:
                     type: object
                     description: Cluster node configuration parameters.

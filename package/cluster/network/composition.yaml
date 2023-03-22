@@ -12,12 +12,13 @@ spec:
   patchSets:
   - name: region
     patches:
+    # type: FromCompositeFieldPath is the default
     - fromFieldPath: spec.region
       toFieldPath: spec.forProvider.region
   - name: availabilityZone-a
     patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.region
+    # type: FromCompositeFieldPath is the default
+    - fromFieldPath: spec.region
       toFieldPath: spec.forProvider.availabilityZone
       transforms:
       - type: string
@@ -25,8 +26,8 @@ spec:
           fmt: "%sa"
   - name: availabilityZone-b
     patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.region
+    # type: FromCompositeFieldPath is the default
+    - fromFieldPath: spec.region
       toFieldPath: spec.forProvider.availabilityZone
       transforms:
       - type: string
@@ -34,8 +35,8 @@ spec:
           fmt: "%sb"
   - name: subnetIdSelectorMatchLabelsZone-a
     patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.region
+    # type: FromCompositeFieldPath is the default
+    - fromFieldPath: spec.region
       toFieldPath: spec.forProvider.subnetIdSelector.matchLabels.zone
       transforms:
       - type: string
@@ -43,8 +44,8 @@ spec:
           fmt: "%sa"
   - name: subnetIdSelectorMatchLabelsZone-b
     patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.region
+    # type: FromCompositeFieldPath is the default
+    - fromFieldPath: spec.region
       toFieldPath: spec.forProvider.subnetIdSelector.matchLabels.zone
       transforms:
       - type: string
@@ -52,8 +53,8 @@ spec:
           fmt: "%sa"
   - name: metadataLabelsZone-a
     patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.region
+    # type: FromCompositeFieldPath is the default
+    - fromFieldPath: spec.region
       toFieldPath: metadata.labels.zone
       transforms:
       - type: string
@@ -61,17 +62,22 @@ spec:
           fmt: "%sa"
   - name: metadataLabelsZone-b
     patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.region
+    # type: FromCompositeFieldPath is the default
+    - fromFieldPath: spec.region
       toFieldPath: metadata.labels.zone
       transforms:
       - type: string
         string:
           fmt: "%sb"
+  - name: deletionPolicy
+    patches:
+    # type: FromCompositeFieldPath is the default
+    - fromFieldPath: spec.deletionPolicy
+      toFieldPath: spec.deletionPolicy
   - name: network-id
     patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
+    # type: FromCompositeFieldPath is the default
+    - fromFieldPath: spec.id
       toFieldPath: metadata.labels[networks.aws.platformref.upbound.io/network-id]
   resources:
     - base:
@@ -91,6 +97,8 @@ spec:
         - type: PatchSet
           patchSetName: region
         - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
@@ -104,6 +112,8 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: region
+        - type: PatchSet
+          patchSetName: deletionPolicy
         - type: PatchSet
           patchSetName: network-id
     - base:
@@ -129,6 +139,8 @@ spec:
           patchSetName: metadataLabelsZone-a
         - type: PatchSet
           patchSetName: region
+        - type: PatchSet
+          patchSetName: deletionPolicy
         - type: PatchSet
           patchSetName: availabilityZone-a
         - type: PatchSet
@@ -160,6 +172,8 @@ spec:
         - type: PatchSet
           patchSetName: region
         - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: availabilityZone-b
         - type: PatchSet
           patchSetName: network-id
@@ -188,6 +202,8 @@ spec:
           patchSetName: metadataLabelsZone-a
         - type: PatchSet
           patchSetName: region
+        - type: PatchSet
+          patchSetName: deletionPolicy
         - type: PatchSet
           patchSetName: availabilityZone-a
         - type: PatchSet
@@ -218,6 +234,8 @@ spec:
         - type: PatchSet
           patchSetName: region
         - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: availabilityZone-b
         - type: PatchSet
           patchSetName: network-id
@@ -237,6 +255,8 @@ spec:
         - type: PatchSet
           patchSetName: region
         - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
@@ -253,6 +273,8 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: region
+        - type: PatchSet
+          patchSetName: deletionPolicy
         - type: PatchSet
           patchSetName: network-id
     - base:
@@ -370,6 +392,8 @@ spec:
         - type: PatchSet
           patchSetName: region
         - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
         - type: ToCompositeFieldPath
           fromFieldPath: metadata.annotations[crossplane.io/external-name]
@@ -394,6 +418,8 @@ spec:
         - type: PatchSet
           patchSetName: region
         - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
     - name: securityGroupRuleMysql
       base:
@@ -414,5 +440,7 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: region
+        - type: PatchSet
+          patchSetName: deletionPolicy
         - type: PatchSet
           patchSetName: network-id
