@@ -26,6 +26,7 @@ spec:
                   description: AWS region
                 deletionPolicy:
                   type: string
+                  default: Delete
                   description: Delete or Orphan
                   enum:
                     - Delete

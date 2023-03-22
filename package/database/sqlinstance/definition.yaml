@@ -35,6 +35,9 @@ spec:
                   deletionPolicy:
                     type: string
                     description: Delete or Orphan
+                    enum:
+                      - Delete
+                      - Orphan
                   engine:
                     type: string
                     description: This RDS Instance engine, see https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html for possible values.

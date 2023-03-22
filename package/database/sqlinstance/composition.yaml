@@ -15,17 +15,17 @@ spec:
         apiVersion: rds.aws.upbound.io/v1beta1
         kind: SubnetGroup
         spec:
+          deletionPolicy: Delete
           forProvider:
             # region: us-west-2
             description: An excellent formation of subnetworks.
-            # deletionPolicy: Delete
       patches:
-        - type: FromCompositeFieldPath
-          fromFieldPath: spec.parameters.region
+        # type: FromCompositeFieldPath is default
+        - fromFieldPath: spec.parameters.region
           toFieldPath: spec.forProvider.region
-        - type: FromCompositeFieldPath
-          fromFieldPath: spec.parameters.deletionPolicy
-          toFieldPath: spec.forProvider.deletionPolicy
+        # type: FromCompositeFieldPath is default
+        - fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.deletionPolicy
         - fromFieldPath: spec.parameters.clusterRef.id
           toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
     - name: RDSInstanceSmall
@@ -33,6 +33,7 @@ spec:
         apiVersion: rds.aws.upbound.io/v1beta1
         kind: Instance
         spec:
+          # deletionPolicy: Delete
           forProvider:
             # region: us-west-2
             dbSubnetGroupNameSelector:
@@ -42,14 +43,13 @@ spec:
             skipFinalSnapshot: true
             publiclyAccessible: false
             dbName: upbound # create custom database within the instance by default
-            # deletionPolicy: Delete
       patches:
-        - type: FromCompositeFieldPath
-          fromFieldPath: spec.parameters.region
+        # type: FromCompositeFieldPath is default
+        - fromFieldPath: spec.parameters.region
           toFieldPath: spec.forProvider.region
-        - type: FromCompositeFieldPath
-          fromFieldPath: spec.parameters.deletionPolicy
-          toFieldPath: spec.forProvider.deletionPolicy
+        # type: FromCompositeFieldPath
+        - fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.parameters.deletionPolicy
         - fromFieldPath: "metadata.uid"
           toFieldPath: "spec.writeConnectionSecretToRef.name"
           transforms:
