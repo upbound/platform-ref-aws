@@ -17,7 +17,7 @@ spec:
         spec:
           deletionPolicy: Delete
           forProvider:
-            # region: us-west-2
+            # region: us-west-2 is default in the definition.yaml
             description: An excellent formation of subnetworks.
       patches:
         # type: FromCompositeFieldPath is default
@@ -33,7 +33,7 @@ spec:
         apiVersion: rds.aws.upbound.io/v1beta1
         kind: Instance
         spec:
-          # deletionPolicy: Delete
+          deletionPolicy: Delete
           forProvider:
             # region: us-west-2
             dbSubnetGroupNameSelector:
