@@ -7,5 +7,7 @@ on:
 jobs:
   e2e:
     uses: upbound/uptest/.github/workflows/pr-comment-trigger.yml@main
+    with:
+      package-type: configuration
     secrets:
       UPTEST_CLOUD_CREDENTIALS: ${{ secrets.UPTEST_CLOUD_CREDENTIALS }}
