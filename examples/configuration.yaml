@@ -3,7 +3,6 @@ kind: Configuration
 metadata:
   name: platform-ref-aws
 spec:
-  # package: xpkg.upbound.io/upbound/platform-ref-aws:v0.5.0
-  package: xpkg.upbound.io/markuss/experimental:v0.0.1
+  package: xpkg.upbound.io/upbound/platform-ref-aws:v0.5.1
   packagePullSecrets:
     - name: package-pull-secret
