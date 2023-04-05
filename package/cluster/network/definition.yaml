@@ -21,6 +21,14 @@ spec:
                 id:
                   type: string
                   description: ID of this Network that other objects will use to refer to it.
+                parameters:
+                  deletionPolicy:
+                    type: string
+                    default: Delete
+                    description: Delete or Orphan
+                    enum:
+                      - Delete
+                      - Orphan
                 region:
                   type: string
                   default: us-west-2
@@ -52,13 +60,6 @@ spec:
                     - us-east-2       # US East (Ohio)
                     - us-west-1       # US West (N. California)
                     - us-west-2       # US West (Oregon)
-                deletionPolicy:
-                  type: string
-                  default: Delete
-                  description: Delete or Orphan
-                  enum:
-                    - Delete
-                    - Orphan
               required:
                 - id
             status:

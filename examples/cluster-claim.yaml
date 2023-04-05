@@ -8,7 +8,7 @@ metadata:
 spec:
   id: platform-ref-aws
   parameters:
-    region: us-east-1
+    region: us-west-2
     nodes:
       count: 3
       size: small

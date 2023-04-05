@@ -64,8 +64,8 @@ spec:
           fmt: "%sb"
   - name: deletionPolicy
     patches:
-    - fromFieldPath: spec.deletionPolicy
-      toFieldPath: spec.deletionPolicy
+    - fromFieldPath: spec.parameters.deletionPolicy
+      toFieldPath: spec.parameters.deletionPolicy
   - name: network-id
     patches:
     - fromFieldPath: spec.id
