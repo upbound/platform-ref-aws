@@ -9,20 +9,28 @@ spec:
   compositeTypeRef:
     apiVersion: aws.platformref.upbound.io/v1alpha1
     kind: XSQLInstance
+  patchSets:
+  - name: region
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+  - name: deletionPolicy
+    patches:
+    - fromFieldPath: spec.parameters.deletionPolicy
+      toFieldPath: spec.parameters.deletionPolicy
   resources:
     - name: compositeSQLInstanceDbSubnetGroup
       base:
         apiVersion: rds.aws.upbound.io/v1beta1
         kind: SubnetGroup
         spec:
-          deletionPolicy: Delete
           forProvider:
             description: An excellent formation of subnetworks.
       patches:
-        - fromFieldPath: spec.parameters.region
-          toFieldPath: spec.forProvider.region
-        - fromFieldPath: spec.parameters.deletionPolicy
-          toFieldPath: spec.deletionPolicy
+        - type: PatchSet
+          patchSetName: region
+        - type: PatchSet
+          patchSetName: deletionPolicy
         - fromFieldPath: spec.parameters.clusterRef.id
           toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
     - name: RDSInstanceSmall
@@ -39,10 +47,10 @@ spec:
             publiclyAccessible: false
             dbName: upbound # create custom database within the instance by default
       patches:
-        - fromFieldPath: spec.parameters.region
-          toFieldPath: spec.forProvider.region
-        - fromFieldPath: spec.parameters.deletionPolicy
-          toFieldPath: spec.parameters.deletionPolicy
+        - type: PatchSet
+          patchSetName: region
+        - type: PatchSet
+          patchSetName: deletionPolicy
         - fromFieldPath: "metadata.uid"
           toFieldPath: "spec.writeConnectionSecretToRef.name"
           transforms:

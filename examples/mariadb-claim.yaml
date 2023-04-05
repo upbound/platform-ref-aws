@@ -4,7 +4,7 @@ metadata:
   name: platform-ref-aws-db-mariadb
 spec:
   parameters:
-    region: us-east-1
+    region: us-west-2
     deletionPolicy: Delete
     engine: mariadb
     engineVersion: "10.6.10"

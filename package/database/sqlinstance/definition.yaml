@@ -29,6 +29,14 @@ spec:
               parameters:
                 type: object
                 properties:
+                  paraemters:
+                    deletionPolicy:
+                      type: string
+                      default: Delete
+                      description: Delete or Orphan
+                      enum:
+                        - Delete
+                        - Orphan
                   region:
                     type: string
                     default: us-west-2
@@ -60,13 +68,6 @@ spec:
                       - us-east-2       # US East (Ohio)
                       - us-west-1       # US West (N. California)
                       - us-west-2       # US West (Oregon)
-                  deletionPolicy:
-                    type: string
-                    default: Delete
-                    description: Delete or Orphan
-                    enum:
-                      - Delete
-                      - Orphan
                   engine:
                     type: string
                     description: This RDS Instance engine, see https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html for possible values.
