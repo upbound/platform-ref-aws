@@ -12,12 +12,10 @@ spec:
   patchSets:
   - name: region
     patches:
-    # type: FromCompositeFieldPath is the default type
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
   - name: deletionPolicy
     patches:
-    # type: FromCompositeFieldPath is the default type
     - fromFieldPath: spec.parameters.deletionPolicy
       toFieldPath: spec.deletionPolicy
   resources:
@@ -63,7 +61,6 @@ spec:
         kind: Cluster
         spec:
           forProvider:
-            # region: us-west-2
             roleArnSelector:
               matchControllerRef: true
               matchLabels:
@@ -93,7 +90,6 @@ spec:
         kind: ClusterAuth
         spec:
           forProvider:
-            # region: us-west-2
             clusterNameSelector:
               matchControllerRef: true
       name: kubernetesClusterAuth
@@ -174,7 +170,6 @@ spec:
         kind: NodeGroup
         spec:
           forProvider:
-            # region: us-west-2
             clusterNameSelector:
               matchControllerRef: true
             nodeRoleArnSelector:

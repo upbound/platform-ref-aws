@@ -9,7 +9,6 @@ spec:
     engine: mariadb
     engineVersion: "10.6.10"
     storageGB: 5
-    region: us-east-1
     passwordSecretRef:
       namespace: default
       name: mariadbsecret

@@ -12,12 +12,10 @@ spec:
   patchSets:
   - name: region
     patches:
-    # type: FromCompositeFieldPath is the default
     - fromFieldPath: spec.region
       toFieldPath: spec.forProvider.region
   - name: availabilityZone-a
     patches:
-    # type: FromCompositeFieldPath is the default
     - fromFieldPath: spec.region
       toFieldPath: spec.forProvider.availabilityZone
       transforms:
@@ -26,7 +24,6 @@ spec:
           fmt: "%sa"
   - name: availabilityZone-b
     patches:
-    # type: FromCompositeFieldPath is the default
     - fromFieldPath: spec.region
       toFieldPath: spec.forProvider.availabilityZone
       transforms:
@@ -35,7 +32,6 @@ spec:
           fmt: "%sb"
   - name: subnetIdSelectorMatchLabelsZone-a
     patches:
-    # type: FromCompositeFieldPath is the default
     - fromFieldPath: spec.region
       toFieldPath: spec.forProvider.subnetIdSelector.matchLabels.zone
       transforms:
@@ -44,7 +40,6 @@ spec:
           fmt: "%sa"
   - name: subnetIdSelectorMatchLabelsZone-b
     patches:
-    # type: FromCompositeFieldPath is the default
     - fromFieldPath: spec.region
       toFieldPath: spec.forProvider.subnetIdSelector.matchLabels.zone
       transforms:
@@ -53,7 +48,6 @@ spec:
           fmt: "%sa"
   - name: metadataLabelsZone-a
     patches:
-    # type: FromCompositeFieldPath is the default
     - fromFieldPath: spec.region
       toFieldPath: metadata.labels.zone
       transforms:
@@ -62,7 +56,6 @@ spec:
           fmt: "%sa"
   - name: metadataLabelsZone-b
     patches:
-    # type: FromCompositeFieldPath is the default
     - fromFieldPath: spec.region
       toFieldPath: metadata.labels.zone
       transforms:
@@ -71,12 +64,10 @@ spec:
           fmt: "%sb"
   - name: deletionPolicy
     patches:
-    # type: FromCompositeFieldPath is the default
     - fromFieldPath: spec.deletionPolicy
       toFieldPath: spec.deletionPolicy
   - name: network-id
     patches:
-    # type: FromCompositeFieldPath is the default
     - fromFieldPath: spec.id
       toFieldPath: metadata.labels[networks.aws.platformref.upbound.io/network-id]
   resources:
@@ -85,7 +76,6 @@ spec:
         kind: VPC
         spec:
           forProvider:
-            # region: us-west-2
             cidrBlock: 192.168.0.0/16
             enableDnsSupport: true
             enableDnsHostnames: true
@@ -105,7 +95,6 @@ spec:
         kind: InternetGateway
         spec:
           forProvider:
-            # region: us-west-2
             vpcIdSelector:
               matchControllerRef: true
       name: gateway
@@ -125,12 +114,10 @@ spec:
             access: public
         spec:
           forProvider:
-            # region: us-west-2
             mapPublicIpOnLaunch: true
             cidrBlock: 192.168.0.0/18
             vpcIdSelector:
               matchControllerRef: true
-            # availabilityZone: us-west-2a
             tags:
               kubernetes.io/role/elb: "1"
       name: subnet-public-region-zone-a
@@ -153,16 +140,13 @@ spec:
         kind: Subnet
         metadata:
           labels:
-            # zone: us-west-2b
             access: public
         spec:
           forProvider:
-            # region: us-west-2
             mapPublicIpOnLaunch: true
             cidrBlock: 192.168.64.0/18
             vpcIdSelector:
               matchControllerRef: true
-            # availabilityZone: us-west-2b
             tags:
               kubernetes.io/role/elb: "1"
       name: subnet-public-region-zone-b
@@ -185,15 +169,12 @@ spec:
         kind: Subnet
         metadata:
           labels:
-            # zone: us-west-2a
             access: private
         spec:
           forProvider:
-            # region: us-west-2
             cidrBlock: 192.168.128.0/18
             vpcIdSelector:
               matchControllerRef: true
-                # availabilityZone: us-west-2a
             tags:
               kubernetes.io/role/internal-elb: "1"
       name: subnet-private-region-zone-a
@@ -216,15 +197,12 @@ spec:
         kind: Subnet
         metadata:
           labels:
-            # zone: us-west-2b
             access: private
         spec:
           forProvider:
-            # region: us-west-2
             cidrBlock: 192.168.192.0/18
             vpcIdSelector:
               matchControllerRef: true
-            # availabilityZone: us-west-2b
             tags:
               kubernetes.io/role/internal-elb: "1"
       name: subnet-private-region-zone-b
@@ -247,7 +225,6 @@ spec:
         kind: RouteTable
         spec:
           forProvider:
-            # region: us-west-2
             vpcIdSelector:
               matchControllerRef: true
       name: routeTable
@@ -263,7 +240,6 @@ spec:
         kind: Route
         spec:
           forProvider:
-            # region: us-west-2
             destinationCidrBlock: 0.0.0.0/0
             gatewayIdSelector:
               matchControllerRef: true
@@ -282,7 +258,6 @@ spec:
         kind: MainRouteTableAssociation
         spec:
           forProvider:
-            # region: us-west-2
             routeTableIdSelector:
               matchControllerRef: true
             vpcIdSelector:
@@ -298,13 +273,11 @@ spec:
         kind: RouteTableAssociation
         spec:
           forProvider:
-            # region: us-west-2
             routeTableIdSelector:
               matchControllerRef: true
             subnetIdSelector:
               matchControllerRef: true
               matchLabels:
-                # zone: us-west-2a
                 access: public
       name: RouteTableAssociation-public-a
       patches:
@@ -319,13 +292,11 @@ spec:
         kind: RouteTableAssociation
         spec:
           forProvider:
-            # region: us-west-2
             routeTableIdSelector:
               matchControllerRef: true
             subnetIdSelector:
               matchControllerRef: true
               matchLabels:
-                # zone: us-west-2b
                 access: public
       name: RouteTableAssociation-public-b
       patches:
@@ -340,13 +311,11 @@ spec:
         kind: RouteTableAssociation
         spec:
           forProvider:
-            # region: us-west-2
             routeTableIdSelector:
               matchControllerRef: true
             subnetIdSelector:
               matchControllerRef: true
               matchLabels:
-                # zone: us-west-2a
                 access: private
       name: RouteTableAssociation-private-a
       patches:
@@ -361,13 +330,11 @@ spec:
         kind: RouteTableAssociation
         spec:
           forProvider:
-            # region: us-west-2
             routeTableIdSelector:
               matchControllerRef: true
             subnetIdSelector:
               matchControllerRef: true
               matchLabels:
-                # zone: us-west-2b
                 access: private
       name: RouteTableAssociation-private-b
       patches:
@@ -383,7 +350,6 @@ spec:
         kind: SecurityGroup
         spec:
           forProvider:
-            # region: us-west-2
             vpcIdSelector:
               matchControllerRef: true
             name: platform-ref-aws-cluster
@@ -404,7 +370,6 @@ spec:
         kind: SecurityGroupRule
         spec:
           forProvider:
-            # region: us-west-2
             type: ingress
             fromPort: 5432
             toPort: 5432
@@ -427,7 +392,6 @@ spec:
         kind: SecurityGroupRule
         spec:
           forProvider:
-            # region: us-west-2
             type: ingress
             fromPort: 3306
             toPort: 3306
