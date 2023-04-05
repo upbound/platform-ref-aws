@@ -17,7 +17,7 @@ spec:
         - fromFieldPath: spec.parameters.deletionPolicy
           toFieldPath: spec.parameters.deletionPolicy
         - fromFieldPath: spec.parameters.region
-          toFieldPath: spec.region
+          toFieldPath: spec.parameters.region
         - type: ToCompositeFieldPath
           fromFieldPath: status.subnetIds
           toFieldPath: status.subnetIds
