@@ -7,17 +7,29 @@ spec:
   compositeTypeRef:
     apiVersion: aws.platformref.upbound.io/v1alpha1
     kind: XCluster
+  patchSets:
+  - name: specId
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: spec.id
+  - name: region
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.parameters.region
+  - name: deletionPolicy
+  - fromFieldPath: spec.parameters.deletionPolicy
+    toFieldPath: spec.parameters.deletionPolicy
   resources:
     - base:
         apiVersion: aws.platformref.upbound.io/v1alpha1
         kind: XNetwork
       patches:
-        - fromFieldPath: spec.id
-          toFieldPath: spec.id
-        - fromFieldPath: spec.parameters.deletionPolicy
-          toFieldPath: spec.parameters.deletionPolicy
-        - fromFieldPath: spec.parameters.region
-          toFieldPath: spec.parameters.region
+        - type: PatchSet
+          patchSetName: specId
+        - type: PatchSet
+          patchSetName: region
+        - type: PatchSet
+          patchSetName: deletionPolicy
         - type: ToCompositeFieldPath
           fromFieldPath: status.subnetIds
           toFieldPath: status.subnetIds
@@ -36,8 +48,8 @@ spec:
         - fromConnectionSecretKey: kubeconfig
       name: compositeClusterEKS
       patches:
-        - fromFieldPath: spec.id
-          toFieldPath: spec.id
+        - type: PatchSet
+          patchSetName: specId
         - fromFieldPath: spec.id
           toFieldPath: metadata.annotations[crossplane.io/external-name]
         - fromFieldPath: metadata.uid
@@ -48,10 +60,10 @@ spec:
                 fmt: "%s-eks"
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.writeConnectionSecretToRef.namespace
-        - fromFieldPath: spec.parameters.deletionPolicy
-          toFieldPath: spec.parameters.deletionPolicy
-        - fromFieldPath: spec.parameters.region
-          toFieldPath: spec.parameters.region
+        - type: PatchSet
+          patchSetName: region
+        - type: PatchSet
+          patchSetName: deletionPolicy
         - fromFieldPath: spec.parameters.nodes.count
           toFieldPath: spec.parameters.nodes.count
         - fromFieldPath: spec.parameters.nodes.size
