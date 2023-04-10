@@ -17,8 +17,9 @@ spec:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.parameters.region
   - name: deletionPolicy
-  - fromFieldPath: spec.parameters.deletionPolicy
-    toFieldPath: spec.parameters.deletionPolicy
+    patches:
+    - fromFieldPath: spec.parameters.deletionPolicy
+      toFieldPath: spec.parameters.deletionPolicy
   resources:
     - base:
         apiVersion: aws.platformref.upbound.io/v1alpha1
