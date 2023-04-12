@@ -22,13 +22,15 @@ spec:
                   type: string
                   description: ID of this Network that other objects will use to refer to it.
                 parameters:
-                  deletionPolicy:
-                    type: string
-                    default: Delete
-                    description: Delete or Orphan
-                    enum:
-                      - Delete
-                      - Orphan
+                  type: object
+                  properties:
+                    deletionPolicy:
+                      type: string
+                      default: Delete
+                      description: Delete or Orphan
+                      enum:
+                        - Delete
+                        - Orphan
                   region:
                     type: string
                     default: us-west-2
