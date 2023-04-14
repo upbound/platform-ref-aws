@@ -29,86 +29,83 @@ spec:
               parameters:
                 type: object
                 properties:
-                  parameters:
-                    type: object
-                    properties:
-                      deletionPolicy:
-                        type: string
-                        default: Delete
-                        description: Delete or Orphan
-                        enum:
-                          - Delete
-                          - Orphan
-                    region:
-                      type: string
-                      default: us-west-2
-                      description: Amazon AWS region
-                      enum:
-                        - af-south-1      # Africa (Cape Town)
-                        - ap-east-1       # Asia Pacific (Hong Kong)
-                        - ap-northeast-1  # Asia Pacific (Singapore)
-                        - ap-northeast-2  # Asia Pacific (Seoul)
-                        - ap-northeast-3  # Asia Pacific (Osaka)
-                        - ap-south-1      # Asia Pacific (Mumbai)
-                        - ap-south-2      # Asia Pacific (Hyderabad)
-                        - ap-southeast-1  # Asia Pacific (Singapore)
-                        - ap-southeast-2  # Asia Pacific (Sydney)
-                        - ap-southeast-3  # Asia Pacific (Jakarta)
-                        - ap-southeast-4  # Asia Pacific (Melbourne)
-                        - ca-central-1    # Canada (Central)
-                        - eu-central-1    # Europe (Frankfurt)
-                        - eu-central-2    # Europe (Zurich)
-                        - eu-west-1       # Europe (Ireland)
-                        - eu-west-2       # Europe (London)
-                        - eu-west-3       # Europe (Paris)
-                        - eu-north-1      # Europe (Stockholm)
-                        - eu-south-1      # Europe (Milan)
-                        - me-central-1    # Middle East (UAE)
-                        - me-south-1      # Middle East (Bahrain)
-                        - sa-east-1       # South America (São Paulo)
-                        - us-east-1       # US East (N. Virginia)
-                        - us-east-2       # US East (Ohio)
-                        - us-west-1       # US West (N. California)
-                        - us-west-2       # US West (Oregon)
-                  engine:
+                  deletionPolicy:
                     type: string
-                    description: This RDS Instance engine, see https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html for possible values.
+                    default: Delete
+                    description: Delete or Orphan
                     enum:
-                    - postgres
-                    - mariadb
-                  engineVersion:
+                      - Delete
+                      - Orphan
+                region:
+                  type: string
+                  default: us-west-2
+                  description: Amazon AWS region
+                  enum:
+                    - af-south-1      # Africa (Cape Town)
+                    - ap-east-1       # Asia Pacific (Hong Kong)
+                    - ap-northeast-1  # Asia Pacific (Singapore)
+                    - ap-northeast-2  # Asia Pacific (Seoul)
+                    - ap-northeast-3  # Asia Pacific (Osaka)
+                    - ap-south-1      # Asia Pacific (Mumbai)
+                    - ap-south-2      # Asia Pacific (Hyderabad)
+                    - ap-southeast-1  # Asia Pacific (Singapore)
+                    - ap-southeast-2  # Asia Pacific (Sydney)
+                    - ap-southeast-3  # Asia Pacific (Jakarta)
+                    - ap-southeast-4  # Asia Pacific (Melbourne)
+                    - ca-central-1    # Canada (Central)
+                    - eu-central-1    # Europe (Frankfurt)
+                    - eu-central-2    # Europe (Zurich)
+                    - eu-west-1       # Europe (Ireland)
+                    - eu-west-2       # Europe (London)
+                    - eu-west-3       # Europe (Paris)
+                    - eu-north-1      # Europe (Stockholm)
+                    - eu-south-1      # Europe (Milan)
+                    - me-central-1    # Middle East (UAE)
+                    - me-south-1      # Middle East (Bahrain)
+                    - sa-east-1       # South America (São Paulo)
+                    - us-east-1       # US East (N. Virginia)
+                    - us-east-2       # US East (Ohio)
+                    - us-west-1       # US West (N. California)
+                    - us-west-2       # US West (Oregon)
+              engine:
+                type: string
+                description: This RDS Instance engine, see https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html for possible values.
+                enum:
+                - postgres
+                - mariadb
+              engineVersion:
+                type: string
+                description: This RDS Instance engine version, see https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html for possible values.
+              storageGB:
+                type: integer
+              passwordSecretRef:
+                type: object
+                description: "A reference to the Secret object containing database password"
+                properties:
+                  namespace:
                     type: string
-                    description: This RDS Instance engine version, see https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html for possible values.
-                  storageGB:
-                    type: integer
-                  passwordSecretRef:
-                    type: object
-                    description: "A reference to the Secret object containing database password"
-                    properties:
-                      namespace:
-                        type: string
-                      name:
-                        type: string
-                      key:
-                        type: string
-                    required:
-                    - namespace
-                    - name
-                    - key
-                  clusterRef:
-                    type: object
-                    description: "A reference to the Network object that this database should be connected to."
-                    properties:
-                      id:
-                        type: string
-                        description: ID of the Network object this ref points to.
-                    required:
-                    - id
+                  name:
+                    type: string
+                  key:
+                    type: string
                 required:
-                  - engine
-                  - engineVersion
-                  - storageGB
-                  - clusterRef
-                  - passwordSecretRef
+                - namespace
+                - name
+                - key
+              clusterRef:
+                type: object
+                description: "A reference to the Network object that this database should be connected to."
+                properties:
+                  id:
+                    type: string
+                    description: ID of the Network object this ref points to.
+                required:
+                - id
             required:
-              - parameters
+              - engine
+              - engineVersion
+              - storageGB
+              - clusterRef
+              - passwordSecretRef
+        required:
+          - parameters
