@@ -67,45 +67,45 @@ spec:
                     - us-east-2       # US East (Ohio)
                     - us-west-1       # US West (N. California)
                     - us-west-2       # US West (Oregon)
-              engine:
-                type: string
-                description: This RDS Instance engine, see https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html for possible values.
-                enum:
-                - postgres
-                - mariadb
-              engineVersion:
-                type: string
-                description: This RDS Instance engine version, see https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html for possible values.
-              storageGB:
-                type: integer
-              passwordSecretRef:
-                type: object
-                description: "A reference to the Secret object containing database password"
-                properties:
-                  namespace:
-                    type: string
-                  name:
-                    type: string
-                  key:
-                    type: string
-                required:
-                - namespace
-                - name
-                - key
-              clusterRef:
-                type: object
-                description: "A reference to the Network object that this database should be connected to."
-                properties:
-                  id:
-                    type: string
-                    description: ID of the Network object this ref points to.
-                required:
-                - id
-            required:
-              - engine
-              - engineVersion
-              - storageGB
-              - clusterRef
-              - passwordSecretRef
-        required:
-          - parameters
+                engine:
+                  type: string
+                  description: This RDS Instance engine, see https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html for possible values.
+                  enum:
+                  - postgres
+                  - mariadb
+                engineVersion:
+                  type: string
+                  description: This RDS Instance engine version, see https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html for possible values.
+                storageGB:
+                  type: integer
+                passwordSecretRef:
+                  type: object
+                  description: "A reference to the Secret object containing database password"
+                  properties:
+                    namespace:
+                      type: string
+                    name:
+                      type: string
+                    key:
+                      type: string
+                  required:
+                  - namespace
+                  - name
+                  - key
+                clusterRef:
+                  type: object
+                  description: "A reference to the Network object that this database should be connected to."
+                  properties:
+                    id:
+                      type: string
+                      description: ID of the Network object this ref points to.
+                  required:
+                  - id
+              required:
+                - engine
+                - engineVersion
+                - storageGB
+                - clusterRef
+                - passwordSecretRef
+          required:
+            - parameters
