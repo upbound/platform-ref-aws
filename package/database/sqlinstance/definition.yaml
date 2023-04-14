@@ -29,7 +29,7 @@ spec:
               parameters:
                 type: object
                 properties:
-                  paraemters:
+                  parameters:
                     type: object
                     properties:
                       deletionPolicy:
