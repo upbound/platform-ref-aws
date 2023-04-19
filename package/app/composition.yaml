@@ -54,7 +54,7 @@ spec:
         # All Helm releases derive the ProviderConfig to use from the XR.
         - fromFieldPath: spec.providerConfigRef.name
           toFieldPath: spec.providerConfigRef.name
-        - fromFieldPath: spec.helm.version
+        - fromFieldPath: spec.helm.chart.version
           toFieldPath: spec.forProvider.chart.version
         - fromFieldPath: spec.passwordSecretRef.namespace
           toFieldPath: spec.forProvider.set[0].valueFrom.secretKeyRef.namespace
