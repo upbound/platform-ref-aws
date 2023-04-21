@@ -17,7 +17,7 @@ spec:
   - name: deletionPolicy
     patches:
     - fromFieldPath: spec.parameters.deletionPolicy
-      toFieldPath: spec.forProvider.deletionPolicy
+      toFieldPath: spec.deletionPolicy
   resources:
     - base:
         apiVersion: iam.aws.upbound.io/v1beta1

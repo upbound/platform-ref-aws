@@ -31,14 +31,12 @@ spec:
                 properties:
                   deletionPolicy:
                     type: string
-                    default: Delete
                     description: Delete or Orphan
                     enum:
                       - Delete
                       - Orphan
                   region:
                     type: string
-                    default: us-west-2
                     description: Amazon AWS region
                     enum:
                       - af-south-1      # Africa (Cape Town)
@@ -102,6 +100,8 @@ spec:
                     required:
                     - id
                 required:
+                  - region
+                  - deletionPolicy
                   - engine
                   - engineVersion
                   - storageGB

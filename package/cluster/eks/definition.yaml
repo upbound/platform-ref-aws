@@ -27,6 +27,13 @@ spec:
                 type: object
                 description: EKS configuration parameters.
                 properties:
+                  deletionPolicy:
+                    type: string
+                    default: Delete
+                    description: Delete or Orphan
+                    enum:
+                      - Delete
+                      - Orphan
                   region:
                     type: string
                     default: us-west-2
@@ -83,13 +90,6 @@ spec:
                     required:
                     - count
                     - size
-                  deletionPolicy:
-                    type: string
-                    default: Delete
-                    description: Delete or Orphan
-                    enum:
-                      - Delete
-                      - Orphan
                 required:
                 - nodes
                 - subnetIds
