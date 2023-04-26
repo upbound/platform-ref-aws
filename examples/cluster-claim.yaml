@@ -4,7 +4,7 @@ metadata:
   name: platform-ref-aws
   namespace: default
   annotations:
-    uptest.upbound.io/post-assert-hook: testhooks/delete-release.sh
+    uptest.upbound.io/pre-delete-hook: testhooks/delete-release.sh
 spec:
   id: platform-ref-aws
   parameters:
