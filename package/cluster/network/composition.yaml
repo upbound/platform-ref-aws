@@ -62,10 +62,6 @@ spec:
       - type: string
         string:
           fmt: "%sb"
-  - name: deletionPolicy
-    patches:
-    - fromFieldPath: spec.parameters.deletionPolicy
-      toFieldPath: spec.deletionPolicy
   - name: network-id
     patches:
     - fromFieldPath: spec.id
@@ -87,8 +83,6 @@ spec:
         - type: PatchSet
           patchSetName: region
         - type: PatchSet
-          patchSetName: deletionPolicy
-        - type: PatchSet
           patchSetName: network-id
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
@@ -101,8 +95,6 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: region
-        - type: PatchSet
-          patchSetName: deletionPolicy
         - type: PatchSet
           patchSetName: network-id
     - base:
@@ -126,8 +118,6 @@ spec:
           patchSetName: metadataLabelsZone-a
         - type: PatchSet
           patchSetName: region
-        - type: PatchSet
-          patchSetName: deletionPolicy
         - type: PatchSet
           patchSetName: availabilityZone-a
         - type: PatchSet
@@ -156,8 +146,6 @@ spec:
         - type: PatchSet
           patchSetName: region
         - type: PatchSet
-          patchSetName: deletionPolicy
-        - type: PatchSet
           patchSetName: availabilityZone-b
         - type: PatchSet
           patchSetName: network-id
@@ -183,8 +171,6 @@ spec:
           patchSetName: metadataLabelsZone-a
         - type: PatchSet
           patchSetName: region
-        - type: PatchSet
-          patchSetName: deletionPolicy
         - type: PatchSet
           patchSetName: availabilityZone-a
         - type: PatchSet
@@ -212,8 +198,6 @@ spec:
         - type: PatchSet
           patchSetName: region
         - type: PatchSet
-          patchSetName: deletionPolicy
-        - type: PatchSet
           patchSetName: availabilityZone-b
         - type: PatchSet
           patchSetName: network-id
@@ -232,8 +216,6 @@ spec:
         - type: PatchSet
           patchSetName: region
         - type: PatchSet
-          patchSetName: deletionPolicy
-        - type: PatchSet
           patchSetName: network-id
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
@@ -249,8 +231,6 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: region
-        - type: PatchSet
-          patchSetName: deletionPolicy
         - type: PatchSet
           patchSetName: network-id
     - base:
@@ -268,8 +248,6 @@ spec:
           patchSetName: region
         - type: PatchSet
           patchSetName: network-id
-        - type: PatchSet
-          patchSetName: deletionPolicy
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: RouteTableAssociation
@@ -285,8 +263,6 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: region
-        - type: PatchSet
-          patchSetName: deletionPolicy
         - type: PatchSet
           patchSetName: subnetIdSelectorMatchLabelsZone-a
         - type: PatchSet
@@ -307,8 +283,6 @@ spec:
         - type: PatchSet
           patchSetName: region
         - type: PatchSet
-          patchSetName: deletionPolicy
-        - type: PatchSet
           patchSetName: subnetIdSelectorMatchLabelsZone-b
         - type: PatchSet
           patchSetName: network-id
@@ -327,8 +301,6 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: region
-        - type: PatchSet
-          patchSetName: deletionPolicy
         - type: PatchSet
           patchSetName: subnetIdSelectorMatchLabelsZone-a
         - type: PatchSet
@@ -349,8 +321,6 @@ spec:
         - type: PatchSet
           patchSetName: region
         - type: PatchSet
-          patchSetName: deletionPolicy
-        - type: PatchSet
           patchSetName: subnetIdSelectorMatchLabelsZone-b
         - type: PatchSet
           patchSetName: network-id
@@ -367,8 +337,6 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: region
-        - type: PatchSet
-          patchSetName: deletionPolicy
         - type: PatchSet
           patchSetName: network-id
         - type: ToCompositeFieldPath
@@ -393,8 +361,6 @@ spec:
         - type: PatchSet
           patchSetName: region
         - type: PatchSet
-          patchSetName: deletionPolicy
-        - type: PatchSet
           patchSetName: network-id
     - name: securityGroupRuleMysql
       base:
@@ -414,7 +380,5 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: region
-        - type: PatchSet
-          patchSetName: deletionPolicy
         - type: PatchSet
           patchSetName: network-id

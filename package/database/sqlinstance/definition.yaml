@@ -29,12 +29,6 @@ spec:
               parameters:
                 type: object
                 properties:
-                  deletionPolicy:
-                    type: string
-                    description: Delete or Orphan
-                    enum:
-                      - Delete
-                      - Orphan
                   region:
                     type: string
                     description: Amazon AWS region
@@ -101,7 +95,6 @@ spec:
                     - id
                 required:
                   - region
-                  - deletionPolicy
                   - engine
                   - engineVersion
                   - storageGB

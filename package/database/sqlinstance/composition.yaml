@@ -14,13 +14,6 @@ spec:
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-  - name: deletionPolicy
-    # The fromFieldPath refers to the Crossplane API definition.yaml
-    # The toFieldPath refers to the provider specification
-    # https://doc.crds.dev/github.com/crossplane/provider-aws/database.aws.crossplane.io/RDSInstance/v1beta1@v0.33.0
-    patches:
-    - fromFieldPath: spec.parameters.deletionPolicy
-      toFieldPath: spec.deletionPolicy
   resources:
     - name: compositeSQLInstanceDbSubnetGroup
       base:
@@ -32,8 +25,6 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: region
-        - type: PatchSet
-          patchSetName: deletionPolicy
         - fromFieldPath: spec.parameters.clusterRef.id
           toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
     - name: RDSInstanceSmall
@@ -41,7 +32,6 @@ spec:
         apiVersion: rds.aws.upbound.io/v1beta1
         kind: Instance
         spec:
-          deletionPolicy: Orphan
           forProvider:
             dbSubnetGroupNameSelector:
               matchControllerRef: true
@@ -53,8 +43,6 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: region
-        - type: PatchSet
-          patchSetName: deletionPolicy
         - fromFieldPath: "metadata.uid"
           toFieldPath: "spec.writeConnectionSecretToRef.name"
           transforms:

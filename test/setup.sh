@@ -7,7 +7,7 @@ ${KUBECTL} wait configuration.pkg platform-ref-aws --for=condition=Healthy --tim
 ${KUBECTL} wait configuration.pkg platform-ref-aws --for=condition=Installed --timeout 5m
 
 echo "Creating cloud credential secret..."
-${KUBECTL} -n upbound-system create secret generic aws-creds --from-literal=credentials="${UPTEST_CLOUD_CREDENTIALS}" \
+${KUBECTL} -n upbound-system create secret generic aws-creds --from-file=credentials="${UPTEST_CLOUD_CREDENTIALS_PATH}" \
     --dry-run=client -o yaml | ${KUBECTL} apply -f -
 
 echo "Waiting until provider-aws is healthy..."

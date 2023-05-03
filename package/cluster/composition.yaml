@@ -16,10 +16,6 @@ spec:
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.parameters.region
-  - name: deletionPolicy
-    patches:
-    - fromFieldPath: spec.parameters.deletionPolicy
-      toFieldPath: spec.parameters.deletionPolicy
   resources:
     - base:
         apiVersion: aws.platformref.upbound.io/v1alpha1
@@ -29,8 +25,6 @@ spec:
           patchSetName: specId
         - type: PatchSet
           patchSetName: region
-        - type: PatchSet
-          patchSetName: deletionPolicy
         - type: ToCompositeFieldPath
           fromFieldPath: status.subnetIds
           toFieldPath: status.subnetIds
@@ -63,8 +57,6 @@ spec:
           toFieldPath: spec.writeConnectionSecretToRef.namespace
         - type: PatchSet
           patchSetName: region
-        - type: PatchSet
-          patchSetName: deletionPolicy
         - fromFieldPath: spec.parameters.nodes.count
           toFieldPath: spec.parameters.nodes.count
         - fromFieldPath: spec.parameters.nodes.size

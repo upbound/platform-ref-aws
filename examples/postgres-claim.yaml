@@ -6,7 +6,6 @@ metadata:
 spec:
   parameters:
     region: us-west-2
-    deletionPolicy: Delete
     engine: postgres
     engineVersion: "13.7"
     storageGB: 5
