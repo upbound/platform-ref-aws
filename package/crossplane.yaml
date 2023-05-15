@@ -30,7 +30,13 @@ spec:
   crossplane:
     version: ">=v1.7.0-0"
   dependsOn:
-    - provider: xpkg.upbound.io/upbound/provider-aws
-      version: ">=v0.15.0"
     - provider: xpkg.upbound.io/crossplane-contrib/provider-helm
       version: ">=v0.12.0"
+    - provider: xpkg.upbound.io/upbound-release-candidates/provider-aws-ec2
+      version: ">=v0.35.0"
+    - provider: xpkg.upbound.io/upbound-release-candidates/provider-aws-eks
+      version: ">=v0.35.0"
+    - provider: xpkg.upbound.io/upbound-release-candidates/provider-aws-iam
+      version: ">=v0.35.0"
+    - provider: xpkg.upbound.io/upbound-release-candidates/provider-aws-rds
+      version: ">=v0.35.0"
