@@ -21,7 +21,7 @@ spec:
             chart:
               name: ghost
               repository: https://charts.bitnami.com/bitnami
-              version: "19.1.38"
+              version: "19.3.10"
             values:
               persistence:
                 enabled: false
