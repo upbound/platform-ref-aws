@@ -28,7 +28,7 @@ metadata:
       customize to meet the exact needs of your organization!
 spec:
   crossplane:
-    version: ">=v1.10.0-0"
+    version: ">=v1.12.1-0"
   dependsOn:
     - provider: xpkg.upbound.io/crossplane-contrib/provider-helm
       version: ">=v0.15.0"
