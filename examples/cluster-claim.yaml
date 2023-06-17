@@ -17,6 +17,6 @@ spec:
         prometheus:
           version: "34.5.1"
         universal-crossplane:
-          version: "1.12.1-up.1"
+          version: "1.12.2-up.1"
   writeConnectionSecretToRef:
     name: platform-ref-aws-kubeconfig
