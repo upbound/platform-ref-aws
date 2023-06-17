@@ -29,6 +29,14 @@ spec:
                       version:
                         type: string
                         description: Prometheus operator version to run.
+                  universal-crossplane:
+                    type: object
+                    description: Configuration for Universal Crossplane (UXP)
+                    properties:
+                      version:
+                        type: string
+                        description: UXP Version. Default is 1.12.2-up.1
+                        default: 1.12.2-up.1
               providerConfigRef:
                 type: object
                 description: "A reference to the ProviderConfig of the cluster that services should

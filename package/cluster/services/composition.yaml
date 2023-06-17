@@ -51,7 +51,6 @@ spec:
               # Note that default values are overridden by the patches below.
               name: universal-crossplane
               repository: https://charts.upbound.io/stable
-              version: "1.10.1-up.1"
             values: {}
       patches:
         # All Helm releases derive their labels and annotations from the XR.
@@ -62,3 +61,5 @@ spec:
         # All Helm releases derive the ProviderConfig to use from the XR.
         - fromFieldPath: spec.providerConfigRef.name
           toFieldPath: spec.providerConfigRef.name
+        - fromFieldPath: spec.operators.universal-crossplane.version
+          toFieldPath: spec.forProvider.chart.version

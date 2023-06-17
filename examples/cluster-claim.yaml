@@ -8,6 +8,7 @@ metadata:
 spec:
   id: platform-ref-aws
   parameters:
+    version: "1.26"
     nodes:
       count: 3
       size: small
@@ -15,5 +16,7 @@ spec:
       operators:
         prometheus:
           version: "34.5.1"
+        universal-crossplane:
+          version: "1.12.1-up.1"
   writeConnectionSecretToRef:
     name: platform-ref-aws-kubeconfig
