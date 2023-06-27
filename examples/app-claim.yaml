@@ -2,6 +2,7 @@ apiVersion: aws.platformref.upbound.io/v1alpha1
 kind: App
 metadata:
   name: platform-ref-aws-ghost
+  namespace: default
 spec:
   providerConfigRef:
     name: platform-ref-aws
