@@ -60,7 +60,6 @@ spec:
             vpcConfig:
               - endpointPrivateAccess: true
                 endpointPublicAccess: true
-            version: "1.23"
       name: kubernetesCluster
       patches:
           # Change to spec id
@@ -68,6 +67,8 @@ spec:
           toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIds
         - fromFieldPath: spec.parameters.subnetIds
           toFieldPath: spec.forProvider.vpcConfig[0].subnetIds
+        - fromFieldPath: spec.parameters.version
+          toFieldPath: spec.forProvider.version
         - type: ToCompositeFieldPath
           fromFieldPath: status.atProvider.identity[0].oidc[0].issuer
           toFieldPath: status.eks.oidc

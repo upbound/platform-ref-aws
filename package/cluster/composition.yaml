@@ -44,6 +44,8 @@ spec:
                 fmt: "%s-eks"
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.writeConnectionSecretToRef.namespace
+        - fromFieldPath: spec.parameters.version
+          toFieldPath: spec.parameters.version
         - fromFieldPath: spec.parameters.nodes.count
           toFieldPath: spec.parameters.nodes.count
         - fromFieldPath: spec.parameters.nodes.size
@@ -65,3 +67,5 @@ spec:
           toFieldPath: spec.providerConfigRef.name
         - fromFieldPath: spec.parameters.services.operators.prometheus.version
           toFieldPath: spec.operators.prometheus.version
+        - fromFieldPath: spec.parameters.services.operators.universal-crossplane.version
+          toFieldPath: spec.operators.universal-crossplane.version
