@@ -2,6 +2,7 @@ apiVersion: aws.platformref.upbound.io/v1alpha1
 kind: SQLInstance
 metadata:
   name: platform-ref-aws-db-mariadb
+  namespace: default
 spec:
   parameters:
     engine: mariadb
