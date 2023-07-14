@@ -147,6 +147,17 @@ spec:
         kind: RolePolicyAttachment
         spec:
           forProvider:
+            policyArn: arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy
+            roleSelector:
+              matchControllerRef: true
+              matchLabels:
+                role: nodegroup
+      name: ebsCsiRolePolicyAttachment
+    - base:
+        apiVersion: iam.aws.upbound.io/v1beta1
+        kind: RolePolicyAttachment
+        spec:
+          forProvider:
             policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
             roleSelector:
               matchControllerRef: true
@@ -188,6 +199,19 @@ spec:
                 large: t3.large
         - fromFieldPath: spec.id
           toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
+    - base:
+        apiVersion: eks.aws.upbound.io/v1beta1
+        kind: Addon
+        metadata:
+          annotations:
+            crossplane.io/external-name: aws-ebs-csi-driver
+        spec:
+          forProvider:
+            addonName: aws-ebs-csi-driver
+            clusterNameSelector:
+              matchControllerRef: true
+            region: us-west-2
+      name: ebsCsiAddon
     - base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: OpenIDConnectProvider
