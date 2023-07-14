@@ -54,6 +54,8 @@ spec:
           toFieldPath: spec.forProvider.allocatedStorage
         - fromFieldPath: spec.parameters.clusterRef.id
           toFieldPath: spec.forProvider.vpcSecurityGroupIdSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
+        - fromFieldPath: spec.parameters.autoGeneratePassword
+          toFieldPath: spec.forProvider.autoGeneratePassword
         - fromFieldPath: spec.parameters.passwordSecretRef.namespace
           toFieldPath: spec.forProvider.passwordSecretRef.namespace
         - fromFieldPath: spec.parameters.passwordSecretRef.name

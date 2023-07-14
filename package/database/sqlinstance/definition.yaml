@@ -54,6 +54,8 @@ spec:
                     - namespace
                     - name
                     - key
+                  autoGeneratePassword:
+                    type: boolean
                   clusterRef:
                     type: object
                     description: "A reference to the Network object that this database should be connected to."
