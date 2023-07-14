@@ -207,6 +207,7 @@ spec:
             crossplane.io/external-name: aws-ebs-csi-driver
         spec:
           forProvider:
+            addonName: aws-ebs-csi-driver
             clusterNameSelector:
               matchControllerRef: true
             region: us-west-2
