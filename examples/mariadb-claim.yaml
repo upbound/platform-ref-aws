@@ -8,6 +8,7 @@ spec:
     engine: mariadb
     engineVersion: "10.6.10"
     storageGB: 5
+    autoGeneratePassword: true
     passwordSecretRef:
       namespace: default
       name: mariadbsecret
@@ -18,8 +19,6 @@ spec:
     name: platform-ref-aws-db-conn-mariadb
 ---
 apiVersion: v1
-data:
-  password: dXBiMHVuZHIwY2s1ITMxMzM3
 kind: Secret
 metadata:
   name: mariadbsecret
