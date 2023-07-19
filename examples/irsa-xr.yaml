@@ -1,0 +1,37 @@
+apiVersion: aws.platformref.upbound.io/v1alpha1
+kind: XIRSA
+metadata:
+  name: irsa-xplane
+spec:
+  deletionPolicy: Delete
+  parameters:
+    clusterRef:
+      id: platform-ref-aws
+    condition: StringEquals
+    policyDocument: |
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Action": [
+                        "ecr:ListTagsForResource",
+                        "ecr:ListImages",
+                        "ecr:GetRepositoryPolicy",
+                        "ecr:GetLifecyclePolicyPreview",
+                        "ecr:GetLifecyclePolicy",
+                        "ecr:GetDownloadUrlForLayer",
+                        "ecr:GetAuthorizationToken",
+                        "ecr:DescribeRepositories",
+                        "ecr:DescribeImages",
+                        "ecr:DescribeImageScanFindings",
+                        "ecr:BatchGetImage",
+                        "ecr:BatchCheckLayerAvailability"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": "*"
+                }
+            ]
+        }
+    serviceAccount:
+      name: crossplane
+      namespace: upbound-system

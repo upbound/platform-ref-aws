@@ -1,0 +1,92 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xirsas.aws.platformref.upbound.io
+  labels:
+    provider: aws
+spec:
+  claimNames:
+    kind: IRSA
+    plural: irsas
+  group: aws.platformref.upbound.io
+  names:
+    kind: XIRSA
+    plural: xirsas
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              parameters:
+                type: object
+                description: IRSA configuration parameters.
+                properties:
+                  serviceAccount:
+                    type: object
+                    description: Configuration for SA
+                    properties:
+                      name:
+                        type: string
+                        description: name kubernetes SA
+                      namespace:
+                        type: string
+                        description: namespace kubernetes SA
+                    required:
+                    - name
+                    - namespace
+                  condition:
+                    type: string
+                    description: This is the whether or not the equals is a hard match or like query
+                    default: StringEquals
+                    enum:
+                    - StringEquals
+                    - StringLike
+                  clusterRef:
+                    type: object
+                    description: "A reference to the Cluster object that this IRSA should be connected to."
+                    properties:
+                      id:
+                        type: string
+                        description: ID of the Cluster object this ref points to.
+                    required:
+                    - id
+                  policyDocument:
+                    type: string
+                    description: The JSON policy document that is the content for the policy.
+                required:
+                - clusterRef
+                - condition
+                - policyDocument
+                - serviceAccount
+              deletionPolicy:
+                type: string
+                description: DeletionPolicy specifies what will happen to the underlying external when this managed resource is deleted - either "Delete" or "Orphan" the external resource.
+              providerConfigRef:
+                type: object
+                description: crossplane provider credentials to use.
+                properties:
+                  name:
+                    type: string
+                required:
+                - name
+            required:
+            - parameters
+          status:
+            type: object
+            properties:
+              roleArn:
+                description: The arn of the role
+                type: string
+              policyArn:
+                description: The arn of the policy
+                type: string
+              observed:
+                description: Freeform field containing information about the observed status.
+                type: object
+                x-kubernetes-preserve-unknown-fields: true

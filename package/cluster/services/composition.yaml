@@ -38,6 +38,59 @@ spec:
         # Derive the Prometheus operator image and tag from the XR.
         - fromFieldPath: spec.operators.prometheus.version
           toFieldPath: spec.forProvider.chart.version
+
+    - name: irsaCrossplane
+      base:
+        apiVersion: aws.platformref.upbound.io/v1alpha1
+        kind: XIRSA
+        spec:
+          parameters:
+            condition: StringEquals
+            policyDocument: |
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Action": [
+                                "ecr:ListTagsForResource",
+                                "ecr:ListImages",
+                                "ecr:GetRepositoryPolicy",
+                                "ecr:GetLifecyclePolicyPreview",
+                                "ecr:GetLifecyclePolicy",
+                                "ecr:GetDownloadUrlForLayer",
+                                "ecr:GetAuthorizationToken",
+                                "ecr:DescribeRepositories",
+                                "ecr:DescribeImages",
+                                "ecr:DescribeImageScanFindings",
+                                "ecr:BatchGetImage",
+                                "ecr:BatchCheckLayerAvailability"
+                            ],
+                            "Effect": "Allow",
+                            "Resource": "*"
+                        }
+                    ]
+                }
+            serviceAccount:
+              name: crossplane
+              namespace: upbound-system
+      patches:
+        - fromFieldPath: spec.providerConfigRef.name
+          toFieldPath: metadata.name
+          transforms:
+            - type: match
+              match:
+                patterns:
+                  - type: regexp
+                    regexp: '.*'
+                    result: irsa-crossplane
+        - type: ToCompositeFieldPath
+          fromFieldPath: status.roleArn
+          toFieldPath: status.roleArn
+          policy:
+            fromFieldPath: Optional
+        - fromFieldPath: spec.operators.universal-crossplane.clusterRef
+          toFieldPath: spec.parameters.clusterRef.id
+
     - name: releaseUXP
       base:
         apiVersion: helm.crossplane.io/v1beta1
@@ -63,3 +116,7 @@ spec:
           toFieldPath: spec.providerConfigRef.name
         - fromFieldPath: spec.operators.universal-crossplane.version
           toFieldPath: spec.forProvider.chart.version
+        - fromFieldPath: status.roleArn
+          toFieldPath: spec.forProvider.values.serviceAccount.customAnnotations[eks.amazonaws.com/role-arn]
+          policy:
+            fromFieldPath: Required
