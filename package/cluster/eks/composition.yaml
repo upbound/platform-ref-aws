@@ -74,6 +74,28 @@ spec:
           toFieldPath: status.eks.oidc
           policy:
             fromFieldPath: Optional
+        - type: ToCompositeFieldPath
+          fromFieldPath: status.atProvider.identity[0].oidc[0].issuer
+          toFieldPath: status.eks.oidcUri
+          transforms:
+            - type: string
+              string:
+                type: TrimPrefix
+                trim: 'https://'
+          policy:
+            fromFieldPath: Optional
+        - type: ToCompositeFieldPath
+          fromFieldPath: status.atProvider.roleArn
+          toFieldPath: status.eks.accountId
+          transforms:
+          - type: string
+            string:
+              type: Regexp
+              regexp:
+                match: 'arn:aws:iam::(\d+):.*'
+                group: 1
+          policy:
+            fromFieldPath: Optional
     - base:
         apiVersion: eks.aws.upbound.io/v1beta1
         kind: ClusterAuth
@@ -249,5 +271,29 @@ spec:
             - type: string
               string:
                 fmt: "%s-ekscluster"
+      readinessChecks:
+        - type: None
+    - base:
+        apiVersion: apiextensions.crossplane.io/v1alpha1
+        kind: EnvironmentConfig
+      name: irsa-environmentconfig
+      patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.labels[clusterRef]
+      - fromFieldPath: status.eks.oidcUri
+        toFieldPath: data.oidcHost
+      - fromFieldPath: status.eks.accountId
+        toFieldPath: data.accountId
+      - type: CombineFromComposite
+        toFieldPath: data.oidcArn
+        policy:
+          fromFieldPath: Required
+        combine:
+          variables:
+            - fromFieldPath: status.eks.accountId
+            - fromFieldPath: status.eks.oidcUri
+          strategy: string
+          string:
+            fmt: 'arn:aws:iam::%s:oidc-provider/%s'
       readinessChecks:
         - type: None

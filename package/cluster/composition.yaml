@@ -69,3 +69,5 @@ spec:
           toFieldPath: spec.operators.prometheus.version
         - fromFieldPath: spec.parameters.services.operators.universal-crossplane.version
           toFieldPath: spec.operators.universal-crossplane.version
+        - fromFieldPath: spec.id
+          toFieldPath: spec.operators.universal-crossplane.clusterRef

@@ -33,6 +33,8 @@ spec:
                     type: object
                     description: Configuration for Universal Crossplane (UXP)
                     properties:
+                      clusterRef:
+                        type: string
                       version:
                         type: string
                         description: UXP Version. Default is 1.12.2-up.1
@@ -51,3 +53,8 @@ spec:
                 - name
             required:
             - providerConfigRef
+          status:
+            type: object
+            properties:
+              roleArn:
+                type: string

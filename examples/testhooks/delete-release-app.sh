@@ -5,5 +5,5 @@ set -aeuo pipefail
 # Note(turkenh): This is a workaround for the infamous dependency problem during deletion.
 # Note(ytsarev): In addition to helm Release deletion we also need to pause
 # XService reconciler to prevent it from recreating the Release.
-${KUBECTL} annotate --overwrite xapps.aws.platformref.upbound.io --all crossplane.io/paused="true"
+${KUBECTL} annotate xapps.aws.platformref.upbound.io --all crossplane.io/paused="true"
 ${KUBECTL} delete release -l crossplane.io/claim-name=platform-ref-aws-ghost

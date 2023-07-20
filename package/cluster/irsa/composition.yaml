@@ -1,0 +1,156 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: xirsas.aws.platformref.upbound.io
+spec:
+  compositeTypeRef:
+    apiVersion: aws.platformref.upbound.io/v1alpha1
+    kind: XIRSA
+  patchSets:
+  - name: Name
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: metadata.name
+      toFieldPath: metadata.annotations[crossplane.io/external-name]
+    - type: FromCompositeFieldPath
+      fromFieldPath: metadata.labels[crossplane.io/claim-name]
+      toFieldPath: metadata.annotations[crossplane.io/external-name]
+  - name: providerConfigRef
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.providerConfigRef.name
+      toFieldPath: spec.providerConfigRef.name
+  - name: deletionPolicy
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.deletionPolicy
+      toFieldPath: spec.deletionPolicy
+  environment:
+    environmentConfigs:
+    - type: Selector
+      selector:
+        matchLabels:
+        - type: FromCompositeFieldPath
+          key: clusterRef
+          valueFromFieldPath: spec.parameters.clusterRef.id
+
+  resources:
+  - name: irsa-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      metadata:
+        labels:
+          resource: "Role"
+    patches:
+    - type: PatchSet
+      patchSetName: Name
+    - type: PatchSet
+      patchSetName: providerConfigRef
+    - type: PatchSet
+      patchSetName: deletionPolicy
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.roleArn
+      policy:
+        fromFieldPath: Optional
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.conditions
+      toFieldPath: status.observed.role.conditions
+      policy:
+        fromFieldPath: Optional
+    - fromFieldPath: spec.parameters.condition
+      toFieldPath: metadata.annotations[condition]
+    - fromFieldPath: spec.parameters.serviceAccount.namespace
+      toFieldPath: metadata.annotations[serviceAccount/namespace]
+    - fromFieldPath: spec.parameters.serviceAccount.name
+      toFieldPath: metadata.annotations[serviceAccount/name]
+    - type: ToEnvironmentFieldPath
+      fromFieldPath: metadata.annotations[condition]
+      toFieldPath: condition
+    - type: ToEnvironmentFieldPath
+      fromFieldPath: metadata.annotations[serviceAccount/namespace]
+      toFieldPath: serviceAccount.namespace
+    - type: ToEnvironmentFieldPath
+      fromFieldPath: metadata.annotations[serviceAccount/name]
+      toFieldPath: serviceAccount.name
+    - type: CombineFromEnvironment
+      toFieldPath: spec.forProvider.assumeRolePolicy
+      combine:
+        strategy: string
+        variables:
+        - fromFieldPath: oidcArn
+        - fromFieldPath: condition
+        - fromFieldPath: oidcHost
+        - fromFieldPath: serviceAccount.namespace
+        - fromFieldPath: serviceAccount.name
+        string:
+          fmt: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "%s"
+                  },
+                  "Action": "sts:AssumeRoleWithWebIdentity",
+                  "Condition": {
+                    "%s": {
+                      "%s:sub": "system:serviceaccount:%s:%s"
+                    }
+                  }
+                }
+              ]
+            }
+
+  - name: irsa-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Policy
+      metadata:
+        labels:
+          resource: "Policy"
+    patches:
+    - type: PatchSet
+      patchSetName: providerConfigRef
+    - type: PatchSet
+      patchSetName: deletionPolicy
+    - fromFieldPath: spec.parameters.policyDocument
+      toFieldPath: spec.forProvider.policy
+    - type: ToCompositeFieldPath
+      fromFieldPath: metadata.annotations[crossplane.io/external-name]
+      toFieldPath: status.policyArn
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.conditions
+      toFieldPath: status.observed.policy.conditions
+      policy:
+        fromFieldPath: Optional
+
+  - name: irsa-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      metadata:
+        labels:
+          resource: "RolePolicyAttachment"
+      spec:
+        forProvider:
+          policyArnSelector:
+            matchControllerRef: true
+            matchLabels:
+              resource: "Policy"
+          roleSelector:
+            matchControllerRef: true
+            matchLabels:
+              resource: "Role"
+    patches:
+    - type: PatchSet
+      patchSetName: providerConfigRef
+    - type: PatchSet
+      patchSetName: deletionPolicy
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.conditions
+      toFieldPath: status.observed.rpa.conditions
+      policy:
+        fromFieldPath: Optional
