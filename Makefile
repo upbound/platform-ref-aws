@@ -60,7 +60,7 @@ build.init: $(UP)
 # - UPTEST_CLOUD_CREDENTIALS, cloud credentials for the provider being tested, e.g. export UPTEST_CLOUD_CREDENTIALS=$(cat ~/.aws/credentials)
 uptest: $(UPTEST) $(KUBECTL) $(KUTTL)
 	@$(INFO) running automated tests
-	@KUBECTL=$(KUBECTL) KUTTL=$(KUTTL) $(UPTEST) e2e examples/cluster-claim.yaml,examples/mariadb-claim.yaml,examples/app-claim.yaml --setup-script=test/setup.sh --default-timeout=2400 || $(FAIL)
+	@KUBECTL=$(KUBECTL) KUTTL=$(KUTTL) $(UPTEST) e2e examples/app-claim.yaml,examples/mariadb-claim.yaml,examples/cluster-claim.yaml --setup-script=test/setup.sh --default-timeout=2400 || $(FAIL)
 	@$(OK) running automated tests
 
 # This target requires the following environment variables to be set:
