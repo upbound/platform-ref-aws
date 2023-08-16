@@ -1,3 +1,7 @@
 [submodule "build"]
 	path = build
 	url = https://github.com/upbound/build
+
+[submodule "package"]
+	path = package
+	url = https://github.com/haarchri/caas-eks

@@ -24,6 +24,8 @@ XPKG_REG_ORGS ?= xpkg.upbound.io/upbound
 XPKG_REG_ORGS_NO_PROMOTE ?= xpkg.upbound.io/upbound
 XPKGS = $(PROJECT_NAME)
 -include build/makelib/xpkg.mk
+XPKG_IGNORE = '.up/examples/*.yaml'
+export XPKG_IGNORE
 
 CROSSPLANE_NAMESPACE = upbound-system
 CROSSPLANE_ARGS = "--enable-environment-configs"
@@ -62,7 +64,7 @@ build.init: $(UP)
 #   You can check the basic implementation here: https://github.com/upbound/uptest/blob/main/internal/templates/01-delete.yaml.tmpl.
 uptest: $(UPTEST) $(KUBECTL) $(KUTTL)
 	@$(INFO) running automated tests
-	@KUBECTL=$(KUBECTL) KUTTL=$(KUTTL) $(UPTEST) e2e examples/app-claim.yaml,examples/mariadb-claim.yaml,examples/cluster-claim.yaml --setup-script=test/setup.sh --default-timeout=2400 || $(FAIL)
+	@KUBECTL=$(KUBECTL) KUTTL=$(KUTTL) $(UPTEST) e2e package/.up/examples/hub-cluster.yaml --setup-script=test/setup.sh --default-timeout=2400 || $(FAIL)
 	@$(OK) running automated tests
 
 # This target requires the following environment variables to be set:
