@@ -42,7 +42,7 @@ spec:
               providerConfigRef:
                 type: object
                 description: "A reference to the ProviderConfig of the cluster that services should
-                be deployed to."
+                  be deployed to."
                 properties:
                   name:
                     type: string

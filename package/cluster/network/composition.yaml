@@ -28,7 +28,7 @@ spec:
             tags:
               Owner: Platform Team
               Name: platformref-vpc
-      name: platformref-vcp
+      name: platformref-vpc
       patches:
         - type: PatchSet
           patchSetName: network-id
