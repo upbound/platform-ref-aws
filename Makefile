@@ -26,7 +26,7 @@ XPKGS = $(PROJECT_NAME)
 -include build/makelib/xpkg.mk
 
 CROSSPLANE_NAMESPACE = upbound-system
-CROSSPLANE_ARGS = "--enable-environment-configs"
+CROSSPLANE_ARGS = "--enable-environment-configs --enable-usages"
 -include build/makelib/local.xpkg.mk
 -include build/makelib/controlplane.mk
 
