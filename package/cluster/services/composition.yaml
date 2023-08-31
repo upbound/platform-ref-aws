@@ -56,6 +56,8 @@ spec:
       patches:
         - fromFieldPath: metadata.labels[crossplane.io/claim-name]
           toFieldPath: spec.of.resourceSelector.matchLabels[crossplane.io/claim-name]
+        - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+          toFieldPath: spec.of.resourceSelector.matchLabels[crossplane.io/claim-namespace]
         - fromFieldPath: status.releaseNamePrometheus
           toFieldPath: spec.by.resourceRef.name
 
@@ -158,5 +160,7 @@ spec:
       patches:
         - fromFieldPath: metadata.labels[crossplane.io/claim-name]
           toFieldPath: spec.of.resourceSelector.matchLabels[crossplane.io/claim-name]
+        - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+          toFieldPath: spec.of.resourceSelector.matchLabels[crossplane.io/claim-namespace]
         - fromFieldPath: status.releaseNameUXP
           toFieldPath: spec.by.resourceRef.name
