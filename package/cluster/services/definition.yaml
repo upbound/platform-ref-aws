@@ -58,3 +58,7 @@ spec:
             properties:
               roleArn:
                 type: string
+              releaseNamePrometheus:
+                type: string
+              releaseNameUXP:
+                type: string
