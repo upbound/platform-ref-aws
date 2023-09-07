@@ -71,3 +71,18 @@ spec:
           toFieldPath: spec.operators.universal-crossplane.version
         - fromFieldPath: spec.id
           toFieldPath: spec.operators.universal-crossplane.clusterRef
+    - name: usage-of-eks-by-services
+      base:
+        apiVersion: apiextensions.crossplane.io/v1alpha1
+        kind: Usage
+        spec:
+          of:
+            apiVersion: aws.platformref.upbound.io/v1alpha1
+            kind: XEKS
+            resourceSelector:
+              matchControllerRef: true
+          by:
+            apiVersion: aws.platformref.upbound.io/v1alpha1
+            kind: XServices
+            resourceSelector:
+              matchControllerRef: true

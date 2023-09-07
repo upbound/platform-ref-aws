@@ -42,24 +42,24 @@ spec:
           fromFieldPath: metadata.name
           toFieldPath: status.releaseNamePrometheus
 
-    - name: release-promotheus-uses-xeks
-      base:
-        apiVersion: apiextensions.crossplane.io/v1alpha1
-        kind: Usage
-        spec:
-          of:
-            apiVersion: aws.platformref.upbound.io/v1alpha1
-            kind: XEKS
-          by:
-            apiVersion: helm.crossplane.io/v1beta1
-            kind: Release
-      patches:
-        - fromFieldPath: metadata.labels[crossplane.io/claim-name]
-          toFieldPath: spec.of.resourceSelector.matchLabels[crossplane.io/claim-name]
-        - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
-          toFieldPath: spec.of.resourceSelector.matchLabels[crossplane.io/claim-namespace]
-        - fromFieldPath: status.releaseNamePrometheus
-          toFieldPath: spec.by.resourceRef.name
+    # - name: release-promotheus-uses-xeks
+    #   base:
+    #     apiVersion: apiextensions.crossplane.io/v1alpha1
+    #     kind: Usage
+    #     spec:
+    #       of:
+    #         apiVersion: aws.platformref.upbound.io/v1alpha1
+    #         kind: XEKS
+    #       by:
+    #         apiVersion: helm.crossplane.io/v1beta1
+    #         kind: Release
+    #   patches:
+    #     - fromFieldPath: metadata.labels[crossplane.io/claim-name]
+    #       toFieldPath: spec.of.resourceSelector.matchLabels[crossplane.io/claim-name]
+    #     - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+    #       toFieldPath: spec.of.resourceSelector.matchLabels[crossplane.io/claim-namespace]
+    #     - fromFieldPath: status.releaseNamePrometheus
+    #       toFieldPath: spec.by.resourceRef.name
 
     - name: irsaCrossplane
       base:
@@ -146,21 +146,21 @@ spec:
           fromFieldPath: metadata.name
           toFieldPath: status.releaseNameUXP
 
-    - name: release-uxp-uses-xeks
-      base:
-        apiVersion: apiextensions.crossplane.io/v1alpha1
-        kind: Usage
-        spec:
-          of:
-            apiVersion: aws.platformref.upbound.io/v1alpha1
-            kind: XEKS
-          by:
-            apiVersion: helm.crossplane.io/v1beta1
-            kind: Release
-      patches:
-        - fromFieldPath: metadata.labels[crossplane.io/claim-name]
-          toFieldPath: spec.of.resourceSelector.matchLabels[crossplane.io/claim-name]
-        - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
-          toFieldPath: spec.of.resourceSelector.matchLabels[crossplane.io/claim-namespace]
-        - fromFieldPath: status.releaseNameUXP
-          toFieldPath: spec.by.resourceRef.name
+    # - name: release-uxp-uses-xeks
+    #   base:
+    #     apiVersion: apiextensions.crossplane.io/v1alpha1
+    #     kind: Usage
+    #     spec:
+    #       of:
+    #         apiVersion: aws.platformref.upbound.io/v1alpha1
+    #         kind: XEKS
+    #       by:
+    #         apiVersion: helm.crossplane.io/v1beta1
+    #         kind: Release
+    #   patches:
+    #     - fromFieldPath: metadata.labels[crossplane.io/claim-name]
+    #       toFieldPath: spec.of.resourceSelector.matchLabels[crossplane.io/claim-name]
+    #     - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+    #       toFieldPath: spec.of.resourceSelector.matchLabels[crossplane.io/claim-namespace]
+    #     - fromFieldPath: status.releaseNameUXP
+    #       toFieldPath: spec.by.resourceRef.name

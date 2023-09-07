@@ -3,6 +3,7 @@ kind: CompositeResourceDefinition
 metadata:
   name: xclusters.aws.platformref.upbound.io
 spec:
+  defaultCompositeDeletePolicy: Foreground
   group: aws.platformref.upbound.io
   names:
     kind: XCluster
