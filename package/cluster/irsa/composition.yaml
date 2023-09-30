@@ -42,6 +42,8 @@ spec:
       metadata:
         labels:
           resource: "Role"
+      spec:
+        forProvider: {}
     patches:
     - type: PatchSet
       patchSetName: Name
