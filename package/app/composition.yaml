@@ -9,11 +9,11 @@ spec:
   compositeTypeRef:
     apiVersion: aws.platformref.upbound.io/v1alpha1
     kind: XApp
-    mode: Pipeline
+  mode: Pipeline
   pipeline:
   - step: patch-and-transform
     functionRef:
-      name: function-patch-and-transform
+      name: crossplane-contrib-function-patch-and-transform
     input:
       apiVersion: pt.fn.crossplane.io/v1beta1
       kind: Resources
