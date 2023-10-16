@@ -1,0 +1,68 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xapps.aws.platformref.upbound.io
+spec:
+  defaultCompositeDeletePolicy: Foreground
+  group: aws.platformref.upbound.io
+  names:
+    kind: XApp
+    plural: xapps
+  claimNames:
+    kind: App
+    plural: apps
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              parameters:
+                type: object
+                description: App configuration parameters.
+                properties:
+                  deletionPolicy:
+                    description: Delete the external resources when the Claim/XR is deleted. Defaults to Delete
+                    enum:
+                      - Delete
+                      - Orphan
+                    type: string
+                    default: Delete
+                  providerConfigName:
+                    description: Crossplane ProviderConfig to use for provisioning this resources
+                    type: string
+                  helm:
+                    type: object
+                    description: Configuration for operators.
+                    properties:
+                      chart:
+                        type: object
+                        description: Configuration for the Helm Chart
+                        properties:
+                          name:
+                            type: string
+                            description: chart name
+                          repo:
+                            type: string
+                            description: chart repo
+                          version:
+                            type: string
+                            description: chart version
+                  passwordSecretRef:
+                    type: object
+                    description: "A reference to the Secret object containing database credentials"
+                    properties:
+                      namespace:
+                        type: string
+                      name:
+                        type: string
+                    required:
+                      - namespace
+                      - name
+                required:
+                - providerConfigName

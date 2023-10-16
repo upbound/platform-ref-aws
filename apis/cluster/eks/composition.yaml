@@ -9,8 +9,25 @@ spec:
   compositeTypeRef:
     apiVersion: aws.platformref.upbound.io/v1alpha1
     kind: XEKS
+  patchSets:
+    - name: providerConfigRef
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.parameters.providerConfigName
+          toFieldPath: spec.providerConfigRef.name
+    - name: deletionPolicy
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.deletionPolicy
+    - name: region
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.region
   resources:
-    - base:
+    - name: controlplaneRole 
+      base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: Role
         metadata:
@@ -35,8 +52,13 @@ spec:
                     }
                 ]
               }
-      name: controlplaneRole
-    - base:
+      patches:
+        - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+    - name: clusterRolePolicyAttachment
+      base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: RolePolicyAttachment
         spec:
@@ -46,13 +68,17 @@ spec:
               matchControllerRef: true
               matchLabels:
                 role: controlplane
-      name: clusterRolePolicyAttachment
-    - base:
+      patches:
+        - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+    - name: kubernetesCluster
+      base:
         apiVersion: eks.aws.upbound.io/v1beta1
         kind: Cluster
         spec:
           forProvider:
-            region: us-west-2
             roleArnSelector:
               matchControllerRef: true
               matchLabels:
@@ -60,11 +86,13 @@ spec:
             vpcConfig:
               - endpointPrivateAccess: true
                 endpointPublicAccess: true
-      name: kubernetesCluster
       patches:
-          # Change to spec id
-        - fromFieldPath: spec.parameters.securityGroupIds
-          toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIds
+        - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
+          patchSetName: region
         - fromFieldPath: spec.parameters.subnetIds
           toFieldPath: spec.forProvider.vpcConfig[0].subnetIds
         - fromFieldPath: spec.parameters.version
@@ -96,16 +124,21 @@ spec:
                 group: 1
           policy:
             fromFieldPath: Optional
-    - base:
+    - name: kubernetesClusterAuth
+      base:
         apiVersion: eks.aws.upbound.io/v1beta1
         kind: ClusterAuth
         spec:
           forProvider:
-            region: us-west-2
             clusterNameSelector:
               matchControllerRef: true
-      name: kubernetesClusterAuth
       patches:
+        - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
+          patchSetName: region
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.writeConnectionSecretToRef.namespace
         - fromFieldPath: metadata.uid
@@ -116,7 +149,8 @@ spec:
                 fmt: "%s-ekscluster"
       connectionDetails:
         - fromConnectionSecretKey: kubeconfig
-    - base:
+    - name: nodegroupRole
+      base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: Role
         metadata:
@@ -141,8 +175,18 @@ spec:
                     }
                 ]
               }
-      name: nodegroupRole
-    - base:
+      patches:
+        - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: ToCompositeFieldPath
+          fromFieldPath: status.atProvider.arn
+          toFieldPath: status.eks.nodeGroupRoleArn
+          policy:
+            fromFieldPath: Optional
+    - name: workerNodeRolePolicyAttachment
+      base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: RolePolicyAttachment
         spec:
@@ -152,8 +196,13 @@ spec:
               matchControllerRef: true
               matchLabels:
                 role: nodegroup
-      name: workerNodeRolePolicyAttachment
-    - base:
+      patches:
+        - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+    - name: cniRolePolicyAttachment
+      base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: RolePolicyAttachment
         spec:
@@ -163,8 +212,13 @@ spec:
               matchControllerRef: true
               matchLabels:
                 role: nodegroup
-      name: cniRolePolicyAttachment
-    - base:
+      patches:
+        - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+    - name: ebsCsiRolePolicyAttachment
+      base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: RolePolicyAttachment
         spec:
@@ -174,8 +228,13 @@ spec:
               matchControllerRef: true
               matchLabels:
                 role: nodegroup
-      name: ebsCsiRolePolicyAttachment
-    - base:
+      patches:
+        - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+    - name: containerRegistryRolePolicyAttachment
+      base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: RolePolicyAttachment
         spec:
@@ -185,13 +244,17 @@ spec:
               matchControllerRef: true
               matchLabels:
                 role: nodegroup
-      name: containerRegistryRolePolicyAttachment
-    - base:
+      patches:
+        - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+    - name: nodeGroupPublic
+      base:
         apiVersion: eks.aws.upbound.io/v1beta1
         kind: NodeGroup
         spec:
           forProvider:
-            region: us-west-2
             clusterNameSelector:
               matchControllerRef: true
             nodeRoleArnSelector:
@@ -207,21 +270,21 @@ spec:
                 desiredSize: 1
             instanceTypes:
               - t3.medium
-      name: nodeGroupPublic
       patches:
+        - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
+          patchSetName: region
         - fromFieldPath: spec.parameters.nodes.count
           toFieldPath: spec.forProvider.scalingConfig[0].desiredSize
-        - fromFieldPath: spec.parameters.nodes.size
+        - fromFieldPath: spec.parameters.nodes.instanceType
           toFieldPath: spec.forProvider.instanceTypes[0]
-          transforms:
-            - type: map
-              map:
-                small: t3.small
-                medium: t3.medium
-                large: t3.large
-        - fromFieldPath: spec.id
+        - fromFieldPath: spec.parameters.id
           toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
-    - base:
+    - name: ebsCsiAddon
+      base:
         apiVersion: eks.aws.upbound.io/v1beta1
         kind: Addon
         metadata:
@@ -232,9 +295,15 @@ spec:
             addonName: aws-ebs-csi-driver
             clusterNameSelector:
               matchControllerRef: true
-            region: us-west-2
-      name: ebsCsiAddon
-    - base:
+      patches:
+        - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
+          patchSetName: region
+    - name: oidcProvider
+      base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: OpenIDConnectProvider
         spec:
@@ -243,13 +312,22 @@ spec:
               - sts.amazonaws.com
             thumbprintList:
               - "9e99a48a9960b14926bb7f3b02e22da2b0ab7280"
-      name: oidcProvider
       patches:
+        - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
         - fromFieldPath: status.eks.oidc
           toFieldPath: spec.forProvider.url
           policy:
             fromFieldPath: Required
-    - base:
+        - type: ToCompositeFieldPath
+          fromFieldPath: status.atProvider.arn
+          toFieldPath: status.eks.oidcArn
+          policy:
+            fromFieldPath: Optional
+    - name: providerConfigHelm
+      base:
         apiVersion: helm.crossplane.io/v1beta1
         kind: ProviderConfig
         spec:
@@ -257,14 +335,11 @@ spec:
             source: Secret
             secretRef:
               key: kubeconfig
-      name: providerConfig
       patches:
-        - fromFieldPath: spec.id
+        - fromFieldPath: spec.parameters.id
           toFieldPath: metadata.name
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.credentials.secretRef.namespace
-        # This ProviderConfig uses the above EKS cluster's connection secret as
-        # its credentials secret.
         - fromFieldPath: metadata.uid
           toFieldPath: spec.credentials.secretRef.name
           transforms:
@@ -273,27 +348,112 @@ spec:
                 fmt: "%s-ekscluster"
       readinessChecks:
         - type: None
-    - base:
-        apiVersion: apiextensions.crossplane.io/v1alpha1
-        kind: EnvironmentConfig
-      name: irsa-environmentconfig
+    - name: providerConfigKubernetes
+      base:
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: ProviderConfig
+        spec:
+          credentials:
+            source: Secret
+            secretRef:
+              key: kubeconfig
       patches:
-      - fromFieldPath: spec.id
-        toFieldPath: metadata.labels[clusterRef]
-      - fromFieldPath: status.eks.oidcUri
-        toFieldPath: data.oidcHost
-      - fromFieldPath: status.eks.accountId
-        toFieldPath: data.accountId
-      - type: CombineFromComposite
-        toFieldPath: data.oidcArn
-        policy:
-          fromFieldPath: Required
-        combine:
-          variables:
-            - fromFieldPath: status.eks.accountId
-            - fromFieldPath: status.eks.oidcUri
-          strategy: string
-          string:
-            fmt: 'arn:aws:iam::%s:oidc-provider/%s'
+        - fromFieldPath: spec.parameters.id
+          toFieldPath: metadata.name
+        - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+          toFieldPath: spec.credentials.secretRef.namespace
+        - fromFieldPath: metadata.uid
+          toFieldPath: spec.credentials.secretRef.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-ekscluster"
       readinessChecks:
         - type: None
+    - name: irsaSettings
+      base:
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
+        spec:
+          deletionPolicy: Orphan
+          forProvider:
+            manifest:
+              apiVersion: v1
+              kind: ConfigMap
+              metadata:
+                namespace: default
+      patches:
+        - fromFieldPath: spec.parameters.id
+          toFieldPath: spec.providerConfigRef.name
+        - fromFieldPath: spec.parameters.id
+          toFieldPath: metadata.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-irsa-settings"
+        - fromFieldPath: spec.parameters.id
+          toFieldPath: spec.forProvider.manifest.metadata.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-irsa-settings"
+        - fromFieldPath: status.eks.oidcArn
+          toFieldPath: spec.forProvider.manifest.data.oidc_arn
+        - fromFieldPath: status.eks.oidcUri
+          toFieldPath: spec.forProvider.manifest.data.oidc_host
+    - name: awsAuth
+      base:
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
+        spec:
+          deletionPolicy: Orphan
+          forProvider:
+            manifest:
+              apiVersion: v1
+              kind: ConfigMap
+              metadata:
+                namespace: kube-system
+                name: aws-auth
+      patches:
+        - fromFieldPath: spec.parameters.id
+          toFieldPath: spec.providerConfigRef.name
+        - fromFieldPath: spec.parameters.id
+          toFieldPath: metadata.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-aws-auth"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: status.eks.nodeGroupRoleArn
+              - fromFieldPath: spec.parameters.iam.roleArn
+            strategy: string
+            string:
+              fmt: |
+                - groups:
+                  - system:bootstrappers
+                  - system:nodes
+                  rolearn: %s
+                  username: system:node:{{EC2PrivateDNSName}}
+                - groups:
+                  - system:masters
+                  rolearn: %s
+                  username: adminrole
+          toFieldPath: spec.forProvider.manifest.data.mapRoles
+          policy:
+            fromFieldPath: Optional
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: spec.parameters.iam.userArn
+            strategy: string
+            string:
+              fmt: |
+                - groups:
+                  - system:masters
+                  userarn: %s
+                  username: adminuser
+          toFieldPath: spec.forProvider.manifest.data.mapUsers
+          policy:
+            fromFieldPath: Optional

@@ -1,0 +1,86 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xservices.aws.platformref.upbound.io
+spec:
+  group: aws.platformref.upbound.io
+  names:
+    kind: XServices
+    plural: xservices
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              deletionPolicy:
+                description: Delete the external resources when the Claim/XR is deleted. Defaults to Delete
+                enum:
+                - Delete
+                - Orphan
+                type: string
+                default: Delete
+              gitops:
+                type: object
+                description: GitOps configure gitops system
+                properties:
+                  url:
+                    type: string
+                    description: Url for GitOps Sync.
+                  path:
+                    type: string
+                    description: path in Repo for GitOps Sync.
+                  kubeConfigSecretRef:
+                    type: object
+                    description: location for kubeconfig
+                    properties:
+                      name:
+                        type: string
+                        description: Name of the secret.
+                      namespace:
+                        type: string
+                        description: Namespace of the secret.
+                    required:
+                    - name
+                    - namespace
+                required:
+                - url
+              operators:
+                type: object
+                description: Configuration for operators.
+                properties:
+                  flux:
+                    type: object
+                    description: Configuration for the Flux GitOps operator.
+                    properties:
+                      version:
+                        type: string
+                        description: Flux operator version to run.
+                        default: "2.9.2"
+                  prometheus:
+                    type: object
+                    description: Configuration for the Prometheus operator.
+                    properties:
+                      version:
+                        type: string
+                        description: Prometheus operator version to run.
+                        default: "41.4.1"
+              providerConfigRef:
+                type: object
+                description: "A reference to the ProviderConfig of the cluster that services should be deployed to."
+                properties:
+                  name:
+                    type: string
+                    description: "Name of the Kubernetes provider configuration.
+                      This will typically be the name of the cluster with a
+                      five character suffix appended."
+                required:
+                - name
+            required:
+            - providerConfigRef
+            - deletionPolicy

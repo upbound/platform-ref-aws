@@ -3,4 +3,6 @@ kind: XNetwork
 metadata:
   name: ref-aws-network
 spec:
-  id: ref-aws-network-from-xr
+  parameters:
+    id: platform-ref-aws
+    region: us-west-2
