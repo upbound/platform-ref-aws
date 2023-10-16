@@ -1,0 +1,110 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: xclusters.aws.platformref.upbound.io
+spec:
+  writeConnectionSecretsToNamespace: upbound-system
+  compositeTypeRef:
+    apiVersion: aws.platformref.upbound.io/v1alpha1
+    kind: XCluster
+  resources:
+    - base:
+        apiVersion: aws.platformref.upbound.io/v1alpha1
+        kind: XNetwork
+      patches:
+        - fromFieldPath: spec.parameters.id
+          toFieldPath: spec.parameters.id
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.parameters.region
+        - fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.parameters.deletionPolicy
+        - fromFieldPath: spec.parameters.providerConfigName
+          toFieldPath: spec.parameters.providerConfigName
+        - fromFieldPath: spec.parameters.networkSelector
+          toFieldPath: spec.compositionSelector.matchLabels[type]
+        - type: ToCompositeFieldPath
+          fromFieldPath: status.subnetIds
+          toFieldPath: status.subnetIds
+          policy:
+            fromFieldPath: Required
+      name: compositeNetworkEKS
+    - base:
+        apiVersion: aws.platformref.upbound.io/v1alpha1
+        kind: XEKS
+      connectionDetails:
+        - fromConnectionSecretKey: kubeconfig
+      name: compositeClusterEKS
+      patches:
+        - fromFieldPath: spec.parameters.id
+          toFieldPath: metadata.labels[xeks.aws.platformref.upbound.io/cluster-id]
+        - fromFieldPath: spec.parameters.id
+          toFieldPath: spec.parameters.id
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.parameters.region
+        - fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.parameters.deletionPolicy
+        - fromFieldPath: spec.parameters.providerConfigName
+          toFieldPath: spec.parameters.providerConfigName
+        - fromFieldPath: spec.parameters.id
+          toFieldPath: metadata.annotations[crossplane.io/external-name]
+        - fromFieldPath: metadata.uid
+          toFieldPath: spec.writeConnectionSecretToRef.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-eks"
+        - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+          toFieldPath: spec.writeConnectionSecretToRef.namespace
+        - fromFieldPath: spec.parameters.version
+          toFieldPath: spec.parameters.version
+        - fromFieldPath: spec.parameters.nodes.count
+          toFieldPath: spec.parameters.nodes.count
+        - fromFieldPath: spec.parameters.nodes.instanceType
+          toFieldPath: spec.parameters.nodes.instanceType
+        - fromFieldPath: spec.parameters.iam.roleArn
+          toFieldPath: spec.parameters.iam.roleArn
+        - fromFieldPath: spec.parameters.iam.userArn
+          toFieldPath: spec.parameters.iam.userArn
+        - fromFieldPath: status.subnetIds
+          toFieldPath: spec.parameters.subnetIds
+          policy:
+            fromFieldPath: Required
+    - base:
+        apiVersion: aws.platformref.upbound.io/v1alpha1
+        kind: XServices
+      name: compositeClusterServices
+      patches:
+        - fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.deletionPolicy
+        - fromFieldPath: spec.parameters.id
+          toFieldPath: spec.providerConfigRef.name
+        - fromFieldPath: spec.parameters.services.operators.flux.version
+          toFieldPath: spec.operators.flux.version
+        - fromFieldPath: spec.parameters.services.operators.prometheus.version
+          toFieldPath: spec.operators.prometheus.version
+        - fromFieldPath: spec.parameters.gitops.url
+          toFieldPath: spec.gitops.url
+        - fromFieldPath: spec.parameters.gitops.path
+          toFieldPath: spec.gitops.path
+        - fromFieldPath: spec.parameters.gitops.kubeConfigSecretRef.name
+          toFieldPath: spec.gitops.kubeConfigSecretRef.name
+        - fromFieldPath: spec.parameters.gitops.kubeConfigSecretRef.namespace
+          toFieldPath: spec.gitops.kubeConfigSecretRef.namespace
+        - fromFieldPath: spec.parameters.serviceSelector
+          toFieldPath: spec.compositionSelector.matchLabels[type]
+
+    - name: usageXEksByXService
+      base:
+        apiVersion: apiextensions.crossplane.io/v1alpha1
+        kind: Usage
+        spec:
+          of:
+            apiVersion: aws.platformref.upbound.io/v1alpha1
+            kind: XEKS
+            resourceSelector:
+              matchControllerRef: true
+          by:
+            apiVersion: aws.platformref.upbound.io/v1alpha1
+            kind: XServices
+            resourceSelector:
+              matchControllerRef: true

@@ -9,6 +9,22 @@ spec:
   compositeTypeRef:
     apiVersion: aws.platformref.upbound.io/v1alpha1
     kind: XSQLInstance
+  patchSets:
+    - name: providerConfigRef
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.parameters.providerConfigName
+          toFieldPath: spec.providerConfigRef.name
+    - name: deletionPolicy
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.deletionPolicy
+    - name: region
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.region
   resources:
     - name: compositeSQLInstanceDbSubnetGroup
       base:
@@ -16,10 +32,14 @@ spec:
         kind: SubnetGroup
         spec:
           forProvider:
-            region: us-west-2
             description: An excellent formation of subnetworks.
-          deletionPolicy: Delete
       patches:
+        - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
+          patchSetName: region
         - fromFieldPath: spec.parameters.clusterRef.id
           toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
     - name: RDSInstanceSmall
@@ -28,22 +48,26 @@ spec:
         kind: Instance
         spec:
           forProvider:
-            region: us-west-2
             dbSubnetGroupNameSelector:
               matchControllerRef: true
             instanceClass: db.t3.micro
             username: masteruser
             skipFinalSnapshot: true
             publiclyAccessible: false
-            dbName: upbound # create custom database within the instance by default
-          deletionPolicy: Delete
+            dbName: upbound
       patches:
-        - fromFieldPath: "metadata.uid"
-          toFieldPath: "spec.writeConnectionSecretToRef.name"
+        - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
+          patchSetName: region
+        - fromFieldPath: metadata.uid
+          toFieldPath: spec.writeConnectionSecretToRef.name
           transforms:
             - type: string
               string:
-                fmt: "%s-sql" #change
+                fmt: "%s-sql"
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.writeConnectionSecretToRef.namespace
         - fromFieldPath: spec.parameters.engine
@@ -63,11 +87,11 @@ spec:
         - fromFieldPath: spec.parameters.passwordSecretRef.key
           toFieldPath: spec.forProvider.passwordSecretRef.key
       connectionDetails:
-        - fromFieldPath: "status.atProvider.endpoint"
+        - fromFieldPath: status.atProvider.endpoint
           name: endpoint
-        - fromFieldPath: "status.atProvider.address"
+        - fromFieldPath: status.atProvider.address
           name: host
-        - fromFieldPath: "spec.forProvider.username"
+        - fromFieldPath: spec.forProvider.username
           name: username
-        - fromConnectionSecretKey: "attribute.password"
+        - fromConnectionSecretKey: attribute.password
           name: password

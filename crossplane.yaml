@@ -32,6 +32,8 @@ spec:
   dependsOn:
     - provider: xpkg.upbound.io/crossplane-contrib/provider-helm
       version: ">=v0.15.0"
+    - provider: xpkg.upbound.io/crossplane-contrib/provider-kubernetes
+      version: ">=v0.9.0"
     - provider: xpkg.upbound.io/upbound/provider-aws-ec2
       version: ">=v0.36.0"
     - provider: xpkg.upbound.io/upbound/provider-aws-eks

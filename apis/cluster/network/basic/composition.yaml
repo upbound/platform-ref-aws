@@ -4,263 +4,410 @@ metadata:
   name: xnetworks.aws.platformref.upbound.io
   labels:
     provider: aws
+    type: basic
 spec:
   writeConnectionSecretsToNamespace: upbound-system
   compositeTypeRef:
     apiVersion: aws.platformref.upbound.io/v1alpha1
     kind: XNetwork
   patchSets:
-  - name: network-id
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.labels[networks.aws.platformref.upbound.io/network-id]
+    - name: providerConfigRef
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.parameters.providerConfigName
+          toFieldPath: spec.providerConfigRef.name
+    - name: deletionPolicy
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.deletionPolicy
+    - name: network-id
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.parameters.id
+          toFieldPath: metadata.labels[networks.aws.platformref.upbound.io/network-id]
+    - name: region
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.region
   resources:
-    - base:
+    - name: vpc
+      base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: VPC
         spec:
           forProvider:
-            region: us-west-2
             cidrBlock: 192.168.0.0/16
             enableDnsSupport: true
             enableDnsHostnames: true
             tags:
-              Owner: Platform Team
-              Name: platformref-vpc
-      name: platformref-vcp
+              Name: ""
       patches:
         - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
-    - base:
+        - type: PatchSet
+          patchSetName: region
+        - fromFieldPath: metadata.name
+          toFieldPath: spec.forProvider.tags["Name"]
+    - name: internetGateway
+      base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: InternetGateway
         spec:
           forProvider:
-            region: us-west-2
             vpcIdSelector:
               matchControllerRef: true
-      name: gateway
       patches:
         - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
-    - base:
+        - type: PatchSet
+          patchSetName: region
+    - name: subnetPublicA
+      base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: Subnet
         metadata:
           labels:
-            zone: us-west-2a
             access: public
         spec:
           forProvider:
-            region: us-west-2
             mapPublicIpOnLaunch: true
             cidrBlock: 192.168.0.0/18
             vpcIdSelector:
               matchControllerRef: true
-            availabilityZone: us-west-2a
             tags:
               kubernetes.io/role/elb: "1"
-      name: subnet-public-west-2a
       patches:
         - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
+        - type: PatchSet
+          patchSetName: region
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.availabilityZone
+          transforms:
+          - type: string
+            string:
+              fmt: "%sa"
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: metadata.labels[zone]
+          transforms:
+          - type: string
+            string:
+              fmt: "%sa"
         - type: ToCompositeFieldPath
           fromFieldPath: metadata.annotations[crossplane.io/external-name]
           toFieldPath: status.subnetIds[0]
-    - base:
+    - name: subnetPublicB
+      base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: Subnet
         metadata:
           labels:
-            zone: us-west-2b
             access: public
         spec:
           forProvider:
-            region: us-west-2
             mapPublicIpOnLaunch: true
             cidrBlock: 192.168.64.0/18
             vpcIdSelector:
               matchControllerRef: true
-            availabilityZone: us-west-2b
             tags:
               kubernetes.io/role/elb: "1"
-      name: subnet-public-west-2b
       patches:
         - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
+        - type: PatchSet
+          patchSetName: region
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.availabilityZone
+          transforms:
+          - type: string
+            string:
+              fmt: "%sb"
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: metadata.labels[zone]
+          transforms:
+          - type: string
+            string:
+              fmt: "%sb"
         - type: ToCompositeFieldPath
           fromFieldPath: metadata.annotations[crossplane.io/external-name]
           toFieldPath: status.subnetIds[1]
-    - base:
+    - name: subnetPrivateA
+      base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: Subnet
         metadata:
           labels:
-            zone: us-west-2a
             access: private
         spec:
           forProvider:
-            region: us-west-2
             cidrBlock: 192.168.128.0/18
             vpcIdSelector:
               matchControllerRef: true
-            availabilityZone: us-west-2a
             tags:
               kubernetes.io/role/internal-elb: "1"
-      name: subnet-private-west-2a
       patches:
         - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
+        - type: PatchSet
+          patchSetName: region
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.availabilityZone
+          transforms:
+          - type: string
+            string:
+              fmt: "%sa"
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: metadata.labels[zone]
+          transforms:
+          - type: string
+            string:
+              fmt: "%sa"
         - type: ToCompositeFieldPath
           fromFieldPath: metadata.annotations[crossplane.io/external-name]
           toFieldPath: status.subnetIds[2]
-    - base:
+    - name: subnetPrivateB
+      base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: Subnet
         metadata:
           labels:
-            zone: us-west-2b
             access: private
         spec:
           forProvider:
-            region: us-west-2
             cidrBlock: 192.168.192.0/18
             vpcIdSelector:
               matchControllerRef: true
-            availabilityZone: us-west-2b
             tags:
               kubernetes.io/role/internal-elb: "1"
-      name: subnet-private-west-2b
       patches:
         - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
+        - type: PatchSet
+          patchSetName: region
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.availabilityZone
+          transforms:
+          - type: string
+            string:
+              fmt: "%sb"
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: metadata.labels[zone]
+          transforms:
+          - type: string
+            string:
+              fmt: "%sb"
         - type: ToCompositeFieldPath
           fromFieldPath: metadata.annotations[crossplane.io/external-name]
           toFieldPath: status.subnetIds[3]
-    - base:
+    - name: routeTable
+      base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: RouteTable
         spec:
           forProvider:
-            region: us-west-2
             vpcIdSelector:
               matchControllerRef: true
-      name: routeTable
       patches:
         - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
-    - base:
+        - type: PatchSet
+          patchSetName: region
+    - name: route
+      base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: Route
         spec:
           forProvider:
-            region: us-west-2
             destinationCidrBlock: 0.0.0.0/0
             gatewayIdSelector:
               matchControllerRef: true
             routeTableIdSelector:
               matchControllerRef: true
-      name: route
       patches:
         - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
-    - base:
+        - type: PatchSet
+          patchSetName: region
+    - name: mainRouteTableAssociation
+      base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: MainRouteTableAssociation
         spec:
           forProvider:
-            region: us-west-2
             routeTableIdSelector:
               matchControllerRef: true
             vpcIdSelector:
               matchControllerRef: true
-      name: mainRouteTableAssociation
       patches:
         - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
-    - base:
+        - type: PatchSet
+          patchSetName: region
+    - name: routeTableAssociationPublicA
+      base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: RouteTableAssociation
         spec:
           forProvider:
-            region: us-west-2
             routeTableIdSelector:
               matchControllerRef: true
             subnetIdSelector:
               matchControllerRef: true
               matchLabels:
-                zone: us-west-2a
                 access: public
-      name: RouteTableAssociation-public-a
       patches:
         - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
-    - base:
+        - type: PatchSet
+          patchSetName: region
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[zone]
+          transforms:
+          - type: string
+            string:
+              fmt: "%sa"
+    - name: routeTableAssociationPublicB
+      base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: RouteTableAssociation
         spec:
           forProvider:
-            region: us-west-2
             routeTableIdSelector:
               matchControllerRef: true
             subnetIdSelector:
               matchControllerRef: true
               matchLabels:
-                zone: us-west-2b
                 access: public
-      name: RouteTableAssociation-public-b
       patches:
         - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
-    - base:
+        - type: PatchSet
+          patchSetName: region
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[zone]
+          transforms:
+          - type: string
+            string:
+              fmt: "%sb"
+    - name: routeTableAssociationPrivateA
+      base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: RouteTableAssociation
         spec:
           forProvider:
-            region: us-west-2
             routeTableIdSelector:
               matchControllerRef: true
             subnetIdSelector:
               matchControllerRef: true
               matchLabels:
-                zone: us-west-2a
                 access: private
-      name: RouteTableAssociation-private-a
       patches:
         - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
-    - base:
+        - type: PatchSet
+          patchSetName: region
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[zone]
+          transforms:
+          - type: string
+            string:
+              fmt: "%sa"
+    - name: routeTableAssociationPrivateB
+      base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: RouteTableAssociation
         spec:
           forProvider:
-            region: us-west-2
             routeTableIdSelector:
               matchControllerRef: true
             subnetIdSelector:
               matchControllerRef: true
               matchLabels:
-                zone: us-west-2b
                 access: private
-      name: RouteTableAssociation-private-b
       patches:
         - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
+        - type: PatchSet
+          patchSetName: region
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[zone]
+          transforms:
+          - type: string
+            string:
+              fmt: "%sb"
     - name: securityGroup
       base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: SecurityGroup
         spec:
           forProvider:
-            region: us-west-2
             vpcIdSelector:
               matchControllerRef: true
             name: platform-ref-aws-cluster
             description: Allow access to databases
       patches:
         - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
+        - type: PatchSet
+          patchSetName: region
         - type: ToCompositeFieldPath
           fromFieldPath: metadata.annotations[crossplane.io/external-name]
           toFieldPath: status.securityGroupIds[0]
@@ -270,7 +417,6 @@ spec:
         kind: SecurityGroupRule
         spec:
           forProvider:
-            region: us-west-2
             type: ingress
             fromPort: 5432
             toPort: 5432
@@ -282,14 +428,19 @@ spec:
             description: Everywhere
       patches:
         - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
+        - type: PatchSet
+          patchSetName: region
     - name: securityGroupRuleMysql
       base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: SecurityGroupRule
         spec:
           forProvider:
-            region: us-west-2
             type: ingress
             fromPort: 3306
             toPort: 3306
@@ -301,4 +452,10 @@ spec:
             description: Everywhere
       patches:
         - type: PatchSet
+          patchSetName: providerConfigRef
+        - type: PatchSet
+          patchSetName: deletionPolicy
+        - type: PatchSet
           patchSetName: network-id
+        - type: PatchSet
+          patchSetName: region

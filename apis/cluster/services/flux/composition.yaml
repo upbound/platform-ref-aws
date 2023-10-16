@@ -1,0 +1,98 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: xservicesflux.aws.platformref.upbound.io
+  labels:
+    type: gitops
+spec:
+  writeConnectionSecretsToNamespace: upbound-system
+  compositeTypeRef:
+    apiVersion: aws.platformref.upbound.io/v1alpha1
+    kind: XServices
+  patchSets:
+    - name: Common
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: metadata.labels
+          toFieldPath: metadata.labels
+        - type: FromCompositeFieldPath
+          fromFieldPath: metadata.annotations
+          toFieldPath: metadata.annotations
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.providerConfigRef.name
+          toFieldPath: spec.providerConfigRef.name
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.deletionPolicy
+          toFieldPath: spec.deletionPolicy
+  resources:
+    - name: releaseFlux
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: Release
+        spec:
+          rollbackLimit: 3
+          forProvider:
+            namespace: flux-system
+            chart:
+              name: flux2
+              url: https://github.com/fluxcd-community/helm-charts/releases/download/flux2-2.9.2/flux2-2.9.2.tgz
+              version: 2.9.2
+            values:
+              imageAutomationController:
+                create: false
+              imageReflectionController:
+                create: false
+      patches:
+        - type: PatchSet
+          patchSetName: Common
+        - fromFieldPath: spec.operators.flux.version
+          toFieldPath: spec.forProvider.chart.version
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: spec.operators.flux.version
+              - fromFieldPath: spec.operators.flux.version
+            strategy: string
+            string:
+              fmt: https://github.com/fluxcd-community/helm-charts/releases/download/flux2-%s/flux2-%s.tgz
+          toFieldPath: spec.forProvider.chart.url
+    - name: syncFlux
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: Release
+        spec:
+          rollbackLimit: 3
+          forProvider:
+            namespace: flux-system
+            chart:
+              name: flux2-sync
+              repository: https://fluxcd-community.github.io/helm-charts
+              version: "1.6.2"
+            values:
+              gitRepository:
+                spec:
+                  timeout: 20s
+                  interval: 10m0s
+                  gitImplementation: go-git
+                  ref:
+                    branch: main
+              kustomization:
+                spec:
+                  interval: 10m
+                  sourceRef:
+                    kind: GitRepository
+      patches:
+        - type: PatchSet
+          patchSetName: Common
+        - fromFieldPath: spec.providerConfigRef.name
+          toFieldPath: metadata.annotations[crossplane.io/external-name]
+        - fromFieldPath: spec.gitops.url
+          toFieldPath: spec.forProvider.values.gitRepository.spec.url
+        - fromFieldPath: spec.providerConfigRef.name
+          toFieldPath: spec.forProvider.values.kustomization.spec.path
+          transforms:
+            - type: string
+              string:
+                fmt: "./infrastructure/%s"
+        - fromFieldPath: spec.gitops.path
+          toFieldPath: spec.forProvider.values.kustomization.spec.path

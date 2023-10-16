@@ -52,19 +52,38 @@ spec:
         - fromFieldPath: metadata.annotations
           toFieldPath: metadata.annotations
         # All Helm releases derive the ProviderConfig to use from the XR.
-        - fromFieldPath: spec.providerConfigRef.name
+        - fromFieldPath: spec.parameters.providerConfigName
           toFieldPath: spec.providerConfigRef.name
-        - fromFieldPath: spec.helm.chart.version
+        - fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.deletionPolicy
+        - fromFieldPath: spec.parameters.helm.chart.version
           toFieldPath: spec.forProvider.chart.version
-        - fromFieldPath: spec.passwordSecretRef.namespace
+        - fromFieldPath: spec.parameters.passwordSecretRef.namespace
           toFieldPath: spec.forProvider.set[0].valueFrom.secretKeyRef.namespace
-        - fromFieldPath: spec.passwordSecretRef.name
+        - fromFieldPath: spec.parameters.passwordSecretRef.name
           toFieldPath: spec.forProvider.set[0].valueFrom.secretKeyRef.name
-        - fromFieldPath: spec.passwordSecretRef.namespace
+        - fromFieldPath: spec.parameters.passwordSecretRef.namespace
           toFieldPath: spec.forProvider.set[1].valueFrom.secretKeyRef.namespace
-        - fromFieldPath: spec.passwordSecretRef.name
+        - fromFieldPath: spec.parameters.passwordSecretRef.name
           toFieldPath: spec.forProvider.set[1].valueFrom.secretKeyRef.name
-        - fromFieldPath: spec.passwordSecretRef.namespace
+        - fromFieldPath: spec.parameters.passwordSecretRef.namespace
           toFieldPath: spec.forProvider.set[2].valueFrom.secretKeyRef.namespace
-        - fromFieldPath: spec.passwordSecretRef.name
+        - fromFieldPath: spec.parameters.passwordSecretRef.name
           toFieldPath: spec.forProvider.set[2].valueFrom.secretKeyRef.name
+
+    - name: usageXEksByXApp
+      base:
+        apiVersion: apiextensions.crossplane.io/v1alpha1
+        kind: Usage
+        spec:
+          of:
+            apiVersion: aws.platformref.upbound.io/v1alpha1
+            kind: XEKS
+          by:
+            apiVersion: helm.crossplane.io/v1beta1
+            kind: Release
+            resourceSelector:
+              matchControllerRef: true
+      patches:
+        - fromFieldPath: spec.parameters.providerConfigName
+          toFieldPath: spec.of.resourceSelector.matchLabels[xeks.aws.platformref.upbound.io/cluster-id]

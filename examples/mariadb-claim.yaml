@@ -5,6 +5,7 @@ metadata:
   namespace: default
 spec:
   parameters:
+    region: us-west-2
     engine: mariadb
     engineVersion: "10.6.10"
     storageGB: 5

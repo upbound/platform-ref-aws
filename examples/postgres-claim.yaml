@@ -5,6 +5,7 @@ metadata:
   namespace: default
 spec:
   parameters:
+    region: us-west-2
     engine: postgres
     engineVersion: "13.7"
     storageGB: 5

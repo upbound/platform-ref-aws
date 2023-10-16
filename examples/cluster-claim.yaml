@@ -3,20 +3,18 @@ kind: Cluster
 metadata:
   name: platform-ref-aws
   namespace: default
-  annotations:
-    uptest.upbound.io/pre-delete-hook: testhooks/delete-release.sh
 spec:
-  id: platform-ref-aws
+  compositeDeletePolicy: Foreground
   parameters:
-    version: "1.26"
+    id: platform-ref-aws
+    region: us-west-2
+    version: "1.27"
+    iam:
+      # replace with your custom arn like:
+      # roleArn: arn:aws:iam::123456789:role/AWSReservedSSO_AdministratorAccess_d703c73ed340fde7
+      roleArn: ${data.aws_eks_iam_default_admin}
     nodes:
       count: 3
-      size: small
-    services:
-      operators:
-        prometheus:
-          version: "34.5.1"
-        universal-crossplane:
-          version: "1.12.2-up.1"
+      instanceType: t3.small
   writeConnectionSecretToRef:
     name: platform-ref-aws-kubeconfig
