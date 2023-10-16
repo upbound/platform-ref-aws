@@ -18,10 +18,3 @@ spec:
       id: platform-ref-aws
   writeConnectionSecretToRef:
     name: platform-ref-aws-db-conn-mariadb
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: mariadbsecret
-  namespace: default
-type: Opaque
