@@ -73,4 +73,5 @@ jobs:
           password: ${{ secrets.XPKG_TOKEN }}
 
       - name: Publish Artifacts
+        if: env.XPKG_ACCESS_ID != ''
         run: make -j2 publish BRANCH_NAME=${GITHUB_REF##*/}

@@ -55,7 +55,7 @@ spec:
                     description: ServiceSelector employs a specific type of service architecture.
                     enum:
                     - default
-                    - gitops-master
+                    - gitops
                     default: default
                   deletionPolicy:
                     description: Delete the external resources when the Claim/XR is deleted. Defaults to Delete
