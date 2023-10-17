@@ -282,7 +282,7 @@ spec:
         - fromFieldPath: spec.parameters.nodes.instanceType
           toFieldPath: spec.forProvider.instanceTypes[0]
         - fromFieldPath: spec.parameters.id
-          toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
+          toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[networks.aws.platform.upbound.io/network-id]
     - name: ebsCsiAddon
       base:
         apiVersion: eks.aws.upbound.io/v1beta1

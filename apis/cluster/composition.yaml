@@ -9,7 +9,7 @@ spec:
     kind: XCluster
   resources:
     - base:
-        apiVersion: aws.platformref.upbound.io/v1alpha1
+        apiVersion: aws.platform.upbound.io/v1alpha1
         kind: XNetwork
       patches:
         - fromFieldPath: spec.parameters.id
