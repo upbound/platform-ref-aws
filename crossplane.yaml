@@ -40,7 +40,7 @@ spec:
       version: ">=v0.36.0"
     - provider: xpkg.upbound.io/upbound/provider-aws-iam
       version: ">=v0.36.0"
-    - provider: xpkg.upbound.io/upbound/provider-aws-rds
-      version: ">=v0.36.0"
     - configuration: xpkg.upbound.io/upbound/configuration-aws-network
+      version: ">=v0.1.0"
+    - configuration: xpkg.upbound.io/upbound/configuration-aws-database
       version: ">=v0.1.0"
