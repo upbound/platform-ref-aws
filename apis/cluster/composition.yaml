@@ -29,14 +29,14 @@ spec:
             fromFieldPath: Required
       name: compositeNetworkEKS
     - base:
-        apiVersion: aws.platformref.upbound.io/v1alpha1
+        apiVersion: aws.platform.upbound.io/v1alpha1
         kind: XEKS
       connectionDetails:
         - fromConnectionSecretKey: kubeconfig
       name: compositeClusterEKS
       patches:
         - fromFieldPath: spec.parameters.id
-          toFieldPath: metadata.labels[xeks.aws.platformref.upbound.io/cluster-id]
+          toFieldPath: metadata.labels[xeks.aws.platform.upbound.io/cluster-id]
         - fromFieldPath: spec.parameters.id
           toFieldPath: spec.parameters.id
         - fromFieldPath: spec.parameters.region
@@ -65,10 +65,6 @@ spec:
           toFieldPath: spec.parameters.iam.roleArn
         - fromFieldPath: spec.parameters.iam.userArn
           toFieldPath: spec.parameters.iam.userArn
-        - fromFieldPath: status.subnetIds
-          toFieldPath: spec.parameters.subnetIds
-          policy:
-            fromFieldPath: Required
     - base:
         apiVersion: aws.platformref.upbound.io/v1alpha1
         kind: XServices
@@ -99,7 +95,7 @@ spec:
         kind: Usage
         spec:
           of:
-            apiVersion: aws.platformref.upbound.io/v1alpha1
+            apiVersion: aws.platform.upbound.io/v1alpha1
             kind: XEKS
             resourceSelector:
               matchControllerRef: true
