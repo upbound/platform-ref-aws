@@ -35,10 +35,10 @@ spec:
     - provider: xpkg.upbound.io/crossplane-contrib/provider-kubernetes
       version: ">=v0.9.0"
     - provider: index.docker.io/ulucinar/provider-aws-ec2
-      version: "=v1.0.0-e36995fd35da976fa260653a5fe268a54b7d41f3"
+      version: "=v0.44.0-a7f97d0a9b3d2e3d279a0038803702c389453197"
     - provider: index.docker.io/ulucinar/provider-aws-eks
-      version: "=v1.0.0-e36995fd35da976fa260653a5fe268a54b7d41f3"
+      version: "=v0.44.0-a7f97d0a9b3d2e3d279a0038803702c389453197"
     - provider: index.docker.io/ulucinar/provider-aws-iam
-      version: "=v1.0.0-e36995fd35da976fa260653a5fe268a54b7d41f3"
+      version: "=v0.44.0-a7f97d0a9b3d2e3d279a0038803702c389453197"
     - provider: index.docker.io/ulucinar/provider-aws-rds
-      version: "=v1.0.0-e36995fd35da976fa260653a5fe268a54b7d41f3"
+      version: "=v0.44.0-a7f97d0a9b3d2e3d279a0038803702c389453197"
