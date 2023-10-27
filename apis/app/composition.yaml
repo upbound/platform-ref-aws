@@ -77,7 +77,7 @@ spec:
         kind: Usage
         spec:
           of:
-            apiVersion: aws.platformref.upbound.io/v1alpha1
+            apiVersion: aws.platform.upbound.io/v1alpha1
             kind: XEKS
           by:
             apiVersion: helm.crossplane.io/v1beta1
@@ -86,4 +86,4 @@ spec:
               matchControllerRef: true
       patches:
         - fromFieldPath: spec.parameters.providerConfigName
-          toFieldPath: spec.of.resourceSelector.matchLabels[xeks.aws.platformref.upbound.io/cluster-id]
+          toFieldPath: spec.of.resourceSelector.matchLabels[xeks.aws.platform.upbound.io/cluster-id]
