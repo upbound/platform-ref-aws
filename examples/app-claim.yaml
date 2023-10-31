@@ -1,8 +1,10 @@
-apiVersion: aws.platformref.upbound.io/v1alpha1
+apiVersion: platform.upbound.io/v1alpha1
 kind: App
 metadata:
   name: platform-ref-aws-ghost
   namespace: default
+  labels:
+    platform.upbound.io/deletion-ordering: enabled
 spec:
   compositeDeletePolicy: Foreground
   parameters:

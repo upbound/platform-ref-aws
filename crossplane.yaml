@@ -46,3 +46,5 @@ spec:
       version: ">=v0.1.0"
     - configuration: xpkg.upbound.io/upbound/configuration-aws-eks
       version: ">=v0.1.0"
+    - configuration: xpkg.upbound.io/upbound/configuration-app
+      version: ">=v0.1.0"

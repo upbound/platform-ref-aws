@@ -104,3 +104,22 @@ spec:
             kind: XServices
             resourceSelector:
               matchControllerRef: true
+
+    - name: usageXEksByArbitraryLabeledRelease
+      base:
+        apiVersion: apiextensions.crossplane.io/v1alpha1
+        kind: Usage
+        spec:
+          of:
+            apiVersion: aws.platform.upbound.io/v1alpha1
+            kind: XEKS
+            resourceSelector:
+              matchControllerRef: true
+          by:
+            apiVersion: helm.crossplane.io/v1beta1
+            kind: Release
+            resourceSelector:
+              matchLabels:
+                platform.upbound.io/deletion-ordering: enabled
+      readinessChecks:
+        - type: None
