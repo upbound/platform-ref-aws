@@ -8,7 +8,8 @@ spec:
     apiVersion: aws.platformref.upbound.io/v1alpha1
     kind: XCluster
   resources:
-    - base:
+    - name: XNetwork
+      base:
         apiVersion: aws.platform.upbound.io/v1alpha1
         kind: XNetwork
       patches:
@@ -27,13 +28,13 @@ spec:
           toFieldPath: status.subnetIds
           policy:
             fromFieldPath: Required
-      name: compositeNetworkEKS
-    - base:
+
+    - name: XEKS
+      base:
         apiVersion: aws.platform.upbound.io/v1alpha1
         kind: XEKS
       connectionDetails:
         - fromConnectionSecretKey: kubeconfig
-      name: compositeClusterEKS
       patches:
         - fromFieldPath: spec.parameters.id
           toFieldPath: metadata.labels[xeks.aws.platform.upbound.io/cluster-id]
@@ -65,31 +66,36 @@ spec:
           toFieldPath: spec.parameters.iam.roleArn
         - fromFieldPath: spec.parameters.iam.userArn
           toFieldPath: spec.parameters.iam.userArn
-    - base:
-        apiVersion: aws.platformref.upbound.io/v1alpha1
-        kind: XServices
-      name: compositeClusterServices
+
+    - name: XOss
+      base:
+        apiVersion: observe.platform.upbound.io/v1alpha1
+        kind: XOss
       patches:
         - fromFieldPath: spec.parameters.deletionPolicy
-          toFieldPath: spec.deletionPolicy
+          toFieldPath: spec.parameters.deletionPolicy
         - fromFieldPath: spec.parameters.id
-          toFieldPath: spec.providerConfigRef.name
-        - fromFieldPath: spec.parameters.services.operators.flux.version
-          toFieldPath: spec.operators.flux.version
-        - fromFieldPath: spec.parameters.services.operators.prometheus.version
-          toFieldPath: spec.operators.prometheus.version
-        - fromFieldPath: spec.parameters.gitops.url
-          toFieldPath: spec.gitops.url
-        - fromFieldPath: spec.parameters.gitops.path
-          toFieldPath: spec.gitops.path
-        - fromFieldPath: spec.parameters.gitops.kubeConfigSecretRef.name
-          toFieldPath: spec.gitops.kubeConfigSecretRef.name
-        - fromFieldPath: spec.parameters.gitops.kubeConfigSecretRef.namespace
-          toFieldPath: spec.gitops.kubeConfigSecretRef.namespace
-        - fromFieldPath: spec.parameters.serviceSelector
-          toFieldPath: spec.compositionSelector.matchLabels[type]
+          toFieldPath: spec.parameters.id
+        - fromFieldPath: spec.parameters.operators.prometheus.version
+          toFieldPath: spec.parameters.operators.prometheus.version
 
-    - name: usageXEksByXService
+    - name: XFlux
+      base:
+        apiVersion: gitops.platform.upbound.io/v1alpha1
+        kind: XFlux
+      patches:
+        - fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.parameters.deletionPolicy
+        - fromFieldPath: spec.parameters.id
+          toFieldPath: spec.parameters.providerConfigName
+        - fromFieldPath: spec.parameters.operators.flux.version
+          toFieldPath: spec.parameters.operators.flux.version
+        - fromFieldPath: spec.parameters.operators.flux-sync.version
+          toFieldPath: spec.parameters.operators.flux-sync.version
+        - fromFieldPath: spec.parameters.gitops
+          toFieldPath: spec.parameters.source
+
+    - name: usageXEksByXFlux
       base:
         apiVersion: apiextensions.crossplane.io/v1alpha1
         kind: Usage
@@ -100,8 +106,24 @@ spec:
             resourceSelector:
               matchControllerRef: true
           by:
-            apiVersion: aws.platformref.upbound.io/v1alpha1
-            kind: XServices
+            apiVersion: gitops.platform.upbound.io/v1alpha1
+            kind: XFlux
+            resourceSelector:
+              matchControllerRef: true
+
+    - name: usageXEksByXOss
+      base:
+        apiVersion: apiextensions.crossplane.io/v1alpha1
+        kind: Usage
+        spec:
+          of:
+            apiVersion: aws.platform.upbound.io/v1alpha1
+            kind: XEKS
+            resourceSelector:
+              matchControllerRef: true
+          by:
+            apiVersion: observe.platform.upbound.io/v1alpha1
+            kind: XOss
             resourceSelector:
               matchControllerRef: true
 
