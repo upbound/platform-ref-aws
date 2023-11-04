@@ -154,7 +154,7 @@ spec:
                               type: string
                               default: "/"
                             ref:
-                              description: Reference specifies the Git reference to resolve and 
+                              description: Reference specifies the Git reference to resolve and
                                 monitor for changes.
                               type: object
                               properties:
