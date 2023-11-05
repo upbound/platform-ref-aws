@@ -1,12 +1,18 @@
 # AWS Reference Platform
 
 This repository contains a reference AWS Platform Configuration for
-[Crossplane](https://crossplane.io/). It's a great starting point for building
-internal cloud platforms with AWS and offering a self-service API to your internal
-development teams.
+[Crossplane](https://crossplane.io). It's a great starting point for
+building internal cloud platforms with AWS and offering a self-service
+API to your internal development teams.
 
-This platform offers APIs for setting up fully configured EKS clusters with secure networking, stateful cloud services (RDS) that can securely connect to the EKS clusters, an Observability Stack, and a GitOps System. All these components are built using cloud service tools from the [Official Upbound AWS
-Provider](https://marketplace.upbound.io/providers/upbound/provider-aws). App deployments can securely access the necessary infrastructure through secrets distributed directly to the app namespace.
+This platform offers APIs for setting up fully configured EKS clusters
+with secure networking, stateful cloud services (RDS) that can securely
+connect to the EKS clusters, an Observability Stack, and a GitOps
+System. All these components are built using cloud service tools from
+the [Official Upbound AWS Provider](https://marketplace.upbound.io/
+providers/upbound/provider-aws). App deployments can securely access the
+necessary infrastructure through secrets distributed directly to the app
+namespace.
 
 ## Overview
 
