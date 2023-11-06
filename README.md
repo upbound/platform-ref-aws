@@ -19,12 +19,12 @@ namespace.
 This reference platform outlines a specialized API for generating an EKS cluster
 ([XCluster](apis/cluster/definition.yaml)) that incorporates XRs from the specified configurations:
 
-[upbound-configuration-app](https://github.com/upbound/upbound-configuration-app)
-[upbound-configuration-aws-database](https://github.com/upbound/upbound-configuration-aws-database)
-[upbound-configuration-aws-eks](https://github.com/upbound/upbound-configuration-aws-eks)
-[upbound-configuration-aws-network](https://github.com/upbound/upbound-configuration-aws-network)
-[upbound-configuration-gitops-flux](https://github.com/upbound/upbound-configuration-gitops-flux)
-[upbound-configuration-observability-oss](https://github.com/upbound/upbound-configuration-observability-oss)
+* [upbound-configuration-app](https://github.com/upbound/upbound-configuration-app)
+* [upbound-configuration-aws-database](https://github.com/upbound/upbound-configuration-aws-database)
+* [upbound-configuration-aws-eks](https://github.com/upbound/upbound-configuration-aws-eks)
+* [upbound-configuration-aws-network](https://github.com/upbound/upbound-configuration-aws-network)
+* [upbound-configuration-gitops-flux](https://github.com/upbound/upbound-configuration-gitops-flux)
+* [upbound-configuration-observability-oss](https://github.com/upbound/upbound-configuration-observability-oss)
 
 ```mermaid
 graph LR;

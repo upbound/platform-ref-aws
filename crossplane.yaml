@@ -31,14 +31,14 @@ spec:
     version: ">=v1.12.1-0"
   dependsOn:
     - configuration: xpkg.upbound.io/upbound/configuration-aws-network
-      version: ">=v0.2.0"
+      version: "v0.2.0"
     - configuration: xpkg.upbound.io/upbound/configuration-aws-database
-      version: ">=v0.1.0"
+      version: "v0.1.0"
     - configuration: xpkg.upbound.io/upbound/configuration-aws-eks
-      version: ">=v0.1.0"
+      version: "v0.1.0"
     - configuration: xpkg.upbound.io/upbound/configuration-app
-      version: ">=v0.1.0"
+      version: "v0.1.0"
     - configuration: xpkg.upbound.io/upbound/configuration-observability-oss
-      version: ">=v0.1.0"
+      version: "v0.1.0"
     - configuration: xpkg.upbound.io/upbound/configuration-gitops-flux
-      version: ">=v0.1.0"
+      version: "v0.1.0"
