@@ -1,27 +1,30 @@
 # AWS Reference Platform
 
 This repository contains a reference AWS Platform Configuration for
-[Crossplane](https://crossplane.io/). It's a great starting point for building
-internal cloud platforms with AWS and offering a self-service API to your internal
-development teams.
+[Crossplane](https://crossplane.io). It's a great starting point for
+building internal cloud platforms with AWS and offering a self-service
+API to your internal development teams.
 
-This platform provides APIs to provision fully configured EKS clusters, with
-secure networking, and stateful cloud services (RDS) designed to securely
-connect to the nodes in each EKS cluster — all composed using cloud service
-primitives from the [Official Upbound AWS
-Provider](https://marketplace.upbound.io/providers/upbound/provider-aws). App
-deployments can securely connect to the infrastructure they need using secrets
-distributed directly to the app namespace.
+This platform offers APIs for setting up fully configured EKS clusters
+with secure networking, stateful cloud services (RDS) that can securely
+connect to the EKS clusters, an Observability Stack, and a GitOps
+System. All these components are built using cloud service tools from
+the [Official Upbound AWS Provider](https://marketplace.upbound.io/
+providers/upbound/provider-aws). App deployments can securely access the
+necessary infrastructure through secrets distributed directly to the app
+namespace.
 
 ## Overview
 
-This reference platform defines a custom API for creating an EKS cluster
-([XCluster](package/cluster/definition.yaml)) which includes the actual EKS
-cluster, a network fabric, Prometheus, and other cluster services
-([XServices](package/cluster/composition.yaml)). Additionally, it defines a
-custom API for provisioning RDS Databases
-([XSQLInstance](package/database/sqlinstance/definition.yaml)).
+This reference platform outlines a specialized API for generating an EKS cluster
+([XCluster](apis/cluster/definition.yaml)) that incorporates XRs from the specified configurations:
 
+[upbound-configuration-app](https://github.com/upbound/upbound-configuration-app)
+[upbound-configuration-aws-database](https://github.com/upbound/upbound-configuration-aws-database)
+[upbound-configuration-aws-eks](https://github.com/upbound/upbound-configuration-aws-eks)
+[upbound-configuration-aws-network](https://github.com/upbound/upbound-configuration-aws-network)
+[upbound-configuration-gitops-flux](https://github.com/upbound/upbound-configuration-gitops-flux)
+[upbound-configuration-observability-oss](https://github.com/upbound/upbound-configuration-observability-oss)
 
 ```mermaid
 graph LR;
@@ -30,7 +33,7 @@ graph LR;
     MyApp---MyDB(XRC: my-db);
     MyDB---XRD2(XRD: XSQLInstance);
 		subgraph Configuration:upbound/platform-ref-aws;
-	    XRD1---Composition(XEKS, XNetwork, XServices);
+	    XRD1---Composition(XEKS, XNetwork, XFlux, XOss);
 	    XRD2---Composition2(Composition);
 		end
 		subgraph Provider:upbound/provider-aws
@@ -55,7 +58,7 @@ style RDS.MRs color:#000,fill:#81CABB,stroke:#000,stroke-width:2px
 ```
 
 Learn more about Composite Resources in the [Crossplane
-Docs](https://crossplane.io/docs/v1.10/concepts/composition.html).
+Docs](https://docs.crossplane.io/latest/concepts/compositions/).
 
 ## Quickstart
 
@@ -98,11 +101,11 @@ kubectl get all -n upbound-system
 ### Install the AWS Reference Platform
 
 Now you can install this reference platform. It's packaged as a [Crossplane
-configuration package](https://crossplane.io/docs/v1.10/concepts/packages.html)
+configuration package](https://docs.crossplane.io/latest/concepts/packages/)
 so there is a single command to install it:
 
 ```console
-up ctp configuration install xpkg.upbound.io/upbound/platform-ref-aws:v0.6.0
+up ctp configuration install xpkg.upbound.io/upbound/platform-ref-aws:v0.7.0
 ```
 
 Validate the install by inspecting the provider and configuration packages:
@@ -165,7 +168,7 @@ kubectl apply -f examples/mariadb-claim.yaml
 Now deploy the sample application:
 
 ```
-kubectl apply -f examples/ghost-claim.yaml
+kubectl apply -f examples/app-claim.yaml
 ```
 
 You can verify the status by inspecting the claims, composites and managed
@@ -185,8 +188,21 @@ To uninstall the provider & platform configuration:
 
 ```console
 kubectl delete configurations.pkg.crossplane.io upbound-platform-ref-aws
-kubectl delete providers.pkg.crossplane.io upbound-provider-aws
+kubectl delete configurations.pkg.crossplane.io upbound-configuration-app
+kubectl delete configurations.pkg.crossplane.io upbound-configuration-aws-database
+kubectl delete configurations.pkg.crossplane.io upbound-configuration-aws-eks
+kubectl delete configurations.pkg.crossplane.io upbound-configuration-aws-network
+kubectl delete configurations.pkg.crossplane.io upbound-configuration-gitops-flux
+kubectl delete configurations.pkg.crossplane.io upbound-configuration-observability-oss
+
 kubectl delete providers.pkg.crossplane.io crossplane-contrib-provider-helm
+kubectl delete providers.pkg.crossplane.io crossplane-contrib-provider-kubernetes
+kubectl delete providers.pkg.crossplane.io grafana-provider-grafana
+kubectl delete providers.pkg.crossplane.io upbound-provider-aws-ec2
+kubectl delete providers.pkg.crossplane.io upbound-provider-aws-eks
+kubectl delete providers.pkg.crossplane.io upbound-provider-aws-iam
+kubectl delete providers.pkg.crossplane.io upbound-provider-aws-rds
+kubectl delete providers.pkg.crossplane.io upbound-provider-family-aws
 ```
 
 ## Customize for your Organization
@@ -219,11 +235,6 @@ To make your changes clone this repository:
 ```console
 git clone https://github.com/upbound/platform-ref-aws.git $PLATFORM && cd $PLATFORM
 ```
-
-In the [EKS composition](package/cluster/eks/composition.yaml) find the `region`
-definitions and change them from `us-west-2` to `eu-central-1`. Also find the
-`scalingConfig.maxSize` and change it from `100` to `10`.
-
 
 ### Build and push your platform
 
