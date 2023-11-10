@@ -9,22 +9,21 @@ This platform offers APIs for setting up fully configured EKS clusters
 with secure networking, stateful cloud services (RDS) that can securely
 connect to the EKS clusters, an Observability Stack, and a GitOps
 System. All these components are built using cloud service tools from
-the [Official Upbound AWS Provider](https://marketplace.upbound.io/
-providers/upbound/provider-aws). App deployments can securely access the
-necessary infrastructure through secrets distributed directly to the app
-namespace.
+the [Official Upbound AWS Provider](https://marketplace.upbound.io/providers/upbound/provider-aws).
+App deployments can securely access the necessary infrastructure through secrets
+distributed directly to the app namespace.
 
 ## Overview
 
 This reference platform outlines a specialized API for generating an EKS cluster
 ([XCluster](apis/cluster/definition.yaml)) that incorporates XRs from the specified configurations:
 
-* [upbound-configuration-app](https://github.com/upbound/upbound-configuration-app)
-* [upbound-configuration-aws-database](https://github.com/upbound/upbound-configuration-aws-database)
-* [upbound-configuration-aws-eks](https://github.com/upbound/upbound-configuration-aws-eks)
-* [upbound-configuration-aws-network](https://github.com/upbound/upbound-configuration-aws-network)
-* [upbound-configuration-gitops-flux](https://github.com/upbound/upbound-configuration-gitops-flux)
-* [upbound-configuration-observability-oss](https://github.com/upbound/upbound-configuration-observability-oss)
+* [upbound-configuration-app](https://github.com/upbound/configuration-app)
+* [upbound-configuration-aws-database](https://github.com/upbound/configuration-aws-database)
+* [upbound-configuration-aws-eks](https://github.com/upbound/configuration-aws-eks)
+* [upbound-configuration-aws-network](https://github.com/upbound/configuration-aws-network)
+* [upbound-configuration-gitops-flux](https://github.com/upbound/configuration-gitops-flux)
+* [upbound-configuration-observability-oss](https://github.com/upbound/configuration-observability-oss)
 
 ```mermaid
 graph LR;
@@ -77,10 +76,9 @@ curl -sL https://cli.upbound.io | sh
 See [up docs](https://docs.upbound.io/cli/) for more install options.
 
 We need a running Crossplane control plane to install our instance. We are
-using [Universal Crossplane (UXP)
-](https://github.com/upbound/universal-crossplane). Ensure that your kubectl
-context points to the correct Kubernetes cluster or create a new
-[kind](https://kind.sigs.k8s.io) cluster:
+using [Universal Crossplane (UXP)](https://github.com/upbound/universal-crossplane).
+Ensure that your kubectl context points to the correct Kubernetes cluster or
+create a new [kind](https://kind.sigs.k8s.io) cluster:
 
 ```console
 kind create cluster
@@ -135,7 +133,8 @@ kubectl create secret generic aws-creds -n upbound-system --from-file=credential
 kubectl apply -f examples/aws-default-provider.yaml
 ```
 
-See [provider-aws docs](https://marketplace.upbound.io/providers/upbound/provider-aws/latest/docs/configuration) for more detailed configuration options.
+See [provider-aws docs](https://marketplace.upbound.io/providers/upbound/provider-family-aws/v0.43.1)
+for more detailed configuration options.
 
 ## Using the AWS reference platform
 
