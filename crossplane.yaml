@@ -32,7 +32,7 @@ spec:
   dependsOn:
     - configuration: xpkg.upbound.io/upbound/configuration-aws-network
       # renovate: datasource=github-releases depName=upbound/configuration-aws-network
-      version: "v0.6.0"
+      version: "v0.7.0"
     - configuration: xpkg.upbound.io/upbound/configuration-aws-database
       # renovate: datasource=github-releases depName=upbound/configuration-aws-database
       version: "v0.5.0"
