@@ -101,15 +101,15 @@ spec:
               apiVersion: observe.platform.upbound.io/v1alpha1
               kind: XOss
             patches:
-            - type: FromCompositeFieldPath
-              fromFieldPath: spec.parameters.deletionPolicy
-              toFieldPath: spec.parameters.deletionPolicy
-            - type: FromCompositeFieldPath
-              fromFieldPath: spec.parameters.id
-              toFieldPath: spec.parameters.id
-            - type: FromCompositeFieldPath
-              fromFieldPath: spec.parameters.operators.prometheus.version
-              toFieldPath: spec.parameters.operators.prometheus.version
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.deletionPolicy
+                toFieldPath: spec.parameters.deletionPolicy
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.id
+                toFieldPath: spec.parameters.id
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.operators.prometheus.version
+                toFieldPath: spec.parameters.operators.prometheus.version
 
           - name: XFlux
             base:
