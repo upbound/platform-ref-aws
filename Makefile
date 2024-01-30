@@ -13,7 +13,7 @@ PLATFORMS ?= linux_amd64
 
 UP_VERSION = v0.21.0
 UP_CHANNEL = stable
-UPTEST_VERSION = v0.9.0
+UPTEST_VERSION = v0.10.0
 
 -include build/makelib/k8s_tools.mk
 # ====================================================================================
