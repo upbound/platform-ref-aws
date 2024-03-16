@@ -47,7 +47,7 @@ spec:
       version: "v0.4.0"
     - configuration: xpkg.upbound.io/upbound/configuration-gitops-flux
       # renovate: datasource=github-releases depName=upbound/configuration-gitops-flux
-      version: "v0.4.0"
+      version: "v0.6.0"
     - function: xpkg.upbound.io/crossplane-contrib/function-patch-and-transform
       # renovate: datasource=github-releases depName=crossplane-contrib/function-patch-and-transform
       version: "v0.3.0"
