@@ -244,7 +244,7 @@ account](https://accounts.upbound.io/register) to push your custom platform.
 Afterwards you can log in:
 
 ```console
-
+up login
 ```
 
 ### Make the changes
