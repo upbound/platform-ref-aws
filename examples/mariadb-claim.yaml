@@ -7,7 +7,7 @@ spec:
   parameters:
     region: us-west-2
     engine: mariadb
-    engineVersion: "10.6.10"
+    engineVersion: "10.6.19"
     storageGB: 5
     autoGeneratePassword: true
     passwordSecretRef:
