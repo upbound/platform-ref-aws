@@ -55,6 +55,9 @@ spec:
                 fromFieldPath: spec.parameters.id
                 toFieldPath: metadata.labels[xeks.aws.platform.upbound.io/cluster-id]
               - type: FromCompositeFieldPath
+                fromFieldPath: metadata.labels[platform.upbound.io/deletion-ordering]
+                toFieldPath: metadata.labels[platform.upbound.io/deletion-ordering]
+              - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.id
                 toFieldPath: spec.parameters.id
               - type: FromCompositeFieldPath
@@ -90,11 +93,11 @@ spec:
                 fromFieldPath: spec.parameters.nodes.instanceType
                 toFieldPath: spec.parameters.nodes.instanceType
               - type: FromCompositeFieldPath
-                fromFieldPath: spec.parameters.iam.roleArn
-                toFieldPath: spec.parameters.iam.roleArn
-              - type: FromCompositeFieldPath
-                fromFieldPath: spec.parameters.iam.userArn
-                toFieldPath: spec.parameters.iam.userArn
+                fromFieldPath: spec.parameters.iam.principalArn
+                toFieldPath: spec.parameters.iam.principalArn
+              - type: ToCompositeFieldPath
+                fromFieldPath: status.eks.clusterName
+                toFieldPath: status.clusterName
 
           - name: XOss
             base:
@@ -131,6 +134,51 @@ spec:
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.parameters.gitops
                 toFieldPath: spec.parameters.source
+
+          - name: XAWSLBController
+            base:
+              apiVersion: aws.platform.upbound.io/v1alpha1
+              kind: XAWSLBController
+              spec:
+                parameters:
+                  providerConfigName: platform-ref-aws
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: status.oidcProvider
+                toFieldPath: spec.parameters.oidcProvider
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.deletionPolicy
+                toFieldPath: spec.parameters.deletionPolicy
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.providerConfigName
+                toFieldPath: spec.parameters.providerConfigName
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.id
+                toFieldPath: spec.parameters.helm.providerConfigName
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.region
+                toFieldPath: spec.parameters.region
+              - type: FromCompositeFieldPath
+                fromFieldPath: status.clusterName
+                policy:
+                  fromFieldPath: Required
+                toFieldPath: spec.parameters.clusterName
+
+          - name: usageXNetworkByXEKS
+            base:
+              apiVersion: apiextensions.crossplane.io/v1alpha1
+              kind: Usage
+              spec:
+                by:
+                  apiVersion: aws.platform.upbound.io/v1alpha1
+                  kind: XEKS
+                  resourceSelector:
+                    matchControllerRef: true
+                of:
+                  apiVersion: aws.platform.upbound.io/v1alpha1
+                  kind: XNetwork
+                  resourceSelector:
+                    matchControllerRef: true
 
           - name: usageXEksByXFlux
             base:
@@ -178,6 +226,25 @@ spec:
                 of:
                   apiVersion: aws.platform.upbound.io/v1alpha1
                   kind: XEKS
+                  resourceSelector:
+                    matchControllerRef: true
+            readinessChecks:
+              - type: None
+
+          - name: usageXAWSLBControllerByArbitraryLabeledApp
+            base:
+              apiVersion: apiextensions.crossplane.io/v1alpha1
+              kind: Usage
+              spec:
+                by:
+                  apiVersion: platform.upbound.io/v1alpha1
+                  kind: XApp
+                  resourceSelector:
+                    matchLabels:
+                      platform.upbound.io/deletion-ordering: enabled
+                of:
+                  apiVersion: aws.platform.upbound.io/v1alpha1
+                  kind: XAWSLBController
                   resourceSelector:
                     matchControllerRef: true
             readinessChecks:

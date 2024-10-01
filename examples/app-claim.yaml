@@ -8,6 +8,17 @@ metadata:
 spec:
   compositeDeletePolicy: Foreground
   parameters:
+    helm:
+      values:
+        ingress:
+          annotations:
+            alb.ingress.kubernetes.io/scheme: internet-facing
+            alb.ingress.kubernetes.io/target-type: ip
+          enabled: true
+          ingressClassName: alb
+        service:
+          type: ClusterIP
+      wait: true
     providerConfigName: platform-ref-aws
     passwordSecretRef:
       namespace: default
