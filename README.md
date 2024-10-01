@@ -16,7 +16,7 @@ distributed directly to the app namespace.
 ## Overview
 
 This reference platform outlines a specialized API for generating an EKS cluster
-([XCluster](apis/cluster/definition.yaml)) that incorporates XRs from the specified configurations:
+([XCluster](apis/pat/definition.yaml)) that incorporates XRs from the specified configurations:
 
 * [upbound-configuration-app](https://github.com/upbound/configuration-app)
 * [upbound-configuration-aws-database](https://github.com/upbound/configuration-aws-database)

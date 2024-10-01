@@ -28,6 +28,9 @@ spec:
                   type: object
                   description: Cluster configuration parameters.
                   properties:
+                    clusterName:
+                      type: string
+                      description: The name of the cluster on the cloud platform.
                     id:
                       type: string
                       description: ID of this Cluster that other objects will use to refer to it.
@@ -38,18 +41,14 @@ spec:
                       type: object
                       description: IAM configuration to connect as ClusterAdmin.
                       properties:
-                        roleArn:
-                          description: The IAM Role ARN to connect as ClusterAdmin.
-                          type: string
-                        userArn:
-                          description: The IAM User ARN to connect as ClusterAdmin.
+                        principalArn:
+                          description: The IAM Principal ARN to connect as ClusterAdmin.
                           type: string
                     networkSelector:
                       type: string
                       description: NetworkSelector employs a specific type of network architecture.
                       enum:
                         - basic
-                      default: basic
                     deletionPolicy:
                       description: Delete the external resources when the Claim/XR is deleted. Defaults to Delete
                       enum:
@@ -186,6 +185,8 @@ spec:
             status:
               type: object
               properties:
+                clusterName:
+                  type: string
                 subnetIds:
                   type: array
                   items:
