@@ -32,22 +32,22 @@ spec:
   dependsOn:
     - configuration: xpkg.upbound.io/upbound/configuration-aws-network
       # renovate: datasource=github-releases depName=upbound/configuration-aws-network
-      version: "v0.12.0"
+      version: "v0.18.0"
     - configuration: xpkg.upbound.io/upbound/configuration-aws-database
       # renovate: datasource=github-releases depName=upbound/configuration-aws-database
-      version: "v0.10.0"
+      version: "v0.11.1"
     - configuration: xpkg.upbound.io/upbound/configuration-aws-eks
       # renovate: datasource=github-releases depName=upbound/configuration-aws-eks
       version: "v0.13.1"
     - configuration: xpkg.upbound.io/upbound/configuration-app
       # renovate: datasource=github-releases depName=upbound/configuration-app
-      version: "v0.5.0"
+      version: "v0.8.0"
     - configuration: xpkg.upbound.io/upbound/configuration-observability-oss
       # renovate: datasource=github-releases depName=upbound/configuration-observability-oss
-      version: "v0.5.0"
+      version: "v0.7.1"
     - configuration: xpkg.upbound.io/upbound/configuration-gitops-flux
       # renovate: datasource=github-releases depName=upbound/configuration-gitops-flux
-      version: "v0.6.0"
+      version: "v0.8.0"
     - function: xpkg.upbound.io/crossplane-contrib/function-patch-and-transform
       # renovate: datasource=github-releases depName=crossplane-contrib/function-patch-and-transform
-      version: "v0.4.0"
+      version: "v0.7.0"
