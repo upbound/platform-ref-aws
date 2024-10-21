@@ -1,18 +1,22 @@
 apiVersion: aws.platformref.upbound.io/v1alpha1
 kind: Cluster
 metadata:
+  annotations:
+    render.crossplane.io/composition-path: apis/pat/composition.yaml
+    render.crossplane.io/function-path: examples/functions.yaml
   name: platform-ref-aws
   namespace: default
+  labels:
+    platform.upbound.io/deletion-ordering: enabled
 spec:
   compositeDeletePolicy: Foreground
   parameters:
     id: platform-ref-aws
     region: us-west-2
     version: "1.27"
-    iam:
+    #iam:
       # replace with your custom arn like:
-      # roleArn: arn:aws:iam::123456789:role/AWSReservedSSO_AdministratorAccess_d703c73ed340fde7
-      roleArn: ${data.aws_eks_iam_default_admin}
+      # principalArn: arn:aws:iam::123456789:role/AWSReservedSSO_AdministratorAccess_d703c73ed340fde7
     nodes:
       count: 3
       instanceType: t3.small
