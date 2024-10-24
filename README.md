@@ -171,13 +171,13 @@ uses the same network to have connectivity with the EKS cluster.
 
 Alternatively, you can use a postgresql claim:
 
-```
+```console
 kubectl apply -f https://raw.githubusercontent.com/upbound/platform-ref-aws/main/examples/postgres-claim.yaml
 ```
 
 Now deploy the sample application:
 
-```
+```console
 kubectl apply -f https://raw.githubusercontent.com/upbound/platform-ref-aws/main/examples/app-claim.yaml
 ```
 
