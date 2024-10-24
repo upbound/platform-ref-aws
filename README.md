@@ -191,7 +191,9 @@ kubectl get claim,composite,managed
 ```
 
 To get nice representation of the Claim deployment status you can use
-[crossplane beta trace](https://docs.crossplane.io/latest/cli/command-reference/#beta-trace) command
+[crossplane beta trace](https://docs.crossplane.io/latest/cli/command-reference/#beta-trace) command.
+If you don't have `crossplane` CLI, see the [installation
+instructions](https://docs.crossplane.io/latest/cli/).
 
 ```console
 crossplane beta trace cluster.aws.platformref.upbound.io/platform-ref-aws
