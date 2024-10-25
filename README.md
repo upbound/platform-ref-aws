@@ -108,7 +108,7 @@ configuration package](https://docs.crossplane.io/latest/concepts/packages/)
 so there is a single command to install it:
 
 ```console
-up ctp configuration install xpkg.upbound.io/upbound/platform-ref-aws:v1.1.0
+up ctp configuration install xpkg.upbound.io/upbound/platform-ref-aws:v1.2.0
 ```
 
 Validate the install by inspecting the provider and configuration packages:
@@ -171,13 +171,13 @@ uses the same network to have connectivity with the EKS cluster.
 
 Alternatively, you can use a postgresql claim:
 
-```
+```console
 kubectl apply -f https://raw.githubusercontent.com/upbound/platform-ref-aws/main/examples/postgres-claim.yaml
 ```
 
 Now deploy the sample application:
 
-```
+```console
 kubectl apply -f https://raw.githubusercontent.com/upbound/platform-ref-aws/main/examples/app-claim.yaml
 ```
 
@@ -191,7 +191,9 @@ kubectl get claim,composite,managed
 ```
 
 To get nice representation of the Claim deployment status you can use
-[crossplane beta trace](https://docs.crossplane.io/latest/cli/command-reference/#beta-trace) command
+[crossplane beta trace](https://docs.crossplane.io/latest/cli/command-reference/#beta-trace) command.
+If you don't have `crossplane` CLI, see the [installation
+instructions](https://docs.crossplane.io/latest/cli/).
 
 ```console
 crossplane beta trace cluster.aws.platformref.upbound.io/platform-ref-aws
@@ -244,7 +246,7 @@ account](https://accounts.upbound.io/register) to push your custom platform.
 Afterwards you can log in:
 
 ```console
-
+up login
 ```
 
 ### Make the changes
