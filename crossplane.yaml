@@ -35,7 +35,7 @@ spec:
       version: "v0.1.0"
     - configuration: xpkg.upbound.io/upbound/configuration-aws-network
       # renovate: datasource=github-releases depName=upbound/configuration-aws-network
-      version: "v0.18.0"
+      version: "v0.19.0"
     - configuration: xpkg.upbound.io/upbound/configuration-aws-database
       # renovate: datasource=github-releases depName=upbound/configuration-aws-database
       version: "v0.11.1"
