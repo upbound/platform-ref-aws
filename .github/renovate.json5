@@ -1,42 +1,77 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended",
-    "helpers:pinGitHubActionDigests",
-    ":semanticCommits"
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
+    'helpers:pinGitHubActionDigests',
+    ':semanticCommits',
   ],
-  "rebaseWhen": "conflicted",
-  "prConcurrentLimit": 5,
-  "baseBranches": ["main"],
-  "labels": ["automated"],
-  "customManagers": [
+  rebaseWhen: 'conflicted',
+  prConcurrentLimit: 5,
+  baseBranches: [
+    'main',
+  ],
+  labels: [
+    'automated',
+  ],
+  packageRules: [
     {
-      "customType": "regex",
-      "description": "Bump up version in the Makefile",
-      "fileMatch": ["^Makefile$"],
-      "matchStrings": [
-        "UP_VERSION = (?<currentValue>.*?)\\n"
+      matchFileNames: [
+        '.github/**',
       ],
-      "datasourceTemplate": "github-releases",
-      "depNameTemplate": "upbound/up",
-    }, {
-      "customType": "regex",
-      "description": "Bump uptest version in the Makefile",
-      "fileMatch": ["^Makefile$"],
-      "matchStrings": [
-        "UPTEST_VERSION = (?<currentValue>.*?)\\n"
+      groupName: 'github-actions dependencies',
+    },
+    {
+      matchFileNames: [
+        'crossplane.yaml',
       ],
-      "datasourceTemplate": "github-releases",
-      "depNameTemplate": "upbound/uptest",
-    }, {
-      "customType": "regex",
-      "description": "Bump providers/functions/configurations in crossplane.yaml",
-      "fileMatch": ["crossplane.yaml"],
-      "matchStrings": [
-        "#\\s*renovate:\\s*datasource=(?<datasource>[^\\s]+)\\s+depName=(?<depName>[^\\s]+)\\s*\\n\\s*version:\\s*\"(?<currentValue>[^\"]+)\""
+      groupName: 'crossplane dependencies',
+    },
+    {
+      matchFileNames: [
+        'Makefile',
       ],
-      "datasourceTemplate": "{{{datasource}}}",
-      "depNameTemplate": "{{{depName}}}",
-    }
+      groupName: 'Makefile dependencies',
+    },
   ],
+  customManagers: [
+    {
+      customType: 'regex',
+      description: 'Bump up version in the Makefile',
+      fileMatch: [
+        '^Makefile$',
+      ],
+      matchStrings: [
+        'UP_VERSION = (?<currentValue>.*?)\\n',
+      ],
+      datasourceTemplate: 'github-releases',
+      depNameTemplate: 'upbound/up',
+    },
+    {
+      customType: 'regex',
+      description: 'Bump uptest version in the Makefile',
+      fileMatch: [
+        '^Makefile$',
+      ],
+      matchStrings: [
+        'UPTEST_VERSION = (?<currentValue>.*?)\\n',
+      ],
+      datasourceTemplate: 'github-releases',
+      depNameTemplate: 'upbound/uptest',
+    },
+    {
+      customType: 'regex',
+      description: 'Bump providers/functions/configurations in crossplane.yaml',
+      fileMatch: [
+        'crossplane.yaml',
+      ],
+      matchStrings: [
+        '#\\s*renovate:\\s*datasource=(?<datasource>[^\\s]+)\\s+depName=(?<depName>[^\\s]+)\\s*\\n\\s*version:\\s*"(?<currentValue>[^"]+)"',
+      ],
+      datasourceTemplate: '{{{datasource}}}',
+      depNameTemplate: '{{{depName}}}',
+    },
+  ],
+  "git-submodules": {
+     "enabled": true
+  }
 }
