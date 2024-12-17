@@ -35,7 +35,7 @@ spec:
       version: "v0.1.0"
     - configuration: xpkg.upbound.io/upbound/configuration-aws-network
       # renovate: datasource=github-releases depName=upbound/configuration-aws-network
-      version: "v0.18.0"
+      version: "v0.20.0"
     - configuration: xpkg.upbound.io/upbound/configuration-aws-database
       # renovate: datasource=github-releases depName=upbound/configuration-aws-database
       version: "v0.11.1"
@@ -53,4 +53,4 @@ spec:
       version: "v0.8.0"
     - function: xpkg.upbound.io/crossplane-contrib/function-patch-and-transform
       # renovate: datasource=github-releases depName=crossplane-contrib/function-patch-and-transform
-      version: "v0.7.0"
+      version: "v0.8.0"
