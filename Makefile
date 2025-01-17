@@ -117,7 +117,7 @@ PLATFORMS ?= linux_amd64
 
 # Tool Versions
 # ------------------
-UP_VERSION = v0.35.0
+UP_VERSION = v0.36.4
 UP_CHANNEL = stable
 CROSSPLANE_CLI_VERSION = v1.18.0
 CROSSPLANE_VERSION = v1.18.0-up.1
@@ -134,7 +134,7 @@ KIND_CLUSTER_NAME ?= uptest-$(PROJECT_NAME)
 # XPKG Configuration
 # ------------------
 XPKG_DIR = $(shell pwd)
-XPKG_IGNORE = .github/workflows/*.yaml,.github/workflows/*.yml,examples/*.yaml,.work/uptest-datasource.yaml,.cache/render/*
+XPKG_IGNORE ?= .github/workflows/*.yaml,.github/workflows/*.yml,examples/*.yaml,.work/uptest-datasource.yaml,.cache/render/*
 XPKG_REG_ORGS ?= xpkg.upbound.io/upbound
 # NOTE: Skip promoting on xpkg.upbound.io as channel tags are inferred
 XPKG_REG_ORGS_NO_PROMOTE ?= xpkg.upbound.io/upbound
