@@ -169,6 +169,7 @@ spec:
               apiVersion: apiextensions.crossplane.io/v1alpha1
               kind: Usage
               spec:
+                replayDeletion: true
                 by:
                   apiVersion: aws.platform.upbound.io/v1alpha1
                   kind: XEKS
@@ -185,6 +186,7 @@ spec:
               apiVersion: apiextensions.crossplane.io/v1alpha1
               kind: Usage
               spec:
+                replayDeletion: true
                 by:
                   apiVersion: gitops.platform.upbound.io/v1alpha1
                   kind: XFlux
@@ -201,6 +203,7 @@ spec:
               apiVersion: apiextensions.crossplane.io/v1alpha1
               kind: Usage
               spec:
+                replayDeletion: true
                 by:
                   apiVersion: observe.platform.upbound.io/v1alpha1
                   kind: XOss
@@ -217,6 +220,7 @@ spec:
               apiVersion: apiextensions.crossplane.io/v1alpha1
               kind: Usage
               spec:
+                replayDeletion: true
                 by:
                   apiVersion: helm.crossplane.io/v1beta1
                   kind: Release
@@ -236,6 +240,7 @@ spec:
               apiVersion: apiextensions.crossplane.io/v1alpha1
               kind: Usage
               spec:
+                replayDeletion: true
                 by:
                   apiVersion: platform.upbound.io/v1alpha1
                   kind: XApp
