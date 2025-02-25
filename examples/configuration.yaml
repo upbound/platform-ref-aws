@@ -3,4 +3,4 @@ kind: Configuration
 metadata:
   name: platform-ref-aws
 spec:
-  package: xpkg.upbound.io/upbound/platform-ref-aws:v0.10.0
+  package: xpkg.upbound.io/upbound/platform-ref-aws:v1.3.0
