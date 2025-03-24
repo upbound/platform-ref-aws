@@ -3,7 +3,8 @@ name: End to End Testing
 on:
   issue_comment:
     types: [created]
-
+  pull_request:
+    types: [labeled]
 jobs:
   e2e:
     uses: upbound/official-providers-ci/.github/workflows/pr-comment-trigger.yml@main
