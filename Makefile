@@ -150,6 +150,12 @@ UPTEST_DEFAULT_TIMEOUT ?= 2400s
 KCL_COMPOSITION_PATH ?= apis/kcl/generate.k
 LANG_KCL := $(shell find ./apis -type f -name '*.k')
 
+# Overwrite example list if it is set by CI
+# For example with comment `/test-examples="path/to/example.yaml"`
+ifdef UPTEST_EXAMPLE_LIST
+       UPTEST_INPUT_MANIFESTS=$(UPTEST_EXAMPLE_LIST)
+endif
+
 # Include makelib files
 # ------------------
 -include build/makelib/common.mk
