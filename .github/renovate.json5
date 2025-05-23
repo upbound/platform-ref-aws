@@ -5,13 +5,18 @@
     'helpers:pinGitHubActionDigests',
     ':semanticCommits',
   ],
-  rebaseWhen: 'conflicted',
+  rebaseWhen: 'auto',
+  rebaseLabel: 'rebase',
   prConcurrentLimit: 5,
+  autoApprove: true,
+  automerge: true,
+  automergeType: 'pr',
   baseBranches: [
     'main',
   ],
   labels: [
     'automated',
+    'run-e2e-tests',
   ],
   ignorePaths: [ // default renovate ignorePaths without '**/examples/**'
     '**/node_modules/**',
