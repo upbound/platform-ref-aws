@@ -117,7 +117,7 @@ PLATFORMS ?= linux_amd64
 
 # Tool Versions
 # ------------------
-UP_VERSION = v0.38.0
+UP_VERSION = v0.39.0
 UP_CHANNEL = stable
 CROSSPLANE_CLI_VERSION = v1.18.0
 CROSSPLANE_VERSION = v1.18.0-up.1
@@ -149,6 +149,12 @@ UPTEST_DEFAULT_TIMEOUT ?= 2400s
 # ------------------
 KCL_COMPOSITION_PATH ?= apis/kcl/generate.k
 LANG_KCL := $(shell find ./apis -type f -name '*.k')
+
+# Overwrite example list if it is set by CI
+# For example with comment `/test-examples="path/to/example.yaml"`
+ifdef UPTEST_EXAMPLE_LIST
+       UPTEST_INPUT_MANIFESTS=$(UPTEST_EXAMPLE_LIST)
+endif
 
 # Include makelib files
 # ------------------
