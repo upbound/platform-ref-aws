@@ -1,0 +1,33 @@
+apiVersion: aws.platformref.upbound.io/v1alpha1
+kind: Cluster
+metadata:
+  annotations:
+    render.crossplane.io/composition-path: apis/pat/composition.yaml
+    render.crossplane.io/function-path: examples/functions.yaml
+  name: platform-ref-aws
+  namespace: default
+  labels:
+    platform.upbound.io/deletion-ordering: enabled
+spec:
+  compositeDeletePolicy: Foreground
+  parameters:
+    id: platform-ref-aws
+    region: us-west-2
+    version: "1.33"
+    #iam:
+      # replace with your custom arn like:
+      # principalArn: arn:aws:iam::123456789:role/AWSReservedSSO_AdministratorAccess_d703c73ed340fde7
+    nodes:
+      count: 3
+      instanceType: t3.small
+    gitops:
+      git:
+        url: https://github.com/upbound/platform-ref-aws/
+        ref:
+          # refs/heads/main
+          # refs/tags/v0.1.0
+          # refs/pull/420/head
+          # refs/merge-requests/1/head
+          name: refs/heads/main
+  writeConnectionSecretToRef:
+    name: platform-ref-aws-kubeconfig

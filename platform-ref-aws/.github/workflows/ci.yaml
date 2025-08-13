@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request: {}
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Package version (e.g. v0.1.0)
+        required: false
+
+env:
+  UP_API_TOKEN: ${{ secrets.UP_API_TOKEN }}
+  UP_ORG: ${{ secrets.UP_ORG }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Install and login with up
+        if: env.UP_API_TOKEN != '' && env.UP_ORG != ''
+        uses: upbound/action-up@v1
+        with:
+          api-token: ${{ secrets.UP_API_TOKEN }}
+          organization: ${{ secrets.UP_ORG }}
+
+      - name: Build and Push Upbound project
+        if: env.UP_API_TOKEN != ''
+        uses: upbound/action-up-project@v1
+        with:
+          push-project: true
+          tag: ${{ inputs.version || '' }}

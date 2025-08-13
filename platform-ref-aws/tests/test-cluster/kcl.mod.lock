@@ -1,0 +1,12 @@
+[dependencies]
+  [dependencies.model]
+    name = "model"
+    full_name = "models_0.0.1"
+    version = "0.0.1"
+    reg = "ghcr.io"
+    repo = "kcl-lang/model"
+    oci_tag = "0.0.1"
+  [dependencies.models]
+    name = "models"
+    full_name = "models_0.0.1"
+    version = "0.0.1"
