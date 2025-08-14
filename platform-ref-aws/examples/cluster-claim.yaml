@@ -20,9 +20,19 @@ spec:
     nodes:
       count: 3
       instanceType: t3.small
+    operators:
+      flux:
+        version: "2.16.4"
+      fluxSync:
+        version: "1.13.4"
+      prometheus:
+        version: "76.3.0"
     gitops:
       git:
+        interval: "5m0s"
+        timeout: "60s"
         url: https://github.com/upbound/platform-ref-aws/
+        path: "/"
         ref:
           # refs/heads/main
           # refs/tags/v0.1.0

@@ -31,6 +31,10 @@ _connectionSecretName = _id + "-eks"
 # Try to get VPC ID from observed XNetwork status
 _observedVpcId = _ocds?["XNetwork"]?.Resource?.status?.vpcId
 
+# Check if XEKS is ready before creating any Helm releases (they all need kubeconfig)
+_eksReadyCondition = [condition for condition in (_ocds?["XEKS"]?.Resource?.status?.conditions or []) if condition.type == "Ready" and condition.status == "True"]
+_isEksReady = len(_eksReadyCondition) > 0
+
 _items = [
     # XNetwork resource
     awsplatformv1alpha1.XNetwork {
@@ -79,66 +83,69 @@ _items = [
         }
     }
 
-    # XOss resource
-    observev1alpha1.XOss {
-        metadata: _metadata("XOss") | {
-            name = _id + "-oss"
-        }
-        spec: {
-            parameters: {
-                deletionPolicy = _deletionPolicy
-                id = _id
-                operators: {
-                    prometheus = _operators?.prometheus
-                }
+    # XOss resource - only create when XEKS is ready (needs kubeconfig secret)
+    if _isEksReady:
+        observev1alpha1.XOss {
+            metadata: _metadata("XOss") | {
+                name = _id + "-oss"
             }
-        }
-    }
-
-    # XFlux resource
-    gitopsv1alpha1.XFlux {
-        metadata: _metadata("XFlux") | {
-            name = _id + "-flux"
-        }
-        spec: {
-            parameters: {
-                deletionPolicy = _deletionPolicy
-                providerConfigName = _id
-                operators: {
-                    flux = _operators?.flux
-                    fluxSync = _operators?.fluxSync
-                }
-                source = _gitops
-            }
-        }
-    }
-
-    # XAWSLBController resource
-    awsplatformv1alpha1.XAWSLBController {
-        metadata: _metadata("XAWSLBController") | {
-            name = _id + "-lb-controller"
-        }
-        spec: {
-            parameters: {
-                providerConfigName = _providerConfigName
-                deletionPolicy = _deletionPolicy
-                helm: {
-                    providerConfigName = _id
-                }
-                region = _region
-                clusterNameSelector = {
-                    matchLabels = {
-                        "crossplane.io/claim-name" = _id
-                    } if oxr.spec?.claimRef?.name else {
-                        "crossplane.io/composite" = _id
+            spec: {
+                parameters: {
+                    deletionPolicy = _deletionPolicy
+                    id = _id
+                    operators: {
+                        prometheus = _operators?.prometheus
                     }
                 }
-                # Pass VPC ID if available to avoid EC2 metadata discovery
-                if _observedVpcId:
-                    vpcId = _observedVpcId
             }
         }
-    }
+
+    # XFlux resource - only create when XEKS is ready (needs kubeconfig secret)
+    if _isEksReady:
+        gitopsv1alpha1.XFlux {
+            metadata: _metadata("XFlux") | {
+                name = _id + "-flux"
+            }
+            spec: {
+                parameters: {
+                    deletionPolicy = _deletionPolicy
+                    providerConfigName = _id
+                    operators: {
+                        flux = _operators?.flux
+                        fluxSync = _operators?.fluxSync
+                    }
+                    source = _gitops
+                }
+            }
+        }
+
+    # XAWSLBController resource - only create when XEKS is ready (needs kubeconfig secret)
+    if _isEksReady:
+        awsplatformv1alpha1.XAWSLBController {
+            metadata: _metadata("XAWSLBController") | {
+                name = _id + "-lb-controller"
+            }
+            spec: {
+                parameters: {
+                    providerConfigName = _providerConfigName
+                    deletionPolicy = _deletionPolicy
+                    helm: {
+                        providerConfigName = _id
+                    }
+                    region = _region
+                    clusterNameSelector = {
+                        matchLabels = {
+                            "crossplane.io/claim-name" = _id
+                        } if oxr.spec?.claimRef?.name else {
+                            "crossplane.io/composite" = _id
+                        }
+                    }
+                    # Pass VPC ID if available to avoid EC2 metadata discovery
+                    if _observedVpcId:
+                        vpcId = _observedVpcId
+                }
+            }
+        }
     
     # Usage resources for dependency management (untyped objects)
     {
@@ -269,6 +276,35 @@ _items = [
             of: {
                 apiVersion = "aws.platform.upbound.io/v1alpha1"
                 kind = "XAWSLBController"
+                resourceSelector: {
+                    matchControllerRef = True
+                }
+            }
+        }
+    }
+    
+    # Usage resource to ensure XFlux is deleted before XAWSLBController
+    {
+        apiVersion: "apiextensions.crossplane.io/v1alpha1"
+        kind: "Usage"
+        metadata: _metadata("usageXAWSLBControllerByXFlux") | {
+            name = _id + "-lb-controller-by-flux"
+            annotations = {
+                "krm.kcl.dev/ready": "True"
+            }
+        }
+        spec: {
+            replayDeletion = True
+            by: {
+                apiVersion: "gitops.platform.upbound.io/v1alpha1"
+                kind: "XFlux"
+                resourceSelector: {
+                    matchControllerRef = True
+                }
+            }
+            of: {
+                apiVersion: "aws.platform.upbound.io/v1alpha1"
+                kind: "XAWSLBController"
                 resourceSelector: {
                     matchControllerRef = True
                 }

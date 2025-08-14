@@ -274,6 +274,28 @@ _items = [
                             }
                         }
                     }
+                },
+                {
+                    apiVersion: "apiextensions.crossplane.io/v1alpha1"
+                    kind: "Usage"
+                    metadata.name: "platform-ref-aws-lb-controller-by-flux"
+                    spec = {
+                        replayDeletion: True
+                        by = {
+                            apiVersion: "gitops.platform.upbound.io/v1alpha1"
+                            kind: "XFlux"
+                            resourceSelector = {
+                                matchControllerRef: True
+                            }
+                        }
+                        of = {
+                            apiVersion: "aws.platform.upbound.io/v1alpha1"
+                            kind: "XAWSLBController"
+                            resourceSelector = {
+                                matchControllerRef: True
+                            }
+                        }
+                    }
                 }
             ]
             observedResources: [
@@ -300,6 +322,89 @@ _items = [
                     }
                     status = {
                         vpcId: "vpc-test123"
+                    }
+                },
+                # XFlux with Ready condition to trigger XAWSLBController creation
+                gitopsv1alpha1.XFlux{
+                    metadata = {
+                        name: "platform-ref-aws-flux"
+                        annotations = {
+                            "crossplane.io/composition-resource-name" = "XFlux"
+                        }
+                    }
+                    spec = {
+                        parameters = {
+                            deletionPolicy: "Delete"
+                            providerConfigName: "platform-ref-aws"
+                            operators = {
+                                flux = {
+                                    version: "2.10.6"
+                                }
+                                fluxSync = {
+                                    version: "1.7.2"
+                                }
+                            }
+                            source = {
+                                git = {
+                                    interval: "5m0s"
+                                    timeout: "60s"
+                                    url: "https://github.com/upbound/platform-ref-aws/"
+                                    path: "/"
+                                    ref = {
+                                        name: "refs/heads/main"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    status = {
+                        conditions = [
+                            {
+                                type = "Ready"
+                                status = "True"
+                                reason = "Available"
+                                lastTransitionTime = "2025-08-13T22:30:00Z"
+                            }
+                        ]
+                    }
+                },
+                # XEKS with Ready condition to trigger all Helm releases creation
+                awsplatformv1alpha1.XEKS{
+                    metadata = {
+                        name: "platform-ref-aws-eks"
+                        annotations = {
+                            "crossplane.io/composition-resource-name" = "XEKS"
+                        }
+                    }
+                    spec = {
+                        parameters = {
+                            id: "platform-ref-aws"
+                            region: "us-west-2"
+                            deletionPolicy: "Delete"
+                            providerConfigName: "default"
+                            version: "1.32"
+                            nodes = {
+                                count: 3
+                                instanceType: "t3.small"
+                            }
+                        }
+                        writeConnectionSecretToRef = {
+                            name: "platform-ref-aws-eks"
+                            namespace: "upbound-system"
+                        }
+                    }
+                    status = {
+                        conditions = [
+                            {
+                                type = "Ready"
+                                status = "True"
+                                reason = "Available"
+                                lastTransitionTime = "2025-08-13T23:00:00Z"
+                            }
+                        ]
+                        eks = {
+                            clusterName: "platform-ref-aws-cluster"
+                        }
                     }
                 }
             ]
