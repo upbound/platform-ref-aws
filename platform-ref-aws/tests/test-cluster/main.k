@@ -18,7 +18,6 @@ _items = [
                             id: "platform-ref-aws"
                             region: "us-west-2"
                             version: "1.32"
-                            networkSelector: "basic"
                             deletionPolicy: "Delete"
                             providerConfigName: "default"
                             nodes = {
@@ -59,11 +58,6 @@ _items = [
                             region: "us-west-2"
                             deletionPolicy: "Delete"
                             providerConfigName: "default"
-                        }
-                        compositionSelector = {
-                            matchLabels = {
-                                type: "basic"
-                            }
                         }
                     }
                 },

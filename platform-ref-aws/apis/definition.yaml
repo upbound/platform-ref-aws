@@ -42,11 +42,6 @@ spec:
                         principalArn:
                           description: The IAM Principal ARN to connect as ClusterAdmin.
                           type: string
-                    networkSelector:
-                      type: string
-                      description: NetworkSelector employs a specific type of network architecture.
-                      enum:
-                        - basic
                     deletionPolicy:
                       description: Delete the external resources when the Claim/XR is deleted. Defaults to Delete
                       enum:

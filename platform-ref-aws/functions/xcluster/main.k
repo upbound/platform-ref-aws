@@ -48,11 +48,6 @@ _items = [
                 deletionPolicy = _deletionPolicy
                 providerConfigName = _providerConfigName
             }
-            compositionSelector: {
-                matchLabels: {
-                    type = _networkSelector
-                }
-            }
         }
     }
 
