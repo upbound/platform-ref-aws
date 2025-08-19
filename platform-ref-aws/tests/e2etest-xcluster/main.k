@@ -30,7 +30,7 @@ _items = [
                             deletionPolicy: "Delete"
                             providerConfigName: "default"
                             nodes= {
-                                count: 3
+                                count: 3 # Single node is not enough for e2e test with lb-controller and rest of the helm charts
                                 instanceType: "t3.small"
                             }
                             operators= {
@@ -209,7 +209,7 @@ _items = [
                 }
             ]
             skipDelete: False
-            timeoutSeconds: 4500
+            timeoutSeconds: 7200
         }
     }
 ]
