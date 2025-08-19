@@ -35,6 +35,10 @@ _observedVpcId = _ocds?["XNetwork"]?.Resource?.status?.vpcId
 _eksReadyCondition = [condition for condition in (_ocds?["XEKS"]?.Resource?.status?.conditions or []) if condition.type == "Ready" and condition.status == "True"]
 _isEksReady = len(_eksReadyCondition) > 0
 
+# Check if XAWSLBController is ready before creating Flux and OSS (to avoid webhook conflicts)
+_lbControllerReadyCondition = [condition for condition in (_ocds?["XAWSLBController"]?.Resource?.status?.conditions or []) if condition.type == "Ready" and condition.status == "True"]
+_isLbControllerReady = len(_lbControllerReadyCondition) > 0
+
 _items = [
     # XNetwork resource
     awsplatformv1alpha1.XNetwork {
@@ -73,46 +77,10 @@ _items = [
             } | ({iam = _iam} if _iam else {})
             writeConnectionSecretToRef: {
                 name = _connectionSecretName
-                namespace = "upbound-system"
+                namespace = "crossplane-system"
             }
         }
     }
-
-    # XOss resource - only create when XEKS is ready (needs kubeconfig secret)
-    if _isEksReady:
-        observev1alpha1.XOss {
-            metadata: _metadata("XOss") | {
-                name = _id + "-oss"
-            }
-            spec: {
-                parameters: {
-                    deletionPolicy = _deletionPolicy
-                    id = _id
-                    operators: {
-                        prometheus = _operators?.prometheus
-                    }
-                }
-            }
-        }
-
-    # XFlux resource - only create when XEKS is ready (needs kubeconfig secret)
-    if _isEksReady:
-        gitopsv1alpha1.XFlux {
-            metadata: _metadata("XFlux") | {
-                name = _id + "-flux"
-            }
-            spec: {
-                parameters: {
-                    deletionPolicy = _deletionPolicy
-                    providerConfigName = _id
-                    operators: {
-                        flux = _operators?.flux
-                        fluxSync = _operators?.fluxSync
-                    }
-                    source = _gitops
-                }
-            }
-        }
 
     # XAWSLBController resource - only create when XEKS is ready (needs kubeconfig secret)
     if _isEksReady:
@@ -138,6 +106,42 @@ _items = [
                     # Pass VPC ID if available to avoid EC2 metadata discovery
                     if _observedVpcId:
                         vpcId = _observedVpcId
+                }
+            }
+        }
+
+    # XOss resource - only create when LB Controller is ready (to avoid webhook conflicts)
+    if _isLbControllerReady:
+        observev1alpha1.XOss {
+            metadata: _metadata("XOss") | {
+                name = _id + "-oss"
+            }
+            spec: {
+                parameters: {
+                    deletionPolicy = _deletionPolicy
+                    id = _id
+                    operators: {
+                        prometheus = _operators?.prometheus
+                    }
+                }
+            }
+        }
+
+    # XFlux resource - only create when LB Controller is ready (to avoid webhook conflicts)
+    if _isLbControllerReady:
+        gitopsv1alpha1.XFlux {
+            metadata: _metadata("XFlux") | {
+                name = _id + "-flux"
+            }
+            spec: {
+                parameters: {
+                    deletionPolicy = _deletionPolicy
+                    providerConfigName = _id
+                    operators: {
+                        flux = _operators?.flux
+                        fluxSync = _operators?.fluxSync
+                    }
+                    source = _gitops
                 }
             }
         }

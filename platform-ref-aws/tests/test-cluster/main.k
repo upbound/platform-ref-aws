@@ -86,7 +86,7 @@ _items = [
                         }
                         writeConnectionSecretToRef = {
                             name: "platform-ref-aws-eks"
-                            namespace: "upbound-system"
+                            namespace: "crossplane-system"
                         }
                     }
                 },
@@ -384,7 +384,7 @@ _items = [
                         }
                         writeConnectionSecretToRef = {
                             name: "platform-ref-aws-eks"
-                            namespace: "upbound-system"
+                            namespace: "crossplane-system"
                         }
                     }
                     status = {
@@ -399,6 +399,41 @@ _items = [
                         eks = {
                             clusterName: "platform-ref-aws-cluster"
                         }
+                    }
+                },
+                # XAWSLBController with Ready condition to trigger Flux and OSS creation
+                awsplatformv1alpha1.XAWSLBController{
+                    metadata = {
+                        name: "platform-ref-aws-lb-controller"
+                        annotations = {
+                            "crossplane.io/composition-resource-name" = "XAWSLBController"
+                        }
+                    }
+                    spec = {
+                        parameters = {
+                            providerConfigName: "default"
+                            deletionPolicy: "Delete"
+                            helm = {
+                                providerConfigName: "platform-ref-aws"
+                            }
+                            region: "us-west-2"
+                            clusterNameSelector = {
+                                matchLabels = {
+                                    "crossplane.io/composite" = "platform-ref-aws"
+                                }
+                            }
+                            vpcId: "vpc-test123"
+                        }
+                    }
+                    status = {
+                        conditions = [
+                            {
+                                type = "Ready"
+                                status = "True"
+                                reason = "Available"
+                                lastTransitionTime = "2025-08-13T23:15:00Z"
+                            }
+                        ]
                     }
                 }
             ]

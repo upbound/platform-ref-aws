@@ -30,7 +30,7 @@ _items = [
                             deletionPolicy: "Delete"
                             providerConfigName: "default"
                             nodes= {
-                                count: 1
+                                count: 3
                                 instanceType: "t3.small"
                             }
                             operators= {
@@ -72,7 +72,7 @@ _items = [
                         parameters = {
                             region: "us-west-2"
                             engine: "mariadb"
-                            engineVersion: "10.11.6"
+                            engineVersion: "10.11.14"
                             storageGB: 5
                             autoGeneratePassword: True
                             passwordSecretRef = {
@@ -104,7 +104,7 @@ _items = [
                         parameters = {
                             providerConfigName: "test-cluster-e2e"
                             helm = {
-                                wait: True
+                                wait: False
                                 values = {
                                     ingress = {
                                         annotations = {
@@ -127,6 +127,68 @@ _items = [
                         writeConnectionSecretToRef = {
                             name: "test-cluster-e2e-app-conn"
                         }
+                    }
+                }
+            ]
+            initResources = [
+                # AWS Provider Family
+                {
+                    apiVersion: "pkg.crossplane.io/v1"
+                    kind: "Provider"
+                    metadata = {
+                        name: "upbound-provider-family-aws"
+                    }
+                    spec = {
+                        package: "xpkg.upbound.io/upbound/provider-family-aws:v1.23.2"
+                        packagePullPolicy: "Always"
+                    }
+                },
+                # AWS EC2 Provider
+                {
+                    apiVersion: "pkg.crossplane.io/v1"
+                    kind: "Provider"
+                    metadata = {
+                        name: "upbound-provider-aws-ec2"
+                    }
+                    spec = {
+                        package: "xpkg.upbound.io/upbound/provider-aws-ec2:v1.23.2"
+                        packagePullPolicy: "Always"
+                    }
+                },
+                # AWS EKS Provider
+                {
+                    apiVersion: "pkg.crossplane.io/v1"
+                    kind: "Provider"
+                    metadata = {
+                        name: "upbound-provider-aws-eks"
+                    }
+                    spec = {
+                        package: "xpkg.upbound.io/upbound/provider-aws-eks:v1.23.2"
+                        packagePullPolicy: "Always"
+                    }
+                },
+                # AWS IAM Provider
+                {
+                    apiVersion: "pkg.crossplane.io/v1"
+                    kind: "Provider"
+                    metadata = {
+                        name: "upbound-provider-aws-iam"
+                    }
+                    spec = {
+                        package: "xpkg.upbound.io/upbound/provider-aws-iam:v1.23.2"
+                        packagePullPolicy: "Always"
+                    }
+                },
+                # AWS RDS Provider
+                {
+                    apiVersion: "pkg.crossplane.io/v1"
+                    kind: "Provider"
+                    metadata = {
+                        name: "upbound-provider-aws-rds"
+                    }
+                    spec = {
+                        package: "xpkg.upbound.io/upbound/provider-aws-rds:v1.23.2"
+                        packagePullPolicy: "Always"
                     }
                 }
             ]
