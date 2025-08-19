@@ -131,6 +131,7 @@ _items = [
                 }
             ]
             initResources = [
+                # Workaround for the e2e test early failure when providers are not ready
                 # AWS Provider Family
                 {
                     apiVersion: "pkg.crossplane.io/v1"
