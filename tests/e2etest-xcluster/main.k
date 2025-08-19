@@ -12,17 +12,16 @@ _items = [
             crossplane.autoUpgrade.channel: "Rapid"
             defaultConditions: ["Ready"]
             manifests: [
-                # XCluster test instance
-                platformrefawsv1alpha1.Cluster{
+                # XCluster test instance (XR)
+                platformrefawsv1alpha1.XCluster{
                     metadata= {
                         name: "test-cluster-e2e"
-                        namespace: "default"
                         labels: {
                             "platform.upbound.io/deletion-ordering": "enabled"
                         }
                     }
                     spec= {
-                        compositeDeletePolicy: "Foreground"
+                        compositionUpdatePolicy: "Automatic"
                         parameters= {
                             id: "test-cluster-e2e"
                             region: "us-west-2"
@@ -58,15 +57,15 @@ _items = [
                         }
                         writeConnectionSecretToRef: {
                             name: "platform-ref-aws-kubeconfig"
+                            namespace: "crossplane-system"
                         }
                     }
                 },
 
-                # 2. Database claim (MariaDB)
-                platformawsv1alpha1.SQLInstance{
+                # 2. Database XR (MariaDB)
+                platformawsv1alpha1.XSQLInstance{
                     metadata = {
                         name: "test-cluster-e2e-db-mariadb"
-                        namespace: "default"
                     }
                     spec = {
                         parameters = {
@@ -86,21 +85,21 @@ _items = [
                         }
                         writeConnectionSecretToRef = {
                             name: "test-cluster-e2e-db-conn-mariadb"
+                            namespace: "crossplane-system"
                         }
                     }
                 },
 
-                # 3. App claim (Ghost blog application)
-                platformv1alpha1.App{
+                # 3. App XR (Ghost blog application)
+                platformv1alpha1.XApp{
                     metadata = {
                         name: "test-cluster-e2e-ghost"
-                        namespace: "default"
                         labels = {
                             "platform.upbound.io/deletion-ordering": "enabled"
                         }
                     }
                     spec = {
-                        compositeDeletePolicy: "Foreground"
+                        compositionUpdatePolicy: "Automatic"
                         parameters = {
                             providerConfigName: "test-cluster-e2e"
                             helm = {
@@ -120,12 +119,13 @@ _items = [
                                 }
                             }
                             passwordSecretRef = {
-                                namespace: "default"
+                                namespace: "crossplane-system"
                                 name: "test-cluster-e2e-db-conn-mariadb"
                             }
                         }
                         writeConnectionSecretToRef = {
                             name: "test-cluster-e2e-app-conn"
+                            namespace: "crossplane-system"
                         }
                     }
                 }
