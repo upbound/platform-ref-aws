@@ -13,20 +13,20 @@ _metadata = lambda name: str -> any {
 }
 
 # Extract parameters from the observed XR
-_id = oxr.spec?.parameters?.id
-_region = oxr.spec?.parameters?.region
-_version = oxr.spec?.parameters?.version
-_nodes = oxr.spec?.parameters?.nodes
-_iam = oxr.spec?.parameters?.iam
-_networkSelector = oxr.spec?.parameters?.networkSelector
-_deletionPolicy = oxr.spec?.parameters?.deletionPolicy
-_providerConfigName = oxr.spec?.parameters?.providerConfigName
-_operators = oxr.spec?.parameters?.operators
-_gitops = oxr.spec?.parameters?.gitops
-_uid = oxr.metadata?.uid
+id = oxr.spec?.parameters?.id
+region = oxr.spec?.parameters?.region
+version = oxr.spec?.parameters?.version
+nodes = oxr.spec?.parameters?.nodes
+iam = oxr.spec?.parameters?.iam
+networkSelector = oxr.spec?.parameters?.networkSelector
+deletionPolicy = oxr.spec?.parameters?.deletionPolicy
+providerConfigName = oxr.spec?.parameters?.providerConfigName
+operators = oxr.spec?.parameters?.operators
+gitops = oxr.spec?.parameters?.gitops
+uid = oxr.metadata?.uid
 
 # Connection secret name
-_connectionSecretName = _id + "-eks"
+connectionSecretName = id + "-eks"
 
 # Try to get VPC ID from observed XNetwork status
 _observedVpcId = _ocds?["XNetwork"]?.Resource?.status?.vpcId
@@ -35,22 +35,29 @@ _observedVpcId = _ocds?["XNetwork"]?.Resource?.status?.vpcId
 _eksReadyCondition = [condition for condition in (_ocds?["XEKS"]?.Resource?.status?.conditions or []) if condition.type == "Ready" and condition.status == "True"]
 _isEksReady = len(_eksReadyCondition) > 0
 
+# Check if XAWSLBController already exists (safety check to prevent uninstalling)
+_lbControllerExists = "XAWSLBController" in _ocds
+
 # Check if XAWSLBController is ready before creating Flux and OSS (to avoid webhook conflicts)
 _lbControllerReadyCondition = [condition for condition in (_ocds?["XAWSLBController"]?.Resource?.status?.conditions or []) if condition.type == "Ready" and condition.status == "True"]
 _isLbControllerReady = len(_lbControllerReadyCondition) > 0
+
+# Check if dependent resources already exist (safety checks to prevent uninstalling)
+_ossExists = "XOss" in _ocds
+_fluxExists = "XFlux" in _ocds
 
 _items = [
     # XNetwork resource
     awsplatformv1alpha1.XNetwork {
         metadata: _metadata("XNetwork") | {
-            name = _id + "-network"
+            name = id + "-network"
         }
         spec: {
             parameters: {
-                id = _id
-                region = _region
-                deletionPolicy = _deletionPolicy
-                providerConfigName = _providerConfigName
+                id = id
+                region = region
+                deletionPolicy = deletionPolicy
+                providerConfigName = providerConfigName
             }
         }
     }
@@ -58,49 +65,50 @@ _items = [
     # XEKS resource
     awsplatformv1alpha1.XEKS {
         metadata: _metadata("XEKS") | {
-            name = _id + "-eks"
+            name = id + "-eks"
             labels: {
                 "platform.upbound.io/deletion-ordering" = oxr.metadata?.labels?["platform.upbound.io/deletion-ordering"]
             }
             annotations: {
-                "crossplane.io/external-name" = _id
+                "crossplane.io/external-name" = id
             }
         }
         spec: {
             parameters: {
-                id = _id
-                region = _region
-                deletionPolicy = _deletionPolicy
-                providerConfigName = _providerConfigName
-                version = _version
-                nodes = _nodes
-            } | ({iam = _iam} if _iam else {})
+                id = id
+                region = region
+                deletionPolicy = deletionPolicy
+                providerConfigName = providerConfigName
+                version = version
+                nodes = nodes
+            } | ({iam = iam} if iam else {})
             writeConnectionSecretToRef: {
-                name = _connectionSecretName
+                name = connectionSecretName
                 namespace = "crossplane-system"
             }
         }
     }
 
     # XAWSLBController resource - only create when XEKS is ready (needs kubeconfig secret)
-    if _isEksReady:
+    # Also create if it already exists to prevent uninstalling
+    if _isEksReady or _lbControllerExists:
         awsplatformv1alpha1.XAWSLBController {
             metadata: _metadata("XAWSLBController") | {
-                name = _id + "-lb-controller"
+                name = id + "-lb-controller"
             }
             spec: {
                 parameters: {
-                    providerConfigName = _providerConfigName
-                    deletionPolicy = _deletionPolicy
+                    providerConfigName = providerConfigName
+                    deletionPolicy = deletionPolicy
                     helm: {
-                        providerConfigName = _id
+                        providerConfigName = id
                     }
-                    region = _region
+                    region = region
                     clusterNameSelector = {
                         matchLabels = {
-                            "crossplane.io/claim-name" = _id
+                            "crossplane.io/claim-name" = id
                         } if oxr.spec?.claimRef?.name else {
-                            "crossplane.io/composite" = _id
+                            "crossplane.io/composite" = id
                         }
                     }
                     # Pass VPC ID if available to avoid EC2 metadata discovery
@@ -111,37 +119,39 @@ _items = [
         }
 
     # XOss resource - only create when LB Controller is ready (to avoid webhook conflicts)
-    if _isLbControllerReady:
+    # Also create if it already exists to prevent uninstalling
+    if _isLbControllerReady or _ossExists:
         observev1alpha1.XOss {
             metadata: _metadata("XOss") | {
-                name = _id + "-oss"
+                name = id + "-oss"
             }
             spec: {
                 parameters: {
-                    deletionPolicy = _deletionPolicy
-                    id = _id
+                    deletionPolicy = deletionPolicy
+                    id = id
                     operators: {
-                        prometheus = _operators?.prometheus
+                        prometheus = operators?.prometheus
                     }
                 }
             }
         }
 
     # XFlux resource - only create when LB Controller is ready (to avoid webhook conflicts)
-    if _isLbControllerReady:
+    # Also create if it already exists to prevent uninstalling
+    if _isLbControllerReady or _fluxExists:
         gitopsv1alpha1.XFlux {
             metadata: _metadata("XFlux") | {
-                name = _id + "-flux"
+                name = id + "-flux"
             }
             spec: {
                 parameters: {
-                    deletionPolicy = _deletionPolicy
-                    providerConfigName = _id
+                    deletionPolicy = deletionPolicy
+                    providerConfigName = id
                     operators: {
-                        flux = _operators?.flux
-                        fluxSync = _operators?.fluxSync
+                        flux = operators?.flux
+                        fluxSync = operators?.fluxSync
                     }
-                    source = _gitops
+                    source = gitops
                 }
             }
         }
@@ -151,7 +161,7 @@ _items = [
         apiVersion: "apiextensions.crossplane.io/v1alpha1"
         kind: "Usage"
         metadata: _metadata("usageXNetworkByXEKS") | {
-            name = _id + "-network-by-eks"
+            name = id + "-network-by-eks"
         }
         spec: {
             replayDeletion = True
@@ -176,7 +186,7 @@ _items = [
         apiVersion: "apiextensions.crossplane.io/v1alpha1"
         kind: "Usage"
         metadata: _metadata("usageXEksByXFlux") | {
-            name = _id + "-eks-by-flux"
+            name = id + "-eks-by-flux"
         }
         spec: {
             replayDeletion = True
@@ -201,7 +211,7 @@ _items = [
         apiVersion: "apiextensions.crossplane.io/v1alpha1"
         kind: "Usage"
         metadata: _metadata("usageXEksByXOss") | {
-            name = _id + "-eks-by-oss"
+            name = id + "-eks-by-oss"
         }
         spec: {
             replayDeletion = True
@@ -226,7 +236,7 @@ _items = [
         apiVersion: "apiextensions.crossplane.io/v1alpha1"
         kind: "Usage"
         metadata: _metadata("usageXEksByArbitraryLabeledRelease") | {
-            name = _id + "-eks-by-labeled-release"
+            name = id + "-eks-by-labeled-release"
             annotations = {
                 "krm.kcl.dev/ready": "True"
             }
@@ -256,7 +266,7 @@ _items = [
         apiVersion: "apiextensions.crossplane.io/v1alpha1"
         kind: "Usage"
         metadata: _metadata("usageXAWSLBControllerByArbitraryLabeledApp") | {
-            name = _id + "-lb-controller-by-labeled-app"
+            name = id + "-lb-controller-by-labeled-app"
             annotations = {
                 "krm.kcl.dev/ready": "True"
             }
@@ -287,7 +297,7 @@ _items = [
         apiVersion: "apiextensions.crossplane.io/v1alpha1"
         kind: "Usage"
         metadata: _metadata("usageXAWSLBControllerByXFlux") | {
-            name = _id + "-lb-controller-by-flux"
+            name = id + "-lb-controller-by-flux"
             annotations = {
                 "krm.kcl.dev/ready": "True"
             }
