@@ -24,7 +24,7 @@ _items = [
                         compositionUpdatePolicy: "Automatic"
                         parameters= {
                             id: "test-cluster-e2e"
-                            region: "us-west-2"
+                            region: "eu-central-1"
                             version: "1.33"
                             deletionPolicy: "Delete"
                             providerConfigName: "default"
@@ -69,7 +69,7 @@ _items = [
                     }
                     spec = {
                         parameters = {
-                            region: "us-west-2"
+                            region: "eu-central-1"
                             engine: "mariadb"
                             engineVersion: "10.11.14"
                             storageGB: 5

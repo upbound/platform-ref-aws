@@ -18,7 +18,6 @@ region = oxr.spec?.parameters?.region
 version = oxr.spec?.parameters?.version
 nodes = oxr.spec?.parameters?.nodes
 iam = oxr.spec?.parameters?.iam
-networkSelector = oxr.spec?.parameters?.networkSelector
 deletionPolicy = oxr.spec?.parameters?.deletionPolicy
 providerConfigName = oxr.spec?.parameters?.providerConfigName
 operators = oxr.spec?.parameters?.operators
@@ -46,6 +45,47 @@ _isLbControllerReady = len(_lbControllerReadyCondition) > 0
 _ossExists = "XOss" in _ocds
 _fluxExists = "XFlux" in _ocds
 
+# Generate region-specific availability zones for subnets
+_regionAzMap = {
+    "us-east-1": ["us-east-1a", "us-east-1b"]
+    "us-east-2": ["us-east-2a", "us-east-2b"]
+    "us-west-1": ["us-west-1a", "us-west-1c"]
+    "us-west-2": ["us-west-2a", "us-west-2b"]
+    "eu-west-1": ["eu-west-1a", "eu-west-1b"]
+    "eu-west-2": ["eu-west-2a", "eu-west-2b"]
+    "eu-central-1": ["eu-central-1a", "eu-central-1b"]
+    "ap-southeast-1": ["ap-southeast-1a", "ap-southeast-1b"]
+    "ap-southeast-2": ["ap-southeast-2a", "ap-southeast-2b"]
+    "ap-northeast-1": ["ap-northeast-1a", "ap-northeast-1c"]
+    "ca-central-1": ["ca-central-1a", "ca-central-1b"]
+}
+
+_availabilityZones = _regionAzMap[region] if region in _regionAzMap else ["us-west-2a", "us-west-2b"]
+
+# Generate subnets configuration based on the region's availability zones
+_regionSpecificSubnets = [
+    {
+        availabilityZone = _availabilityZones[0]
+        type = "public"
+        cidrBlock = "192.168.0.0/18"
+    }
+    {
+        availabilityZone = _availabilityZones[1]
+        type = "public"
+        cidrBlock = "192.168.64.0/18"
+    }
+    {
+        availabilityZone = _availabilityZones[0]
+        type = "private"
+        cidrBlock = "192.168.128.0/18"
+    }
+    {
+        availabilityZone = _availabilityZones[1]
+        type = "private"
+        cidrBlock = "192.168.192.0/18"
+    }
+]
+
 _items = [
     # XNetwork resource
     awsplatformv1alpha1.XNetwork {
@@ -58,6 +98,7 @@ _items = [
                 region = region
                 deletionPolicy = deletionPolicy
                 providerConfigName = providerConfigName
+                subnets = _regionSpecificSubnets
             }
         }
     }
@@ -155,7 +196,7 @@ _items = [
                 }
             }
         }
-    
+
     # Usage resources for dependency management (untyped objects)
     {
         apiVersion: "apiextensions.crossplane.io/v1alpha1"
@@ -181,7 +222,7 @@ _items = [
             }
         }
     }
-    
+
     {
         apiVersion: "apiextensions.crossplane.io/v1alpha1"
         kind: "Usage"
@@ -206,7 +247,7 @@ _items = [
             }
         }
     }
-    
+
     {
         apiVersion: "apiextensions.crossplane.io/v1alpha1"
         kind: "Usage"
@@ -320,7 +361,7 @@ _items = [
             }
         }
     }
-    
+
     # Forward connection details from XEKS
     {
         apiVersion: "meta.krm.kcl.dev/v1alpha1"
