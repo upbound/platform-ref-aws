@@ -11,8 +11,6 @@ spec:
   claimNames:
     kind: Cluster
     plural: clusters
-  connectionSecretKeys:
-    - kubeconfig
   versions:
     - name: v1alpha1
       served: true
@@ -44,11 +42,6 @@ spec:
                         principalArn:
                           description: The IAM Principal ARN to connect as ClusterAdmin.
                           type: string
-                    networkSelector:
-                      type: string
-                      description: NetworkSelector employs a specific type of network architecture.
-                      enum:
-                        - basic
                     deletionPolicy:
                       description: Delete the external resources when the Claim/XR is deleted. Defaults to Delete
                       enum:
@@ -64,11 +57,10 @@ spec:
                       type: string
                       description: Kubernetes version of the Cluster
                       enum:
-                        - "1.28"
-                        - "1.27"
-                        - "1.26"
-                        - "1.25"
-                      default: "1.27"
+                        - "1.33"
+                        - "1.32"
+                        - "1.31"
+                      default: "1.32"
                     nodes:
                       type: object
                       description: Cluster node configuration parameters.
@@ -89,7 +81,7 @@ spec:
                       default:
                         flux:
                           version: "2.10.6"
-                        flux-sync:
+                        fluxSync:
                           version: "1.7.2"
                         prometheus:
                           version: "52.1.0"
@@ -104,7 +96,7 @@ spec:
                               default: "2.10.6"
                           required:
                             - version
-                        flux-sync:
+                        fluxSync:
                           description: Configuration for the Flux Sync Helm-Chart.
                           type: object
                           properties:
@@ -191,3 +183,5 @@ spec:
                   type: array
                   items:
                     type: string
+                oidcProvider:
+                  type: string
