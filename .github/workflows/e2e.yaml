@@ -10,8 +10,10 @@ on:
       - labeled
 
 env:
-  UP_API_TOKEN: ${{ secrets.UP_API_TOKEN }}
-  UP_ORG: ${{ secrets.UP_ORG }}
+  UP_API_TOKEN: ${{ secrets.UP_E2E_API_TOKEN || secrets.UP_API_TOKEN }}
+  UP_ORG: ${{ secrets.UP_E2E_ORG || secrets.UP_ORG }}
+  UP_GROUP: ${{ secrets.UP_E2E_GROUP || secrets.UP_GROUP || 'default' }}
+  UP_ROBOT_ID: ${{ secrets.UP_E2E_ROBOT_ID || secrets.UP_ROBOT_ID }}
 
 jobs:
   e2e:
@@ -20,22 +22,30 @@ jobs:
     steps:
       - name: Checkout
         id: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Install and login with up
         if: env.UP_API_TOKEN != '' && env.UP_ORG != ''
-        uses: upbound/action-up@v1
+        uses: upbound/action-up@53fe6395637d884c80d2bbc8c2d75d0ece776ced # v1
         with:
-          api-token: ${{ secrets.UP_API_TOKEN }}
-          organization: ${{ secrets.UP_ORG }}
+          api-token: ${{ env.UP_API_TOKEN }}
+          organization: ${{ env.UP_ORG }}
+
+      # doesn't work with plain token when pushing otherwise
+      - name: Login to xpkg with robot
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3
+        with:
+          registry: xpkg.upbound.io
+          username: ${{ env.UP_ROBOT_ID }}
+          password: ${{ env.UP_API_TOKEN }}
 
       - name: Build project
         run: up project build
 
       - name: Switch up context
-        if: env.UP_API_TOKEN != '' && env.UP_ORG != ''
-        run: up ctx ${{ secrets.UP_ORG }}/upbound-gcp-us-central-1/default
+        run: up ctx ${{ env.UP_ORG }}/upbound-gcp-us-central-1/${{ env.UP_GROUP }}
 
       - name: Run e2e tests
-        if: env.UP_API_TOKEN != '' && env.UP_ORG != ''
         run: up test run tests/* --e2e
