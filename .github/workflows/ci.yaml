@@ -14,6 +14,7 @@ env:
   UP_API_TOKEN: ${{ secrets.UP_API_TOKEN }}
   UP_ROBOT_ID: ${{ secrets.UP_ROBOT_ID }}
   UP_ORG: ${{ secrets.UP_ORG }}
+  XPKG_REGISTRY: xpkg.upbound.io
 
 jobs:
   deploy:
@@ -34,7 +35,7 @@ jobs:
       - name: Login to xpkg with robot
         uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3
         with:
-          registry: xpkg.upbound.io
+          registry: ${{ env.XPKG_REGISTRY }}
           username: ${{ env.UP_ROBOT_ID }}
           password: ${{ env.UP_API_TOKEN }}
 
@@ -46,3 +47,10 @@ jobs:
           tag: ${{ inputs.version || '' }}
           # login-check does `up org list` which doesn't work with a robot-token
           skip-login-check: true
+
+      - name: Append icon overlay to package
+        if: env.UP_API_TOKEN != '' && hashFiles('./extensions') != '' && inputs.version != ''
+        run: |
+          PROJECT_NAME=$(yq '.metadata.name' upbound.yaml)
+          PACKAGE_REF="${{ env.XPKG_REGISTRY }}/${{ env.UP_ORG }}/${PROJECT_NAME}:${{ inputs.version }}"
+          up alpha xpkg append --extensions-root=./extensions ${PACKAGE_REF}
