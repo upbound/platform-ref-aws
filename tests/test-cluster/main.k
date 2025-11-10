@@ -7,18 +7,17 @@ import models.io.upbound.platformref.aws.v1alpha1 as platformrefawsv1alpha1
 
 _items = [
     metav1alpha1.CompositionTest{
-        metadata.name: "test-xcluster"
+        metadata.name: "test-cluster"
         spec = {
             assertResources: [
-                # XCluster for main composite resource
-                platformrefawsv1alpha1.XCluster{
+                # Cluster for main composite resource
+                platformrefawsv1alpha1.Cluster{
                     metadata.name: "platform-ref-aws"
                     spec = {
                         parameters = {
                             id: "platform-ref-aws"
                             region: "us-west-2"
                             version: "1.32"
-                            deletionPolicy: "Delete"
                             providerConfigName: "default"
                             nodes = {
                                 count: 3
@@ -46,17 +45,18 @@ _items = [
                                     }
                                 }
                             }
+
                         }
                     }
                 }
-                # XNetwork for AWS networking
-                awsplatformv1alpha1.XNetwork{
+                # Network for AWS networking
+                awsplatformv1alpha1.Network{
                     metadata.name: "platform-ref-aws-network"
                     spec = {
                         parameters = {
                             id: "platform-ref-aws"
                             region: "us-west-2"
-                            deletionPolicy: "Delete"
+                            managementPolicies: ["*"]
                             providerConfigName: "default"
                             subnets = [
                                 {
@@ -83,8 +83,8 @@ _items = [
                         }
                     }
                 },
-                # XEKS for Amazon EKS
-                awsplatformv1alpha1.XEKS{
+                # EKS for Amazon EKS
+                awsplatformv1alpha1.EKS{
                     metadata = {
                         name: "platform-ref-aws-eks"
                         labels = {
@@ -98,7 +98,7 @@ _items = [
                         parameters = {
                             id: "platform-ref-aws"
                             region: "us-west-2"
-                            deletionPolicy: "Delete"
+                            managementPolicies: ["*"]
                             providerConfigName: "default"
                             version: "1.32"
                             nodes = {
@@ -106,18 +106,14 @@ _items = [
                                 instanceType: "t3.small"
                             }
                         }
-                        writeConnectionSecretToRef = {
-                            name: "platform-ref-aws-eks"
-                            namespace: "crossplane-system"
-                        }
                     }
                 },
-                # XOss for observability stack
-                observev1alpha1.XOss{
+                # Oss for observability stack
+                observev1alpha1.Oss{
                     metadata.name: "platform-ref-aws-oss"
                     spec = {
                         parameters = {
-                            deletionPolicy: "Delete"
+                            managementPolicies: ["*"]
                             id: "platform-ref-aws"
                             operators = {
                                 prometheus = {
@@ -127,12 +123,12 @@ _items = [
                         }
                     }
                 },
-                # XFlux for GitOps
-                gitopsv1alpha1.XFlux{
+                # Flux for GitOps
+                gitopsv1alpha1.Flux{
                     metadata.name: "platform-ref-aws-flux"
                     spec = {
                         parameters = {
-                            deletionPolicy: "Delete"
+                            managementPolicies: ["*"]
                             providerConfigName: "platform-ref-aws"
                             operators = {
                                 flux = {
@@ -156,13 +152,13 @@ _items = [
                         }
                     }
                 },
-                # XAWSLBController for Load Balancer Controller
-                awsplatformv1alpha1.XAWSLBController{
+                # AWSLBController for Load Balancer Controller
+                awsplatformv1alpha1.AWSLBController{
                     metadata.name: "platform-ref-aws-lb-controller"
                     spec = {
                         parameters = {
                             providerConfigName: "default"
-                            deletionPolicy: "Delete"
+                            managementPolicies: ["*"]
                             helm = {
                                 providerConfigName: "platform-ref-aws"
                             }
@@ -178,21 +174,21 @@ _items = [
                 },
                 # Usage resources for dependency management (untyped objects)
                 {
-                    apiVersion: "apiextensions.crossplane.io/v1alpha1"
+                    apiVersion: "protection.crossplane.io/v1beta1"
                     kind: "Usage"
                     metadata.name: "platform-ref-aws-network-by-eks"
                     spec = {
                         replayDeletion: True
                         by = {
                             apiVersion: "aws.platform.upbound.io/v1alpha1"
-                            kind: "XEKS"
+                            kind: "EKS"
                             resourceSelector = {
                                 matchControllerRef: True
                             }
                         }
                         of = {
                             apiVersion: "aws.platform.upbound.io/v1alpha1"
-                            kind: "XNetwork"
+                            kind: "Network"
                             resourceSelector = {
                                 matchControllerRef: True
                             }
@@ -200,21 +196,21 @@ _items = [
                     }
                 },
                 {
-                    apiVersion: "apiextensions.crossplane.io/v1alpha1"
+                    apiVersion: "protection.crossplane.io/v1beta1"
                     kind: "Usage"
                     metadata.name: "platform-ref-aws-eks-by-flux"
                     spec = {
                         replayDeletion: True
                         by = {
                             apiVersion: "gitops.platform.upbound.io/v1alpha1"
-                            kind: "XFlux"
+                            kind: "Flux"
                             resourceSelector = {
                                 matchControllerRef: True
                             }
                         }
                         of = {
                             apiVersion: "aws.platform.upbound.io/v1alpha1"
-                            kind: "XEKS"
+                            kind: "EKS"
                             resourceSelector = {
                                 matchControllerRef: True
                             }
@@ -222,21 +218,21 @@ _items = [
                     }
                 },
                 {
-                    apiVersion: "apiextensions.crossplane.io/v1alpha1"
+                    apiVersion: "protection.crossplane.io/v1beta1"
                     kind: "Usage"
                     metadata.name: "platform-ref-aws-eks-by-oss"
                     spec = {
                         replayDeletion: True
                         by = {
                             apiVersion: "observe.platform.upbound.io/v1alpha1"
-                            kind: "XOss"
+                            kind: "Oss"
                             resourceSelector = {
                                 matchControllerRef: True
                             }
                         }
                         of = {
                             apiVersion: "aws.platform.upbound.io/v1alpha1"
-                            kind: "XEKS"
+                            kind: "EKS"
                             resourceSelector = {
                                 matchControllerRef: True
                             }
@@ -244,7 +240,7 @@ _items = [
                     }
                 },
                 {
-                    apiVersion: "apiextensions.crossplane.io/v1alpha1"
+                    apiVersion: "protection.crossplane.io/v1beta1"
                     kind: "Usage"
                     metadata.name: "platform-ref-aws-eks-by-labeled-release"
                     spec = {
@@ -260,7 +256,7 @@ _items = [
                         }
                         of = {
                             apiVersion: "aws.platform.upbound.io/v1alpha1"
-                            kind: "XEKS"
+                            kind: "EKS"
                             resourceSelector = {
                                 matchControllerRef: True
                             }
@@ -268,7 +264,7 @@ _items = [
                     }
                 },
                 {
-                    apiVersion: "apiextensions.crossplane.io/v1alpha1"
+                    apiVersion: "protection.crossplane.io/v1beta1"
                     kind: "Usage"
                     metadata.name: "platform-ref-aws-lb-controller-by-labeled-app"
                     spec = {
@@ -284,7 +280,7 @@ _items = [
                         }
                         of = {
                             apiVersion: "aws.platform.upbound.io/v1alpha1"
-                            kind: "XAWSLBController"
+                            kind: "AWSLBController"
                             resourceSelector = {
                                 matchControllerRef: True
                             }
@@ -292,21 +288,21 @@ _items = [
                     }
                 },
                 {
-                    apiVersion: "apiextensions.crossplane.io/v1alpha1"
+                    apiVersion: "protection.crossplane.io/v1beta1"
                     kind: "Usage"
                     metadata.name: "platform-ref-aws-lb-controller-by-flux"
                     spec = {
                         replayDeletion: True
                         by = {
                             apiVersion: "gitops.platform.upbound.io/v1alpha1"
-                            kind: "XFlux"
+                            kind: "Flux"
                             resourceSelector = {
                                 matchControllerRef: True
                             }
                         }
                         of = {
                             apiVersion: "aws.platform.upbound.io/v1alpha1"
-                            kind: "XAWSLBController"
+                            kind: "AWSLBController"
                             resourceSelector = {
                                 matchControllerRef: True
                             }
@@ -315,19 +311,19 @@ _items = [
                 }
             ]
             observedResources: [
-                # XNetwork with VPC ID in status
-                awsplatformv1alpha1.XNetwork{
+                # Network with VPC ID in status
+                awsplatformv1alpha1.Network{
                     metadata = {
                         name: "platform-ref-aws-network"
                         annotations = {
-                            "crossplane.io/composition-resource-name" = "XNetwork"
+                            "crossplane.io/composition-resource-name" = "Network"
                         }
                     }
                     spec = {
                         parameters = {
                             id: "platform-ref-aws"
                             region: "us-west-2"
-                            deletionPolicy: "Delete"
+                            managementPolicies: ["*"]
                             providerConfigName: "default"
                             subnets = [
                                 {
@@ -352,27 +348,22 @@ _items = [
                                 }
                             ]
                         }
-                        compositionSelector = {
-                            matchLabels = {
-                                type: "basic"
-                            }
-                        }
                     }
                     status = {
                         vpcId: "vpc-test123"
                     }
                 },
-                # XFlux with Ready condition to trigger XAWSLBController creation
-                gitopsv1alpha1.XFlux{
+                # Flux with Ready condition to trigger AWSLBController creation
+                gitopsv1alpha1.Flux{
                     metadata = {
                         name: "platform-ref-aws-flux"
                         annotations = {
-                            "crossplane.io/composition-resource-name" = "XFlux"
+                            "crossplane.io/composition-resource-name" = "Flux"
                         }
                     }
                     spec = {
                         parameters = {
-                            deletionPolicy: "Delete"
+                            managementPolicies: ["*"]
                             providerConfigName: "platform-ref-aws"
                             operators = {
                                 flux = {
@@ -406,29 +397,25 @@ _items = [
                         ]
                     }
                 },
-                # XEKS with Ready condition to trigger all Helm releases creation
-                awsplatformv1alpha1.XEKS{
+                # EKS with Ready condition to trigger all Helm releases creation
+                awsplatformv1alpha1.EKS{
                     metadata = {
                         name: "platform-ref-aws-eks"
                         annotations = {
-                            "crossplane.io/composition-resource-name" = "XEKS"
+                            "crossplane.io/composition-resource-name" = "EKS"
                         }
                     }
                     spec = {
                         parameters = {
                             id: "platform-ref-aws"
                             region: "us-west-2"
-                            deletionPolicy: "Delete"
+                            managementPolicies: ["*"]
                             providerConfigName: "default"
                             version: "1.32"
                             nodes = {
                                 count: 3
                                 instanceType: "t3.small"
                             }
-                        }
-                        writeConnectionSecretToRef = {
-                            name: "platform-ref-aws-eks"
-                            namespace: "crossplane-system"
                         }
                     }
                     status = {
@@ -445,18 +432,18 @@ _items = [
                         }
                     }
                 },
-                # XAWSLBController with Ready condition to trigger Flux and OSS creation
-                awsplatformv1alpha1.XAWSLBController{
+                # AWSLBController with Ready condition to trigger Flux and OSS creation
+                awsplatformv1alpha1.AWSLBController{
                     metadata = {
                         name: "platform-ref-aws-lb-controller"
                         annotations = {
-                            "crossplane.io/composition-resource-name" = "XAWSLBController"
+                            "crossplane.io/composition-resource-name" = "AWSLBController"
                         }
                     }
                     spec = {
                         parameters = {
                             providerConfigName: "default"
-                            deletionPolicy: "Delete"
+                            managementPolicies: ["*"]
                             helm = {
                                 providerConfigName: "platform-ref-aws"
                             }
@@ -481,9 +468,9 @@ _items = [
                     }
                 }
             ]
-            compositionPath: "apis/composition.yaml"
-            xrPath: "examples/xcluster.yaml"
-            xrdPath: "apis/definition.yaml"
+            compositionPath: "apis/clusters/composition.yaml"
+            xrPath: "examples/cluster/cluster.yaml"
+            xrdPath: "apis/clusters/definition.yaml"
             timeoutSeconds: 120
             validate: False
         }

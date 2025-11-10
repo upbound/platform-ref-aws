@@ -12,8 +12,8 @@ _items = [
             crossplane.autoUpgrade.channel: "Rapid"
             defaultConditions: ["Ready"]
             manifests: [
-                # XCluster test instance (XR)
-                platformrefawsv1alpha1.XCluster{
+                # Cluster test instance (XR)
+                platformrefawsv1alpha1.Cluster{
                     metadata= {
                         name: "test-cluster-e2e"
                         labels: {
