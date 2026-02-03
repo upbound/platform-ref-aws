@@ -1,4 +1,4 @@
-import models.io.upbound.aws.v1beta1 as awsv1beta1
+import models.io.upbound.awsm.v1beta1 as awsv1beta1
 import models.io.upbound.dev.meta.v1alpha1 as metav1alpha1
 import models.io.upbound.platform.aws.v1alpha1 as platformawsv1alpha1
 import models.io.upbound.platform.v1alpha1 as platformv1alpha1
@@ -27,7 +27,7 @@ _items = [
                             id: "test-cluster-e2e"
                             region: "eu-central-1"
                             version: "1.33"
-                            providerConfigName: "default"
+                            providerConfigName: "e2e-test-cluster"
                             nodes= {
                                 count: 3 # Single node is not enough for e2e test with lb-controller and rest of the helm charts
                                 instanceType: "t3.small"
@@ -122,7 +122,7 @@ _items = [
                 # AWS ProviderConfig for AWS resources
                 awsv1beta1.ProviderConfig{
                     metadata = {
-                        name = "default"
+                        name = "e2e-test-cluster"
                         namespace = "default"
                     }
                     spec = {
