@@ -27,7 +27,7 @@ _items = [
                             id: "test-cluster-e2e"
                             region: "eu-central-1"
                             version: "1.33"
-                            providerConfigName: "e2e-test-cluster"
+                            providerConfigName: "default"
                             nodes= {
                                 count: 3 # Single node is not enough for e2e test with lb-controller and rest of the helm charts
                                 instanceType: "t3.small"
@@ -66,6 +66,7 @@ _items = [
                     }
                     spec = {
                         parameters = {
+                            providerConfigName: "default"
                             region: "eu-central-1"
                             engine: "mariadb"
                             engineVersion: "10.11.14"
@@ -96,6 +97,11 @@ _items = [
                             providerConfigName: "test-cluster-e2e"
                             helm = {
                                 wait: False
+                                chart = {
+                                    name: "ghost"
+                                    repo: "https://charts.bitnami.com/bitnami"
+                                    version: "21.1.18"
+                                }
                                 values = {
                                     ingress = {
                                         annotations = {
@@ -111,7 +117,7 @@ _items = [
                                 }
                             }
                             passwordSecretRef = {
-                                name: "test-cluster-e2e-db-conn-mariadb"
+                                name: "test-cluster-e2e-db-mariadb-sql"
                                 namespace: "default"
                             }
                         }
@@ -122,7 +128,7 @@ _items = [
                 # AWS ProviderConfig for AWS resources
                 awsv1beta1.ProviderConfig{
                     metadata = {
-                        name = "e2e-test-cluster"
+                        name = "default"
                         namespace = "default"
                     }
                     spec = {

@@ -127,6 +127,7 @@ _items = [
             }
             spec: {
                 parameters: {
+                    providerConfigName = params.providerConfigName
                     helm: {
                         providerConfigName = params.id
                     }

@@ -157,6 +157,7 @@ _items = [
                     metadata.name: "platform-ref-aws-lb-controller"
                     spec = {
                         parameters = {
+                            providerConfigName: "default"
                             managementPolicies: ["*"]
                             helm = {
                                 providerConfigName: "platform-ref-aws"
