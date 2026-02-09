@@ -3,6 +3,7 @@ import models.io.upbound.dev.meta.v1alpha1 as metav1alpha1
 import models.io.upbound.platform.aws.v1alpha1 as platformawsv1alpha1
 import models.io.upbound.platform.v1alpha1 as platformv1alpha1
 import models.io.upbound.platformref.aws.v1alpha1 as platformrefawsv1alpha1
+import models.io.crossplane.pkg.v1 as pkgv1
 
 
 _items = [
@@ -121,6 +122,17 @@ _items = [
                                 namespace: "default"
                             }
                         }
+                    }
+                }
+            ]
+            initResources: [
+                # Provider family for AWS (workaround for ProviderConfig RBAC)
+                pkgv1.Provider {
+                    metadata = {
+                        name: "upbound-provider-family-aws"
+                    }
+                    spec = {
+                        package: "xpkg.upbound.io/upbound/provider-family-aws:v2.3.0"
                     }
                 }
             ]

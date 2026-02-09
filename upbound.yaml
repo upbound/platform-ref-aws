@@ -3,6 +3,15 @@ kind: Project
 metadata:
   name: platform-ref-aws
 spec:
+  apiDependencies:
+  - k8s:
+      version: v1.33.0
+    type: k8s
+  - git:
+      path: cluster/crds
+      ref: release-2.1
+      repository: https://github.com/crossplane/crossplane
+    type: crd
   dependsOn:
   - apiVersion: pkg.crossplane.io/v1
     kind: Configuration
