@@ -13,7 +13,7 @@ uid = oxr.metadata?.uid
 
 _defaults = {
     managementPolicies = params.managementPolicies or ["*"]
-    providerConfigName = params.providerConfigName
+    providerConfigName = params.providerConfigName or "default"
 }
 
 _metadata = lambda name: str -> any {
@@ -126,8 +126,7 @@ _items = [
                 name = params.id + "-lb-controller"
             }
             spec: {
-                parameters: {
-                    providerConfigName = params.providerConfigName
+                parameters: _defaults | {
                     helm: {
                         providerConfigName = params.id
                     }
@@ -142,7 +141,6 @@ _items = [
                     # Pass VPC ID if available to avoid EC2 metadata discovery
                     if _observedVpcId:
                         vpcId = _observedVpcId
-                    managementPolicies = params.managementPolicies or ["*"]
                 }
             }
         }

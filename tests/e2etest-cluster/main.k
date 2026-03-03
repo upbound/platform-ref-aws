@@ -132,7 +132,7 @@ _items = [
                         name: "upbound-provider-family-aws"
                     }
                     spec = {
-                        package: "xpkg.upbound.io/upbound/provider-family-aws:v2.3.0"
+                        package: "xpkg.upbound.io/upbound/provider-family-aws:v2.4.0"
                     }
                 }
             ]
