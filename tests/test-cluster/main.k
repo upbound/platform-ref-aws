@@ -469,7 +469,7 @@ _items = [
                 }
             ]
             compositionPath: "apis/clusters/composition.yaml"
-            xrPath: "examples/cluster/cluster.yaml"
+            xrPath: "examples/cluster-xr.yaml"
             xrdPath: "apis/clusters/definition.yaml"
             timeoutSeconds: 120
             validate: False

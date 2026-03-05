@@ -90,7 +90,7 @@ up project build
 up test run tests/*
 
 # Render compositions with examples
-up composition render apis/clusters/definition.yaml apis/clusters/composition.yaml examples/cluster/cluster.yaml
+up composition render apis/clusters/definition.yaml apis/clusters/composition.yaml examples/cluster-xr.yaml
 ```
 
 ## Using the Platform
