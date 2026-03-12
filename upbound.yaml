@@ -1,37 +1,46 @@
-apiVersion: meta.dev.upbound.io/v1alpha1
+apiVersion: meta.dev.upbound.io/v2alpha1
 kind: Project
 metadata:
   name: platform-ref-aws
 spec:
+  apiDependencies:
+  - k8s:
+      version: v1.33.0
+    type: k8s
+  - git:
+      path: cluster/crds
+      ref: release-2.1
+      repository: https://github.com/crossplane/crossplane
+    type: crd
   dependsOn:
   - apiVersion: pkg.crossplane.io/v1
     kind: Configuration
     package: xpkg.upbound.io/upbound/configuration-aws-lb-controller
-    version: v0.5.0
+    version: v2.0.1
   - apiVersion: pkg.crossplane.io/v1
     kind: Configuration
     package: xpkg.upbound.io/upbound/configuration-aws-network
-    version: v0.24.0
+    version: v2.0.0
   - apiVersion: pkg.crossplane.io/v1
     kind: Configuration
     package: xpkg.upbound.io/upbound/configuration-aws-database
-    version: v0.16.0
+    version: v2.0.0
   - apiVersion: pkg.crossplane.io/v1
     kind: Configuration
     package: xpkg.upbound.io/upbound/configuration-aws-eks
-    version: v0.19.0
+    version: v2.0.1
   - apiVersion: pkg.crossplane.io/v1
     kind: Configuration
     package: xpkg.upbound.io/upbound/configuration-app
-    version: v0.12.1
+    version: v2.0.0
   - apiVersion: pkg.crossplane.io/v1
     kind: Configuration
     package: xpkg.upbound.io/upbound/configuration-observability-oss
-    version: v0.10.1
+    version: v2.0.0
   - apiVersion: pkg.crossplane.io/v1
     kind: Configuration
     package: xpkg.upbound.io/upbound/configuration-gitops-flux
-    version: v0.12.0
+    version: v2.0.0
   - apiVersion: pkg.crossplane.io/v1
     kind: Function
     package: xpkg.upbound.io/crossplane-contrib/function-auto-ready

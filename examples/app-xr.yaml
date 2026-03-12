@@ -6,9 +6,12 @@ metadata:
   labels:
     platform.upbound.io/deletion-ordering: enabled
 spec:
-  compositeDeletePolicy: Foreground
   parameters:
     helm:
+      chart:
+        name: ghost
+        repo: "https://charts.bitnami.com/bitnami"
+        version: 23.0.25
       values:
         ingress:
           annotations:
@@ -22,6 +25,4 @@ spec:
     providerConfigName: platform-ref-aws
     passwordSecretRef:
       namespace: default
-      name: platform-ref-aws-db-conn-mariadb
-  writeConnectionSecretToRef:
-    name: platform-ref-aws-ghost-conn
+      name: platform-ref-aws-db-mariadb-sql

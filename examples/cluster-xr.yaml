@@ -1,21 +1,15 @@
 apiVersion: aws.platformref.upbound.io/v1alpha1
-kind: XCluster
+kind: Cluster
 metadata:
   name: platform-ref-aws
   namespace: default
   labels:
     platform.upbound.io/deletion-ordering: enabled
 spec:
-  compositeDeletePolicy: Foreground
-  writeConnectionSecretToRef:
-    name: platform-ref-aws-kubeconfig
-    namespace: default
   parameters:
     id: platform-ref-aws
     region: us-west-2
     version: "1.32"
-    networkSelector: basic
-    deletionPolicy: Delete
     providerConfigName: default
     nodes:
       count: 3

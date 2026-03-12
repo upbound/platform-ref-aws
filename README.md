@@ -24,7 +24,7 @@ This platform uses **Upbound DevEx** with:
 ## Overview
 
 This reference platform outlines a specialized API for generating an EKS cluster
-([XCluster](apis/definition.yaml)) that incorporates XRs from the specified configurations:
+([Cluster](apis/clusters/definition.yaml)) that incorporates XRs from the specified configurations:
 
 * [upbound-configuration-aws-lb-controller](https://github.com/upbound/configuration-aws-lb-controller)
 * [upbound-configuration-aws-network](https://github.com/upbound/configuration-aws-network)
@@ -37,11 +37,11 @@ This reference platform outlines a specialized API for generating an EKS cluster
 ```mermaid
 graph LR;
     MyApp(My App)---MyCluster(XRC: my-cluster);
-    MyCluster---XRD1(XRD: XCluster);
+    MyCluster---XRD1(XRD: Cluster);
     MyApp---MyDB(XRC: my-db);
     MyDB---XRD2(XRD: XSQLInstance);
 		subgraph Configuration:upbound/platform-ref-aws;
-	    XRD1---Composition(XEKS, XNetwork, XAWSLBController, XFlux, XOss);
+	    XRD1---Composition(EKS, Network, AWSLBController, Flux, Oss);
 	    XRD2---Composition2(Composition);
 		end
 		subgraph Provider:upbound/provider-aws
@@ -90,7 +90,7 @@ up project build
 up test run tests/*
 
 # Render compositions with examples
-up composition render apis/definition.yaml apis/composition.yaml examples/cluster-claim.yaml
+up composition render apis/clusters/definition.yaml apis/clusters/composition.yaml examples/cluster-xr.yaml
 ```
 
 ## Using the Platform

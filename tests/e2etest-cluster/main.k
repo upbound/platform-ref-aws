@@ -1,32 +1,33 @@
-import models.io.upbound.aws.v1beta1 as awsv1beta1
+import models.io.upbound.awsm.v1beta1 as awsv1beta1
 import models.io.upbound.dev.meta.v1alpha1 as metav1alpha1
 import models.io.upbound.platform.aws.v1alpha1 as platformawsv1alpha1
 import models.io.upbound.platform.v1alpha1 as platformv1alpha1
 import models.io.upbound.platformref.aws.v1alpha1 as platformrefawsv1alpha1
+import models.io.crossplane.pkg.v1 as pkgv1
 
 
 _items = [
     metav1alpha1.E2ETest{
         metadata.name: "e2etest-cluster"
         spec= {
-            crossplane.autoUpgrade.channel: "Rapid"
+            crossplane.autoUpgrade.channel: "None"
+            crossplane.version = "2.0.2-up.5"
             defaultConditions: ["Ready"]
             manifests: [
-                # XCluster test instance (XR)
-                platformrefawsv1alpha1.XCluster{
+                # Cluster test instance (XR)
+                platformrefawsv1alpha1.Cluster{
                     metadata= {
                         name: "test-cluster-e2e"
+                        namespace: "default"
                         labels: {
                             "platform.upbound.io/deletion-ordering": "enabled"
                         }
                     }
                     spec= {
-                        compositionUpdatePolicy: "Automatic"
                         parameters= {
                             id: "test-cluster-e2e"
                             region: "eu-central-1"
                             version: "1.33"
-                            deletionPolicy: "Delete"
                             providerConfigName: "default"
                             nodes= {
                                 count: 3 # Single node is not enough for e2e test with lb-controller and rest of the helm charts
@@ -55,27 +56,24 @@ _items = [
                                 }
                             }
                         }
-                        writeConnectionSecretToRef: {
-                            name: "platform-ref-aws-kubeconfig"
-                            namespace: "crossplane-system"
-                        }
                     }
                 },
 
                 # 2. Database XR (MariaDB)
-                platformawsv1alpha1.XSQLInstance{
+                platformawsv1alpha1.SQLInstance{
                     metadata = {
                         name: "test-cluster-e2e-db-mariadb"
+                        namespace: "default"
                     }
                     spec = {
                         parameters = {
+                            providerConfigName: "default"
                             region: "eu-central-1"
                             engine: "mariadb"
                             engineVersion: "10.11.14"
                             storageGB: 5
                             autoGeneratePassword: True
                             passwordSecretRef = {
-                                namespace: "default"
                                 name: "mariadbsecret"
                                 key: "password"
                             }
@@ -83,27 +81,28 @@ _items = [
                                 id: "test-cluster-e2e"
                             }
                         }
-                        writeConnectionSecretToRef = {
-                            name: "test-cluster-e2e-db-conn-mariadb"
-                            namespace: "crossplane-system"
-                        }
                     }
                 },
 
                 # 3. App XR (Ghost blog application)
-                platformv1alpha1.XApp{
+                platformv1alpha1.App{
                     metadata = {
                         name: "test-cluster-e2e-ghost"
+                        namespace: "default"
                         labels = {
                             "platform.upbound.io/deletion-ordering": "enabled"
                         }
                     }
                     spec = {
-                        compositionUpdatePolicy: "Automatic"
                         parameters = {
                             providerConfigName: "test-cluster-e2e"
                             helm = {
                                 wait: False
+                                chart = {
+                                    name: "ghost"
+                                    repo: "https://charts.bitnami.com/bitnami"
+                                    version: "21.1.18"
+                                }
                                 values = {
                                     ingress = {
                                         annotations = {
@@ -119,84 +118,31 @@ _items = [
                                 }
                             }
                             passwordSecretRef = {
-                                namespace: "crossplane-system"
-                                name: "test-cluster-e2e-db-conn-mariadb"
+                                name: "test-cluster-e2e-db-mariadb-sql"
+                                namespace: "default"
                             }
-                        }
-                        writeConnectionSecretToRef = {
-                            name: "test-cluster-e2e-app-conn"
-                            namespace: "crossplane-system"
                         }
                     }
                 }
             ]
-            initResources = [
-                # Workaround for the e2e test early failure when providers are not ready
-                # AWS Provider Family
-                {
-                    apiVersion: "pkg.crossplane.io/v1"
-                    kind: "Provider"
+            initResources: [
+                # Provider family for AWS (workaround for ProviderConfig RBAC)
+                pkgv1.Provider {
                     metadata = {
                         name: "upbound-provider-family-aws"
                     }
                     spec = {
-                        package: "xpkg.upbound.io/upbound/provider-family-aws:v1.23.2"
-                        packagePullPolicy: "Always"
-                    }
-                },
-                # AWS EC2 Provider
-                {
-                    apiVersion: "pkg.crossplane.io/v1"
-                    kind: "Provider"
-                    metadata = {
-                        name: "upbound-provider-aws-ec2"
-                    }
-                    spec = {
-                        package: "xpkg.upbound.io/upbound/provider-aws-ec2:v1.23.2"
-                        packagePullPolicy: "Always"
-                    }
-                },
-                # AWS EKS Provider
-                {
-                    apiVersion: "pkg.crossplane.io/v1"
-                    kind: "Provider"
-                    metadata = {
-                        name: "upbound-provider-aws-eks"
-                    }
-                    spec = {
-                        package: "xpkg.upbound.io/upbound/provider-aws-eks:v1.23.2"
-                        packagePullPolicy: "Always"
-                    }
-                },
-                # AWS IAM Provider
-                {
-                    apiVersion: "pkg.crossplane.io/v1"
-                    kind: "Provider"
-                    metadata = {
-                        name: "upbound-provider-aws-iam"
-                    }
-                    spec = {
-                        package: "xpkg.upbound.io/upbound/provider-aws-iam:v1.23.2"
-                        packagePullPolicy: "Always"
-                    }
-                },
-                # AWS RDS Provider
-                {
-                    apiVersion: "pkg.crossplane.io/v1"
-                    kind: "Provider"
-                    metadata = {
-                        name: "upbound-provider-aws-rds"
-                    }
-                    spec = {
-                        package: "xpkg.upbound.io/upbound/provider-aws-rds:v1.23.2"
-                        packagePullPolicy: "Always"
+                        package: "xpkg.upbound.io/upbound/provider-family-aws:v2.4.0"
                     }
                 }
             ]
             extraResources = [
                 # AWS ProviderConfig for AWS resources
                 awsv1beta1.ProviderConfig{
-                    metadata.name = "default"
+                    metadata = {
+                        name = "default"
+                        namespace = "default"
+                    }
                     spec = {
                         credentials = {
                             source = "Upbound"
