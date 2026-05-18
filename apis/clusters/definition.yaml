@@ -47,12 +47,12 @@ spec:
                     items:
                       type: string
                       enum:
-                        - "*"
-                        - Create
-                        - Observe
-                        - Update
-                        - Delete
-                        - LateInitialize
+                      - "*"
+                      - Create
+                      - Observe
+                      - Update
+                      - Delete
+                      - LateInitialize
                     default: ["*"]
                   providerConfigName:
                     description: Crossplane ProviderConfig to use for provisioning this resources
@@ -62,9 +62,9 @@ spec:
                     type: string
                     description: Kubernetes version of the Cluster
                     enum:
-                      - "1.33"
-                      - "1.32"
-                      - "1.31"
+                    - "1.33"
+                    - "1.32"
+                    - "1.31"
                     default: "1.32"
                   nodes:
                     type: object
@@ -78,8 +78,8 @@ spec:
                         description: instance types associated with the Node Group.
                         default: t3.small
                     required:
-                      - count
-                      - instanceType
+                    - count
+                    - instanceType
                   operators:
                     description: Configuration for operators.
                     type: object
@@ -100,7 +100,7 @@ spec:
                             type: string
                             default: "2.10.6"
                         required:
-                          - version
+                        - version
                       fluxSync:
                         description: Configuration for the Flux Sync Helm-Chart.
                         type: object
@@ -110,7 +110,7 @@ spec:
                             type: string
                             default: "1.7.2"
                         required:
-                          - version
+                        - version
                       prometheus:
                         description: Configuration for the Prometheus Helm-Chart.
                         type: object
@@ -120,7 +120,7 @@ spec:
                             type: string
                             default: "52.1.0"
                         required:
-                          - version
+                        - version
                   gitops:
                     description: GitOps configure gitops system
                     type: object
@@ -162,23 +162,23 @@ spec:
                                   \"refs/merge-requests/1/head\""
                                 type: string
                         required:
-                          - interval
-                          - timeout
-                          - url
-                          - path
-                          - ref
+                        - interval
+                        - timeout
+                        - url
+                        - path
+                        - ref
                     required:
-                      - git
+                    - git
                 required:
-                  - managementPolicies
-                  - gitops
-                  - id
-                  - nodes
-                  - operators
-                  - providerConfigName
-                  - region
+                - managementPolicies
+                - gitops
+                - id
+                - nodes
+                - operators
+                - providerConfigName
+                - region
             required:
-              - parameters
+            - parameters
           status:
             type: object
             properties:
