@@ -22,18 +22,19 @@ jobs:
     steps:
       - name: Checkout
         id: checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Install and login with up
         if: env.UP_API_TOKEN != '' && env.UP_ORG != ''
-        uses: upbound/action-up@53fe6395637d884c80d2bbc8c2d75d0ece776ced # v1
+        uses: upbound/action-up@2c4d9663b902087b0808b79fe2c7ec68424d87d8 # v1
         with:
           api-token: ${{ secrets.UP_API_TOKEN }}
           organization: ${{ secrets.UP_ORG }}
 
       # doesn't work with plain token when pushing otherwise
       - name: Login to xpkg with robot
-        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4
+        if: env.UP_API_TOKEN != '' && env.UP_ROBOT_ID != ''
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4
         with:
           registry: ${{ env.XPKG_REGISTRY }}
           username: ${{ env.UP_ROBOT_ID }}
@@ -41,7 +42,7 @@ jobs:
 
       - name: Build and Push Upbound project
         if: env.UP_API_TOKEN != ''
-        uses: upbound/action-up-project@b849ec1eb303ae4abf22b2b86c0e2afca155137b # v1
+        uses: upbound/action-up-project@1d22ac1cce7d995595d1d1ecc1bf8312ed0307c9 # v1
         with:
           push-project: true
           tag: ${{ inputs.version || '' }}

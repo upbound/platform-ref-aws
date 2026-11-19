@@ -12,10 +12,10 @@ jobs:
     steps:
       - name: Checkout
         id: checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Install up
-        uses: upbound/action-up@53fe6395637d884c80d2bbc8c2d75d0ece776ced # v1
+        uses: upbound/action-up@2c4d9663b902087b0808b79fe2c7ec68424d87d8 # v1
         with:
           skip-login: true
 
