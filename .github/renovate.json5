@@ -18,20 +18,28 @@
     'automated',
     'run-e2e-tests',
   ],
-  ignorePaths: [ // default renovate ignorePaths without '**/examples/**'
+  ignorePaths: [
+    // Renovate defaults minus '**/examples/**' and '**/tests/**' (so pep621 pins under tests/ are watched)
     '**/node_modules/**',
     '**/bower_components/**',
     '**/vendor/**',
     '**/__tests__/**',
     '**/test/**',
-    '**/tests/**',
-    '**/__fixtures__/**'
+    '**/__fixtures__/**',
+    // Synced from upbound/sa-up (gitops/shared-files). Renovate bumps them there;
+    // bumping them here too gets overwritten (and looks like a downgrade) on the next sync.
+    '.github/workflows/ci.yaml',
+    '.github/workflows/composition-tests.yaml',
+    '.github/workflows/e2e.yaml',
+    '.github/workflows/tag.yml',
+    '.github/workflows/yamllint.yaml',
   ],
   crossplane: {
     fileMatch: ['(^|/)examples/.*\\.ya?ml$']
   },
   packageRules: [
     {
+      // Repo-specific workflows only; the synced ones are ignored above.
       matchFileNames: [
         '.github/**',
       ],
@@ -48,6 +56,22 @@
       matchFileNames: ['examples/**'],
       groupName: 'examples'
     },
+    {
+      // poetry supersedes pep621 for a pyproject.toml without a pep621 lockfile
+      // (renovatebot/renovate#37458) and also reads [project].dependencies, so
+      // match both managers.
+      matchManagers: ['pep621', 'poetry'],
+      matchFileNames: ['functions/**'],
+      groupName: 'python function dependencies',
+    },
+    {
+      matchManagers: ['pep621', 'poetry'],
+      matchFileNames: ['tests/**'],
+      groupName: 'python test dependencies',
+      // test-only pins are gated by the offline composition tests; drop the
+      // run-e2e-tests label so their bumps don't spend a real e2e cluster
+      labels: ['automated'],
+    },
   ],
   customManagers: [
     {
@@ -61,6 +85,19 @@
       ],
       datasourceTemplate: '{{{datasource}}}',
       depNameTemplate: '{{{depName}}}',
+    },
+    {
+      customType: 'regex',
+      description: 'Bump Helm chart versions embedded in the Python composition functions',
+      fileMatch: [
+        '^functions/.*\\.py$',
+      ],
+      matchStrings: [
+        '#\\s*renovate:\\s*datasource=(?<datasource>[^\\s]+)\\s+depName=(?<depName>[^\\s]+)\\s+registryUrl=(?<registryUrl>[^\\s]+)\\s*\\n\\s*"version":\\s*"(?<currentValue>[^"]+)"',
+      ],
+      datasourceTemplate: '{{{datasource}}}',
+      depNameTemplate: '{{{depName}}}',
+      registryUrlTemplate: '{{{registryUrl}}}',
     },
   ],
   "git-submodules": {
