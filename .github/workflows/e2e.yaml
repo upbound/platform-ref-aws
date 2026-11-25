@@ -22,20 +22,20 @@ jobs:
     steps:
       - name: Checkout
         id: checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Install and login with up
         if: env.UP_API_TOKEN != '' && env.UP_ORG != ''
-        uses: upbound/action-up@53fe6395637d884c80d2bbc8c2d75d0ece776ced # v1
+        uses: upbound/action-up@2c4d9663b902087b0808b79fe2c7ec68424d87d8 # v1
         with:
           api-token: ${{ env.UP_API_TOKEN }}
           organization: ${{ env.UP_ORG }}
 
       # doesn't work with plain token when pushing otherwise
       - name: Login to xpkg with robot
-        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4
         with:
           registry: xpkg.upbound.io
           username: ${{ env.UP_ROBOT_ID }}
@@ -48,4 +48,14 @@ jobs:
         run: up ctx ${{ env.UP_ORG }}/upbound-gcp-us-central-1/${{ env.UP_GROUP }}
 
       - name: Run e2e tests
-        run: up test run tests/* --e2e
+        # Only tests/e2etest-* run on the shared cloud control plane. Other test
+        # directories (composition tests, or provisioning suites that a repo runs
+        # elsewhere, e.g. on KIND) are never picked up here.
+        run: |
+          shopt -s nullglob
+          tests=(tests/e2etest-*)
+          if [ ${#tests[@]} -eq 0 ]; then
+            echo "No tests/e2etest-* directories, nothing to run."
+            exit 0
+          fi
+          up test run "${tests[@]}" --e2e
